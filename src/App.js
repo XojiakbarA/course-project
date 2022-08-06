@@ -1,8 +1,21 @@
+import {CssBaseline, ThemeProvider} from "@mui/material";
+import {Route, Routes} from "react-router";
+import MainLayout from "./components/layouts/MainLayout";
+import {useTheme} from "./hooks/useTheme";
 
 const App = () => {
 
+    const { theme } = useTheme()
+
     return (
-        <h1>Course Project</h1>
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <Routes>
+                <Route index element={<MainLayout/>}>
+
+                </Route>
+            </Routes>
+        </ThemeProvider>
     )
 }
 
