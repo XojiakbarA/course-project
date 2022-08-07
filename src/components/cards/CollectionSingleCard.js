@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AttachmentIcon from "@mui/icons-material/Attachment";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import EventIcon from "@mui/icons-material/Event";
 
 const CollectionSingleCard = ({ onEditClick, onDeleteClick }) => {
@@ -58,7 +58,7 @@ const CollectionSingleCard = ({ onEditClick, onDeleteClick }) => {
                             </Box>
                         </Stack>
                         <Stack spacing={2} direction={"row"} alignItems={"center"}>
-                            <AttachmentIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
+                            <AttachFileIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                             <Box>
                                 <Typography variant={"caption"} color={"primary"}>Items</Typography>
                                 <Typography variant={isDownSm ? "body2" : "body1"}>10</Typography>

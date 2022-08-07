@@ -14,10 +14,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TagIcon from '@mui/icons-material/Tag';
 import EventIcon from "@mui/icons-material/Event";
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import CommentIcon from '@mui/icons-material/Comment';
 
-const ItemSingleCard = ({ onEditClick, onDeleteClick }) => {
+const ItemSingleCard = ({ onEditClick, onDeleteClick, onLikeClick }) => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -34,6 +35,11 @@ const ItemSingleCard = ({ onEditClick, onDeleteClick }) => {
                     <Tooltip title={"Delete"}>
                         <IconButton onClick={onDeleteClick}>
                             <DeleteIcon/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={"Like"}>
+                        <IconButton onClick={onLikeClick}>
+                            <ThumbUpOffAltIcon/>
                         </IconButton>
                     </Tooltip>
                 </Stack>

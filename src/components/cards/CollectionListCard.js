@@ -29,8 +29,11 @@ const CollectionListCard = ({ onEditClick, onDeleteClick }) => {
                     alt="Paella dish"
                 />
                 <CardContent>
-                    <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
-                        <Typography gutterBottom variant={"h5"} color={"primary.main"}>Collection 1</Typography>
+                    <Stack direction={"row"} justifyContent={"space-between"} alignItems={"end"}>
+                        <Stack>
+                            <Typography variant={"h5"} color={"primary.main"}>Collection 1</Typography>
+                            <Typography gutterBottom color={"grey.400"}>Xojiakbar</Typography>
+                        </Stack>
                         <Typography color={"secondary.dark"}>10 Items</Typography>
                     </Stack>
                     <Typography variant={"body2"} color={"text.disabled"}>

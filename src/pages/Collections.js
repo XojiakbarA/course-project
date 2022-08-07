@@ -1,12 +1,15 @@
-import {Avatar, Chip, Grid, IconButton, Link, Paper, Stack, Tooltip} from "@mui/material";
+import {Avatar, Chip, Grid, IconButton, Link, Paper, Stack, Tooltip, Typography} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ImageIcon from '@mui/icons-material/Image';
-import {DataGrid, GridFilterPanel, GridToolbar} from "@mui/x-data-grid";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import CommentIcon from '@mui/icons-material/Comment';
+import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
 import CollectionSingleCard from "../components/cards/CollectionSingleCard";
 import {toggleDeleteCollection, toggleEditCollection} from "../store/slices/dialogsSlice";
 import {useDispatch} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
+import MyGridToolbar from "../components/data-grid/MyGridToolbar";
 
 const Collections = () => {
 
@@ -45,6 +48,7 @@ const Collections = () => {
             minWidth: 250,
             field: 'tags',
             headerName: 'Tags',
+            sortable: false,
             renderCell: ({ value }) => (
                 <Stack direction={"row"} spacing={1}>
                     {
@@ -59,15 +63,25 @@ const Collections = () => {
             flex: 1,
             minWidth: 100,
             field: 'likes',
-            headerName: 'Likes',
-            renderCell: ({ value }) => <Chip size={"small"} label={value} color={"error"} variant={"outlined"}/>
+            renderHeader: () => (
+                <Stack direction={"row"} spacing={1}>
+                    <ThumbUpIcon fontSize={"small"}/>
+                    <Typography variant={"body2"}>Likes</Typography>
+                </Stack>
+            ),
+            renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
         },
         {
             flex: 1,
             minWidth: 100,
             field: 'comments',
-            headerName: 'Comments',
-            renderCell: ({ value }) => <Chip size={"small"} label={value} color={"info"} variant={"outlined"}/>
+            renderHeader: () => (
+                <Stack direction={"row"} spacing={1}>
+                    <CommentIcon fontSize={"small"}/>
+                    <Typography variant={"body2"}>Comments</Typography>
+                </Stack>
+            ),
+            renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
         },
         {
             width: 120,
@@ -119,7 +133,7 @@ const Collections = () => {
                         disableColumnMenu
                         columns={columns}
                         rows={rows}
-                        components={{ Toolbar: GridToolbar, FilterPanel: GridFilterPanel }}
+                        components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
                     />
                 </Paper>
             </Grid>

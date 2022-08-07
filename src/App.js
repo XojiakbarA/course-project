@@ -13,6 +13,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {dialogsSelector} from "./store/selectors";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "./store/slices/dialogsSlice";
 import Items from "./pages/Items";
+import Home from "./pages/Home";
 
 const App = () => {
 
@@ -36,6 +37,7 @@ const App = () => {
             <CssBaseline/>
             <Routes>
                 <Route path={"/"} element={<MainLayout/>}>
+                    <Route index element={<Home/>}/>
                     <Route path={"/profile"} element={<Profile/>}/>
                     <Route path={"/collections/:id"} element={<Collections/>}/>
                     <Route path={"/items/:id"} element={<Items/>}/>
