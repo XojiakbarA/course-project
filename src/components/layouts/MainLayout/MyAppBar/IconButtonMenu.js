@@ -3,7 +3,7 @@ import {IconButton, Stack, Tooltip} from "@mui/material";
 const IconButtonMenu = ({ menu }) => {
 
     return (
-        <Stack direction={"row"} alignItems={"center"} display={{ xs: "none", md: "flex" }}>
+        <Stack direction={"row"} alignItems={"center"} display={{ xs: "none", sm: "flex" }}>
             {
                 menu.map(item => (
                     <Tooltip key={item.id} title={item.title}>

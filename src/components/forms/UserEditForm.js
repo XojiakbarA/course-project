@@ -1,11 +1,11 @@
-import {Stack, TextField, useMediaQuery} from "@mui/material";
-import PasswordInput from "../inputs/PasswordInput";
-import {LoadingButton} from "@mui/lab";
+import {Button, Stack, TextField, useMediaQuery} from "@mui/material";
+import PasswordIcon from '@mui/icons-material/Password';
+import SaveIcon from '@mui/icons-material/Save';
 import AvatarUpload from "../commons/AvatarUpload";
-import {useSinglePreview} from "../../hooks/useSinglePreview";
 import {useFormik} from "formik";
+import {useSinglePreview} from "../../hooks/useSinglePreview";
 
-const RegisterForm = () => {
+const UserEditForm = () => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -15,7 +15,6 @@ const RegisterForm = () => {
             lastName: "",
             email: "",
             password: "",
-            confirmPassword: "",
             image: null
         }
     })
@@ -31,46 +30,49 @@ const RegisterForm = () => {
                 handleDeleteImage={ e => setValues(prev => ({ ...prev, image: null })) }
                 name='image'
                 preview={preview}
-                size={isDownSm ? 60 : 70}
+                size={isDownSm ? 100 : 120}
             />
             <TextField
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
-                variant={"filled"}
+                variant={"standard"}
                 label={"First Name"}
+                value={"Xojiakbar"}
             />
             <TextField
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
-                variant={"filled"}
+                variant={"standard"}
                 label={"Last Name"}
+                value={"Akramov"}
             />
             <TextField
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
-                variant={"filled"}
+                variant={"standard"}
                 label={"Email"}
+                value={"xoji@mail.ru"}
             />
-            <PasswordInput
-                fullWidth
-                size={isDownSm ? "small" : "medium"}
-                label={"Password"}
-            />
-            <PasswordInput
-                fullWidth
-                size={isDownSm ? "small" : "medium"}
-                label={"Confirm Password"}
-            />
-            <LoadingButton
-                fullWidth
-                variant={"contained"}
-                size={isDownSm ? "small" : "medium"}
-            >
-                Register
-            </LoadingButton>
+            <Stack spacing={2} width={"100%"}>
+                <Button
+                    color={"secondary"}
+                    variant={"outlined"}
+                    startIcon={<PasswordIcon/>}
+                >
+                    Change Password
+                </Button>
+                <Button
+                    color={"success"}
+                    variant={"contained"}
+                    startIcon={<SaveIcon/>}
+                    disabled
+                >
+                    Save
+                </Button>
+            </Stack>
         </Stack>
         </form>
     )
 }
 
-export default RegisterForm
+export default UserEditForm

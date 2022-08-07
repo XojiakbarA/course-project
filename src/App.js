@@ -2,6 +2,7 @@ import {CssBaseline, ThemeProvider} from "@mui/material";
 import {Route, Routes} from "react-router";
 import MainLayout from "./components/layouts/MainLayout";
 import {useTheme} from "./hooks/useTheme";
+import Profile from "./pages/Profile";
 
 const App = () => {
 
@@ -11,8 +12,8 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline/>
             <Routes>
-                <Route index element={<MainLayout/>}>
-
+                <Route path={"/"} element={<MainLayout/>}>
+                    <Route path={"/profile"} element={<Profile/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>

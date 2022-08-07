@@ -1,4 +1,4 @@
-import {AppBar, Box, Toolbar, Button, useMediaQuery} from '@mui/material';
+import {AppBar, Box, Toolbar, Button, useMediaQuery, Stack, Typography} from '@mui/material';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from '@mui/icons-material/Language';
 import BrightnessAutoIcon from '@mui/icons-material/BrightnessAuto';
@@ -13,13 +13,18 @@ import ProfileMenu from "./ProfileMenu";
 import LanguageMenu from "./LanguageMenu";
 import ThemeMenu from "./ThemeMenu";
 import {useTheme} from "../../../../hooks/useTheme";
-import AuthDialog from "../../../dialogs/AuthDialog";
+import CommonDialog from "../../../dialogs/CommonDialog";
+import LoginForm from "../../../forms/LoginForm";
+import RegisterForm from "../../../forms/RegisterForm";
 
 const MyAppBar = () => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     const [authDialog, setAuthDialog] = useState(false)
+    const [isLogin, setIsLogin] = useState(true)
+
+    const toggleAuthDialog = () => setAuthDialog(prev => !prev)
 
     const [anchorProfileEl, setAnchorProfileEl] = useState(null)
     const [anchorLanguageEl, setAnchorLanguageEl] = useState(null)
@@ -34,7 +39,7 @@ const MyAppBar = () => {
                 title: "Profile",
                 icon: <AccountCircle fontSize={"large"}/>,
                 size: "large",
-                onClick: e => setAuthDialog(true)
+                onClick: toggleAuthDialog
             },
             {
                 id: 2,
@@ -55,7 +60,7 @@ const MyAppBar = () => {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="fixed">
                 <Toolbar>
                     <Button
                         color={"inherit"}
@@ -88,10 +93,24 @@ const MyAppBar = () => {
                         mode={mode}
                     />
                 </Toolbar>
-                <AuthDialog
+                <CommonDialog
+                    title={isLogin ? "Login" : "Register"}
+                    maxWidth={"xs"}
                     open={authDialog}
-                    onClose={ e => setAuthDialog(false) }
-                />
+                    onClose={ toggleAuthDialog }
+                >
+                    <Stack spacing={2}>
+                        { isLogin ? <LoginForm/> : <RegisterForm/> }
+                        <Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+                            <Typography>
+                                { isLogin ? "Don't have an account yet?" : "Already have an account?" }
+                            </Typography>
+                            <Button onClick={ e => setIsLogin(prev => !prev) }>
+                                { isLogin ? "Register" : "Login" }
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </CommonDialog>
             </AppBar>
         </Box>
     );

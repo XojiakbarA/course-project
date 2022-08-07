@@ -19,7 +19,7 @@ const MobileMenu = ({ menu }) => {
     const id = 'primary-search-account-menu-mobile'
 
     return (
-        <Box sx={{ display: { sm: "block", md: "none" } }}>
+        <Box sx={{ display: { xs: "block", sm: "none" } }}>
             <IconButton
                 size="large"
                 aria-label="show more"

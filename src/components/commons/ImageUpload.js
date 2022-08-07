@@ -1,12 +1,13 @@
-import {Box, Avatar, IconButton, CircularProgress, Badge} from '@mui/material'
-import {useState} from 'react'
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
-import UploadMenu from './UploadMenu'
+import {Avatar, Badge, Box, Button, IconButton} from "@mui/material";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import UploadMenu from "../menu/UploadMenu";
+import {useState} from "react";
 
-const AvatarUpload = ({
-    handlePrewiewDeleteClick, handleUploadChange, handleDeleteImage,
-    isLoading, name, src, preview, size, ...others
-}) => {
+const ImageUpload = ({
+     handlePrewiewDeleteClick, handleUploadChange, handleDeleteImage,
+     isLoading, name, src, preview, width, height, ...others
+ }) => {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
@@ -21,7 +22,8 @@ const AvatarUpload = ({
     return (
         <Box {...others}>
             <Badge
-                overlap='circular'
+                sx={{ width }}
+                overlap='rectangular'
                 anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                 badgeContent={
                     preview &&
@@ -30,23 +32,19 @@ const AvatarUpload = ({
                     </IconButton>
                 }
             >
-                <IconButton
+                <Button
+                    color={"inherit"}
+                    sx={{ width }}
                     onClick={handleClick}
-                    size="large"
-                    aria-controls={open ? 'account-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    disabled={isLoading}
                 >
                     <Avatar
-                        sx={{ width: size, height: size }}
                         src={preview || src}
-                    />
-                    {
-                        isLoading &&
-                        <CircularProgress sx={{position: 'absolute'}}/>
-                    }
-                </IconButton>
+                        sx={{ width, height }}
+                        variant={"rounded"}
+                    >
+                        <AddPhotoAlternateIcon sx={{ transform: "scale(2)" }}/>
+                    </Avatar>
+                </Button>
             </Badge>
             <UploadMenu
                 open={open}
@@ -58,7 +56,7 @@ const AvatarUpload = ({
                 handleUploadChange={handleUploadChange}
             />
         </Box>
-    );
+    )
 }
 
-export default AvatarUpload
+export default ImageUpload

@@ -36,6 +36,7 @@ const LoginForm = () => {
             <LoadingButton
                 fullWidth
                 variant={"contained"}
+                size={isDownSm ? "small" : "medium"}
             >
                 Login
             </LoadingButton>
