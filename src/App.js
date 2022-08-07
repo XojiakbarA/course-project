@@ -12,6 +12,7 @@ import {useTheme} from "./hooks/useTheme";
 import {useDispatch, useSelector} from "react-redux";
 import {dialogsSelector} from "./store/selectors";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "./store/slices/dialogsSlice";
+import Items from "./pages/Items";
 
 const App = () => {
 
@@ -37,6 +38,7 @@ const App = () => {
                 <Route path={"/"} element={<MainLayout/>}>
                     <Route path={"/profile"} element={<Profile/>}/>
                     <Route path={"/collections/:id"} element={<Collections/>}/>
+                    <Route path={"/items/:id"} element={<Items/>}/>
                 </Route>
             </Routes>
             <CommonDialog

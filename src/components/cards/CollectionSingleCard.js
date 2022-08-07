@@ -1,6 +1,6 @@
 import {
     Avatar,
-    Box,
+    Box, Breadcrumbs,
     Card,
     CardContent,
     Divider,
@@ -24,9 +24,11 @@ const CollectionSingleCard = ({ onEditClick, onDeleteClick }) => {
             <CardContent>
                 <Stack spacing={4}>
                     <Stack direction={"row"} justifyContent={"space-between"}>
-                        <Stack direction={"row"} spacing={1} alignItems={"end"} >
-                            <Typography variant={isDownSm ? "h5" : "h4"}>Collection 1</Typography>
-                            <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>Topic 1</Typography>
+                        <Stack direction={"row"} spacing={1} alignItems={"end"}>
+                            <Breadcrumbs>
+                                <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>Topic 1</Typography>
+                                <Typography variant={isDownSm ? "h5" : "h4"}>Collection 1</Typography>
+                            </Breadcrumbs>
                         </Stack>
                         <Stack direction={"row"} spacing={1}>
                             <Tooltip title={"Edit"}>
@@ -46,27 +48,27 @@ const CollectionSingleCard = ({ onEditClick, onDeleteClick }) => {
                         spacing={4}
                         overflow={"scroll"}
                         pb={1}
-                        divider={<Divider orientation={"vertical"}flexItem/>}
+                        divider={<Divider orientation={"vertical"} flexItem/>}
                     >
                         <Stack spacing={2} direction={"row"} alignItems={"center"}>
-                            <Avatar sx={{ width: 40, height: 40 }}/>
+                            <Avatar sx={{ width: isDownSm ? 30 : 40, height: isDownSm ? 30 : 40 }}/>
                             <Box>
                                 <Typography variant={"caption"} color={"primary"}>User</Typography>
-                                <Typography>Xojiakbar</Typography>
+                                <Typography variant={isDownSm ? "body2" : "body1"}>Xojiakbar</Typography>
                             </Box>
                         </Stack>
                         <Stack spacing={2} direction={"row"} alignItems={"center"}>
-                            <AttachmentIcon sx={{ transform: "scale(1.5)" }} color={"primary"}/>
+                            <AttachmentIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                             <Box>
                                 <Typography variant={"caption"} color={"primary"}>Items</Typography>
-                                <Typography>10</Typography>
+                                <Typography variant={isDownSm ? "body2" : "body1"}>10</Typography>
                             </Box>
                         </Stack>
                         <Stack spacing={2} direction={"row"} alignItems={"center"}>
-                            <EventIcon sx={{ transform: "scale(1.5)" }} color={"primary"}/>
+                            <EventIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                             <Box>
                                 <Typography variant={"caption"} color={"primary"}>Created at</Typography>
-                                <Typography>07.08.2022 14:00</Typography>
+                                <Typography variant={isDownSm ? "body2" : "body1"}>07.08.2022 14:00</Typography>
                             </Box>
                         </Stack>
                     </Stack>

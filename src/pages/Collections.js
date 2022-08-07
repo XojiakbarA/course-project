@@ -1,4 +1,4 @@
-import {Avatar, Chip, Grid, IconButton, Link, Paper, Stack, Tooltip, useMediaQuery} from "@mui/material";
+import {Avatar, Chip, Grid, IconButton, Link, Paper, Stack, Tooltip} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ImageIcon from '@mui/icons-material/Image';
@@ -9,8 +9,6 @@ import {useDispatch} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
 
 const Collections = () => {
-
-    const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     const dispatch = useDispatch()
 
@@ -30,25 +28,46 @@ const Collections = () => {
         },
         {
             flex: 2,
-            minWidth: 80,
+            minWidth: 150,
             field: 'title',
             headerName: 'Title',
             renderCell: ({ row }) => <Link component={RouterLink} to={`/items/${row.id}`}>{row.title}</Link>
         },
         {
+            flex: 1,
+            minWidth: 80,
+            field: 'image',
+            headerName: 'Image',
+            renderCell: () => <Avatar sx={{ width: 30, height: 30 }}><ImageIcon fontSize={"small"}/></Avatar>
+        },
+        {
             flex: 2,
-            minWidth: 180,
+            minWidth: 250,
             field: 'tags',
             headerName: 'Tags',
             renderCell: ({ value }) => (
                 <Stack direction={"row"} spacing={1}>
                     {
                         value.map(item => (
-                            <Chip key={item} label={item}/>
+                            <Chip size={"small"} key={item} label={item}/>
                         ))
                     }
                 </Stack>
             )
+        },
+        {
+            flex: 1,
+            minWidth: 100,
+            field: 'likes',
+            headerName: 'Likes',
+            renderCell: ({ value }) => <Chip size={"small"} label={value} color={"error"} variant={"outlined"}/>
+        },
+        {
+            flex: 1,
+            minWidth: 100,
+            field: 'comments',
+            headerName: 'Comments',
+            renderCell: ({ value }) => <Chip size={"small"} label={value} color={"info"} variant={"outlined"}/>
         },
         {
             width: 120,
@@ -73,8 +92,8 @@ const Collections = () => {
         }
     ]
     const rows = [
-        { id: 1, title: "Xiaomi Mi 9T Pro", tags: ["#smartphones", "#gadgets"] },
-        { id: 2, title: "Xiaomi Mi Band 3", tags: ["#smartwatches", "#gadgets"] },
+        { id: 1, title: "Xiaomi Mi 9T Pro", tags: ["#smartphones", "#gadgets"], likes: 143, comments: 84 },
+        { id: 2, title: "Xiaomi Mi Band 3", tags: ["#smartwatches", "#gadgets"], likes: 45, comments: 12 },
     ]
 
     return (
