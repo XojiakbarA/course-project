@@ -1,0 +1,1 @@
+export const dialogsSelector = (state) => state.dialogs

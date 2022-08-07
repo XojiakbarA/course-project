@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {Link} from "react-router-dom";
 
-const CollectionCard = ({ onEditClick, onDeleteClick }) => {
+const CollectionListCard = ({ onEditClick, onDeleteClick }) => {
 
     return (
         <Card sx={{ position: "relative"}}>
@@ -61,4 +61,4 @@ const CollectionCard = ({ onEditClick, onDeleteClick }) => {
     )
 }
 
-export default CollectionCard
+export default CollectionListCard

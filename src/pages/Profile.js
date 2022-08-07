@@ -1,24 +1,25 @@
 import {Card, CardActionArea, Grid, Paper, Stack, Typography, useMediaQuery} from "@mui/material";
 import CategoryIcon from '@mui/icons-material/Category';
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
-import EditIcon from '@mui/icons-material/Edit';
 import UserEditForm from "../components/forms/UserEditForm";
 import PageTitle from "../components/commons/PageTitle";
-import CollectionCard from "../components/cards/CollectionCard";
-import CommonDialog from "../components/dialogs/CommonDialog";
-import {useState} from "react";
-import ConfirmDialog from "../components/dialogs/ConfirmDialog";
-import CollectionForm from "../components/forms/CollectionForm";
+import CollectionListCard from "../components/cards/CollectionListCard";
+import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "../store/slices/dialogsSlice";
+import {useDispatch} from "react-redux";
 
 const Profile = () => {
 
-    const [createDialog, setCreateDialog] = useState(false)
-    const [editDialog, setEditDialog] = useState(false)
-    const [deleteDialog, setDeleteDialog] = useState(false)
+    const dispatch = useDispatch()
 
-    const toggleCreateDialog = () => setCreateDialog(prev => !prev)
-    const toggleEditDialog = () => setEditDialog(prev => !prev)
-    const toggleDeleteDialog = () => setDeleteDialog(prev => !prev)
+    const toggleCreateCollectionDialog = () => {
+        dispatch(toggleCreateCollection())
+    }
+    const toggleEditCollectionDialog = () => {
+        dispatch(toggleEditCollection())
+    }
+    const toggleDeleteCollectionDialog = () => {
+        dispatch(toggleDeleteCollection())
+    }
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -40,9 +41,9 @@ const Profile = () => {
                     {
                         array.map(item => (
                             <Grid key={item} item xs={12} md={6} lg={4}>
-                                <CollectionCard
-                                    onEditClick={toggleEditDialog}
-                                    onDeleteClick={toggleDeleteDialog}
+                                <CollectionListCard
+                                    onEditClick={toggleEditCollectionDialog}
+                                    onDeleteClick={toggleDeleteCollectionDialog}
                                 />
                             </Grid>
                         ))
@@ -56,7 +57,7 @@ const Profile = () => {
                                     justifyContent: "center",
                                     alignItems: "center"
                                 }}
-                                onClick={toggleCreateDialog}
+                                onClick={toggleCreateCollectionDialog}
                             >
                                 <Stack spacing={3} alignItems={"center"}>
                                     <AddToPhotosIcon sx={{ transform: "scale(2)" }} color={"primary"}/>
@@ -72,35 +73,6 @@ const Profile = () => {
                     <UserEditForm/>
                 </Paper>
             </Grid>
-            <CommonDialog
-                title={"Create Collection"}
-                maxWidth={"md"}
-                open={createDialog}
-                onClose={toggleCreateDialog}
-            >
-                <CollectionForm
-                    buttonText={"Create"}
-                    buttonIcon={<AddToPhotosIcon/>}
-                    onCancelClick={toggleCreateDialog}
-                />
-            </CommonDialog>
-            <CommonDialog
-                title={"Edit Collection"}
-                maxWidth={"md"}
-                open={editDialog}
-                onClose={toggleEditDialog}
-            >
-                <CollectionForm
-                    buttonText={"Edit"}
-                    buttonIcon={<EditIcon/>}
-                    onCancelClick={toggleEditDialog}
-                />
-            </CommonDialog>
-            <ConfirmDialog
-                open={deleteDialog}
-                onClose={toggleDeleteDialog}
-                content={"Do you really want to delete the collection?"}
-            />
         </Grid>
     )
 }
