@@ -1,4 +1,4 @@
-import {Chip, Grid, Link, Stack, useMediaQuery} from "@mui/material";
+import {Box, Chip, Grid, Link, Stack, useMediaQuery} from "@mui/material";
 import {Link as RouterLink} from "react-router-dom"
 import PageTitle from "../components/commons/PageTitle";
 import CategoryIcon from "@mui/icons-material/Category";
@@ -32,7 +32,7 @@ const Home = () => {
                 <Grid container spacing={2}>
                 {
                     items.map(item => (
-                        <Grid item xs={3}>
+                        <Grid key={item} item xs={12} sm={6} md={4} lg={3}>
                             <ItemListCard key={item}/>
                         </Grid>
                     ))
@@ -54,21 +54,11 @@ const Home = () => {
                 <Grid container spacing={2}>
                     {
                         collections.map(collection => (
-                            <Grid item xs={3}>
+                            <Grid key={collection} item xs={12} sm={6} md={4} lg={3}>
                                 <CollectionListCard key={collection}/>
                             </Grid>
                         ))
                     }
-                    <Grid item xs={9}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={9}>
-
-                            </Grid>
-                            <Grid item xs={9} spacing={2}>
-
-                            </Grid>
-                        </Grid>
-                    </Grid>
                 </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -80,10 +70,12 @@ const Home = () => {
                 />
             </Grid>
             <Grid item xs={12}>
-                <Stack direction={"row"} spacing={2}>
+                <Box>
                     {
                         tags.map(tag => (
                             <Chip
+                                sx={{ mb: 2, mr: 2 }}
+                                key={tag}
                                 clickable
                                 label={"#smartphones"}
                                 component={RouterLink}
@@ -91,7 +83,7 @@ const Home = () => {
                             />
                         ))
                     }
-                </Stack>
+                </Box>
             </Grid>
         </Grid>
     )
