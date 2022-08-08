@@ -1,9 +1,11 @@
-import {AppBar, Box, Toolbar, Button, useMediaQuery, Stack, Typography} from '@mui/material';
+import {AppBar, Box, Toolbar, Button, useMediaQuery, Stack, Typography, IconButton} from '@mui/material';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from '@mui/icons-material/Language';
 import BrightnessAutoIcon from '@mui/icons-material/BrightnessAuto';
 import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
+import MenuIcon from '@mui/icons-material/Menu';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {Link} from "react-router-dom";
 import SearchInput from "../../../inputs/SearchInput";
 import IconButtonMenu from "./IconButtonMenu";
@@ -16,10 +18,14 @@ import {useTheme} from "../../../../hooks/useTheme";
 import CommonDialog from "../../../dialogs/CommonDialog";
 import LoginForm from "../../../forms/LoginForm";
 import RegisterForm from "../../../forms/RegisterForm";
+import {useLocation, useNavigate} from "react-router";
 
-const MyAppBar = () => {
+const MyAppBar = ({ onMenuClick }) => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
+
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const [authDialog, setAuthDialog] = useState(false)
     const [isLogin, setIsLogin] = useState(true)
@@ -39,17 +45,24 @@ const MyAppBar = () => {
                 title: "Profile",
                 icon: <AccountCircle fontSize={"large"}/>,
                 size: "large",
-                onClick: toggleAuthDialog
+                onClick: e => navigate("/profile")
             },
             {
                 id: 2,
+                title: "Admin Panel",
+                icon: <AdminPanelSettingsIcon fontSize={"large"}/>,
+                size: "large",
+                onClick: e => navigate("/admin")
+            },
+            {
+                id: 3,
                 title: "Language",
                 icon: <LanguageIcon/>,
                 size: "medium",
                 onClick: e => setAnchorLanguageEl(e.currentTarget)
             },
             {
-                id: 3,
+                id: 4,
                 title: "Theme",
                 icon: mode === 'light' ? <LightModeIcon/> : mode === 'dark' ? <DarkModeIcon/> : <BrightnessAutoIcon/>,
                 size: "medium",
@@ -59,9 +72,17 @@ const MyAppBar = () => {
     }, [mode])
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
             <AppBar position="fixed">
                 <Toolbar>
+                    {
+                        location.pathname.startsWith("/admin") &&
+                        <IconButton
+                            color={"inherit"}
+                            onClick={onMenuClick}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                    }
                     <Button
                         color={"inherit"}
                         size={"large"}
@@ -71,7 +92,10 @@ const MyAppBar = () => {
                     >
                         { isDownSm ? "CP" : "CourseProject" }
                     </Button>
-                    <SearchInput/>
+                    {
+                        !location.pathname.startsWith("/admin") &&
+                        <SearchInput/>
+                    }
                     <Box sx={{ flexGrow: 1 }} />
                     <IconButtonMenu menu={menu}/>
                     <MobileMenu menu={menu}/>
@@ -112,7 +136,6 @@ const MyAppBar = () => {
                     </Stack>
                 </CommonDialog>
             </AppBar>
-        </Box>
     );
 }
 

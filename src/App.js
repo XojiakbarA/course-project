@@ -14,6 +14,7 @@ import {dialogsSelector} from "./store/selectors";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "./store/slices/dialogsSlice";
 import Items from "./pages/Items";
 import Home from "./pages/Home";
+import Dashboard from "./pages/admin/Dashboard";
 
 const App = () => {
 
@@ -41,6 +42,9 @@ const App = () => {
                     <Route path={"/profile"} element={<Profile/>}/>
                     <Route path={"/collections/:id"} element={<Collections/>}/>
                     <Route path={"/items/:id"} element={<Items/>}/>
+                    <Route path={"/admin"}>
+                        <Route index element={<Dashboard/>}/>
+                    </Route>
                 </Route>
             </Routes>
             <CommonDialog

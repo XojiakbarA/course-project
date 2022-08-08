@@ -4,7 +4,7 @@ import {
     CardActions,
     CardContent,
     CardMedia, Chip,
-    IconButton,
+    IconButton, Rating,
     Stack,
     Tooltip,
     Typography
@@ -31,19 +31,22 @@ const ItemListCard = ({ onLikeClick }) => {
                 />
                 <CardContent>
                     <Stack spacing={2}>
-                        <Stack direction={"row"} justifyContent={"space-between"} alignItems={"end"}>
+                        <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
                             <Stack>
                                 <Typography variant={"h5"} color={"primary.main"}>Item 1</Typography>
                                 <Typography color={"grey.400"}>Collection 1</Typography>
                             </Stack>
-                            <Stack direction={"row"} spacing={2}>
-                                <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                                    <ThumbUpIcon fontSize={"small"} color={"disabled"}/>
-                                    <Typography variant={"body2"}>10</Typography>
-                                </Stack>
-                                <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                                    <CommentIcon fontSize={"small"} color={"disabled"}/>
-                                    <Typography variant={"body2"}>10</Typography>
+                            <Stack spacing={1} alignItems={"end"}>
+                                <Rating readOnly value={4} size={"small"}/>
+                                <Stack direction={"row"} spacing={2}>
+                                    <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                                        <ThumbUpIcon fontSize={"small"} color={"disabled"}/>
+                                        <Typography variant={"body2"}>10</Typography>
+                                    </Stack>
+                                    <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                                        <CommentIcon fontSize={"small"} color={"disabled"}/>
+                                        <Typography variant={"body2"}>10</Typography>
+                                    </Stack>
                                 </Stack>
                             </Stack>
                         </Stack>
