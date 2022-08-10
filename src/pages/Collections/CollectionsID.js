@@ -5,13 +5,13 @@ import ImageIcon from '@mui/icons-material/Image';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import CommentIcon from '@mui/icons-material/Comment';
 import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
-import CollectionSingleCard from "../components/cards/CollectionSingleCard";
-import {toggleDeleteCollection, toggleEditCollection} from "../store/slices/dialogsSlice";
+import CollectionSingleCard from "../../components/cards/CollectionSingleCard";
+import {toggleDeleteCollection, toggleEditCollection} from "../../store/slices/dialogsSlice";
 import {useDispatch} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
-import MyGridToolbar from "../components/data-grid/MyGridToolbar";
+import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
 
-const Collections = () => {
+const CollectionsID = () => {
 
     const dispatch = useDispatch()
 
@@ -141,4 +141,4 @@ const Collections = () => {
     )
 }
 
-export default Collections
+export default CollectionsID

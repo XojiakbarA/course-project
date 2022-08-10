@@ -1,12 +1,12 @@
 import {Avatar, Grid, Stack, useMediaQuery} from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
 import CommentIcon from '@mui/icons-material/Comment';
-import ItemSingleCard from "../components/cards/ItemSingleCard";
-import PageTitle from "../components/commons/PageTitle";
-import CommentCard from "../components/cards/CommentCard";
-import CommentForm from "../components/forms/CommentForm";
+import ItemSingleCard from "../../components/cards/ItemSingleCard";
+import PageTitle from "../../components/commons/PageTitle";
+import CommentCard from "../../components/cards/CommentCard";
+import CommentForm from "../../components/forms/CommentForm";
 
-const Items = () => {
+const ItemsID = () => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -54,4 +54,4 @@ const Items = () => {
     )
 }
 
-export default Items
+export default ItemsID
