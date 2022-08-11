@@ -10,13 +10,18 @@ import CollectionForm from "./components/forms/CollectionForm";
 import ConfirmDialog from "./components/dialogs/ConfirmDialog";
 import {useTheme} from "./hooks/useTheme";
 import {useDispatch, useSelector} from "react-redux";
-import {dialogsSelector} from "./store/selectors";
+import {authSelector, dialogsSelector} from "./store/selectors";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "./store/slices/dialogsSlice";
 import ItemsID from "./pages/Items/ItemsID";
 import Home from "./pages/Home";
 import Dashboard from "./pages/admin/Dashboard";
 import Items from "./pages/Items";
 import Collections from "./pages/Collections";
+import CommonSnackbar from "./components/commons/CommonSnackbar";
+import {isExpired} from "react-jwt";
+import {logout} from "./store/slices/authSlice";
+import Protected from "./pages/Protected";
+import {useEffect} from "react";
 
 const App = () => {
 
@@ -24,6 +29,13 @@ const App = () => {
 
     const { theme } = useTheme()
     const { collection } = useSelector(dialogsSelector)
+    const { token } = useSelector(authSelector)
+
+    useEffect(() => {
+        if (isExpired(token)) {
+            dispatch(logout())
+        }
+    }, [dispatch, token])
 
     const toggleCreateCollectionDialog = () => {
         dispatch(toggleCreateCollection())
@@ -41,7 +53,9 @@ const App = () => {
             <Routes>
                 <Route path={"/"} element={<MainLayout/>}>
                     <Route index element={<Home/>}/>
-                    <Route path={"/profile"} element={<Profile/>}/>
+                    <Route element={<Protected/>}>
+                        <Route path={"/profile"} element={<Profile/>}/>
+                    </Route>
                     <Route path={"/collections"} element={<Collections/>}/>
                     <Route path={"/collections/:id"} element={<CollectionsID/>}/>
                     <Route path={"/items/"} element={<Items/>}/>
@@ -51,6 +65,7 @@ const App = () => {
                     </Route>
                 </Route>
             </Routes>
+            <CommonSnackbar/>
             <CommonDialog
                 title={"Create Collection"}
                 maxWidth={"md"}

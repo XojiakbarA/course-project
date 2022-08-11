@@ -6,6 +6,7 @@ import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import MenuIcon from '@mui/icons-material/Menu';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {Link} from "react-router-dom";
 import SearchInput from "../../../inputs/SearchInput";
 import IconButtonMenu from "./IconButtonMenu";
@@ -19,33 +20,36 @@ import CommonDialog from "../../../dialogs/CommonDialog";
 import LoginForm from "../../../forms/LoginForm";
 import RegisterForm from "../../../forms/RegisterForm";
 import {useLocation, useNavigate} from "react-router";
+import {useDispatch, useSelector} from "react-redux";
+import {authSelector, dialogsSelector} from "../../../../store/selectors";
+import {isExpired} from "react-jwt";
+import AvatarImage from "../../../images/AvatarImage";
+import {logout} from "../../../../store/slices/authSlice";
+import {toggleAuth, toggleAuthForm} from "../../../../store/slices/dialogsSlice";
 
 const MyAppBar = ({ onMenuClick }) => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
+    const dispatch = useDispatch()
     const location = useLocation()
     const navigate = useNavigate()
-
-    const [authDialog, setAuthDialog] = useState(false)
-    const [isLogin, setIsLogin] = useState(true)
-
-    const toggleAuthDialog = () => setAuthDialog(prev => !prev)
+    const { mode, handleModeChange } = useTheme()
+    const { token, user } = useSelector(authSelector)
+    const { auth } = useSelector(dialogsSelector)
 
     const [anchorProfileEl, setAnchorProfileEl] = useState(null)
     const [anchorLanguageEl, setAnchorLanguageEl] = useState(null)
     const [anchorThemeEl, setAnchorThemeEl] = useState(null)
 
-    const { mode, handleModeChange } = useTheme()
-
     const menu = useMemo(() => {
-        return [
+        let buttons = [
             {
                 id: 1,
                 title: "Profile",
-                icon: <AccountCircle fontSize={"large"}/>,
+                icon: isExpired(token) ? <AccountCircle fontSize={"large"}/> : <AvatarImage publicId={user?.image} size={35}/>,
                 size: "large",
-                onClick: e => navigate("/profile")
+                onClick: isExpired(token) ? e => dispatch(toggleAuth()) : e => navigate("/profile")
             },
             {
                 id: 2,
@@ -56,20 +60,34 @@ const MyAppBar = ({ onMenuClick }) => {
             },
             {
                 id: 3,
+                title: "Logout",
+                icon: <LogoutIcon fontSize={"large"}/>,
+                size: "large",
+                onClick: e => dispatch(logout())
+            },
+            {
+                id: 4,
                 title: "Language",
                 icon: <LanguageIcon/>,
                 size: "medium",
                 onClick: e => setAnchorLanguageEl(e.currentTarget)
             },
             {
-                id: 4,
+                id: 5,
                 title: "Theme",
                 icon: mode === 'light' ? <LightModeIcon/> : mode === 'dark' ? <DarkModeIcon/> : <BrightnessAutoIcon/>,
                 size: "medium",
                 onClick: e => setAnchorThemeEl(e.currentTarget)
             }
         ]
-    }, [mode])
+        if (isExpired(token)) {
+            buttons = buttons.filter(button => button.title !== "Logout")
+        }
+        if (!user?.authorities?.find(a => a.authority === "ADMIN")) {
+            buttons = buttons.filter(button => button.title !== "Admin Panel")
+        }
+        return buttons
+    }, [mode, token, navigate, dispatch, user])
 
     return (
             <AppBar position="fixed">
@@ -118,19 +136,19 @@ const MyAppBar = ({ onMenuClick }) => {
                     />
                 </Toolbar>
                 <CommonDialog
-                    title={isLogin ? "Login" : "Register"}
+                    title={auth.isLogin ? "Login" : "Register"}
                     maxWidth={"xs"}
-                    open={authDialog}
-                    onClose={ toggleAuthDialog }
+                    open={auth.isOpen}
+                    onClose={ e => dispatch(toggleAuth()) }
                 >
                     <Stack spacing={2}>
-                        { isLogin ? <LoginForm/> : <RegisterForm/> }
+                        { auth.isLogin ? <LoginForm/> : <RegisterForm/> }
                         <Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
                             <Typography>
-                                { isLogin ? "Don't have an account yet?" : "Already have an account?" }
+                                { auth.isLogin ? "Don't have an account yet?" : "Already have an account?" }
                             </Typography>
-                            <Button onClick={ e => setIsLogin(prev => !prev) }>
-                                { isLogin ? "Register" : "Login" }
+                            <Button onClick={ e => dispatch(toggleAuthForm()) }>
+                                { auth.isLogin ? "Register" : "Login" }
                             </Button>
                         </Stack>
                     </Stack>
