@@ -63,7 +63,7 @@ const LoginForm = () => {
             >
                 Login
             </LoadingButton>
-            <Divider><Chip label={"OR"} size={"small"}/></Divider>
+            <Divider><Chip label={"OR LOGIN WITH"} size={"small"}/></Divider>
             <SocialLoginButtons disabled={authLoading}/>
         </Stack>
         </form>

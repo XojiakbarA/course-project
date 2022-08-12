@@ -1,4 +1,14 @@
-import {AppBar, Box, Toolbar, Button, useMediaQuery, Stack, Typography, IconButton} from '@mui/material';
+import {
+    AppBar,
+    Box,
+    Toolbar,
+    Button,
+    useMediaQuery,
+    Stack,
+    Typography,
+    IconButton,
+    CircularProgress
+} from '@mui/material';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from '@mui/icons-material/Language';
 import BrightnessAutoIcon from '@mui/icons-material/BrightnessAuto';
@@ -22,7 +32,6 @@ import RegisterForm from "../../../forms/RegisterForm";
 import {useLocation, useNavigate} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
 import {authSelector, dialogsSelector} from "../../../../store/selectors";
-import {isExpired} from "react-jwt";
 import AvatarImage from "../../../images/AvatarImage";
 import {logout} from "../../../../store/slices/authSlice";
 import {toggleAuth, toggleAuthForm} from "../../../../store/slices/dialogsSlice";
@@ -35,21 +44,31 @@ const MyAppBar = ({ onMenuClick }) => {
     const location = useLocation()
     const navigate = useNavigate()
     const { mode, handleModeChange } = useTheme()
-    const { token, user } = useSelector(authSelector)
+    const { getLoading, user } = useSelector(authSelector)
     const { auth } = useSelector(dialogsSelector)
 
     const [anchorProfileEl, setAnchorProfileEl] = useState(null)
     const [anchorLanguageEl, setAnchorLanguageEl] = useState(null)
     const [anchorThemeEl, setAnchorThemeEl] = useState(null)
 
+    const profileIcon = useMemo(() => {
+        return getLoading ?
+            <CircularProgress size={20}/> :
+        (
+            !user ?
+            <AccountCircle fontSize={"large"}/> :
+            <AvatarImage publicId={user?.image} size={35}/>
+        )
+    }, [user, getLoading])
+
     const menu = useMemo(() => {
         let buttons = [
             {
                 id: 1,
-                title: "Profile",
-                icon: isExpired(token) ? <AccountCircle fontSize={"large"}/> : <AvatarImage publicId={user?.image} size={35}/>,
+                title: user?.firstName ?? "Profile",
+                icon: profileIcon,
                 size: "large",
-                onClick: isExpired(token) ? e => dispatch(toggleAuth()) : e => navigate("/profile")
+                onClick: !user ? e => dispatch(toggleAuth()) : e => navigate("/profile")
             },
             {
                 id: 2,
@@ -80,14 +99,14 @@ const MyAppBar = ({ onMenuClick }) => {
                 onClick: e => setAnchorThemeEl(e.currentTarget)
             }
         ]
-        if (isExpired(token)) {
+        if (!user) {
             buttons = buttons.filter(button => button.title !== "Logout")
         }
         if (!user?.authorities?.find(a => a.authority === "ADMIN")) {
             buttons = buttons.filter(button => button.title !== "Admin Panel")
         }
         return buttons
-    }, [mode, token, navigate, dispatch, user])
+    }, [mode, navigate, dispatch, user, profileIcon])
 
     return (
             <AppBar position="fixed">

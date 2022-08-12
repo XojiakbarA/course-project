@@ -10,8 +10,6 @@ export const appendToFormData = (data) => {
             }
         } else if (data[key] != null) {
             formData.append(key, data[key])
-        } else if (data[key] == null) {
-            formData.append(key, '')
         }
     }
     return formData

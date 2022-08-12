@@ -5,7 +5,7 @@ import AvatarUpload from "../commons/AvatarUpload";
 import {useSinglePreview} from "../../hooks/useSinglePreview";
 import {useFormik} from "formik";
 import {registerValidationSchema} from "../../utils/validate";
-import {appendToFormData} from "../../utils/converters";
+import {appendToFormData} from "../../utils/helpers";
 import {useDispatch, useSelector} from "react-redux";
 import {register} from "../../store/asyncThunk/userAsyncThunk";
 import {authSelector} from "../../store/selectors";

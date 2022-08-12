@@ -1,9 +1,8 @@
 import axios from "axios"
-
-export const baseURL = "http://localhost:8080/api/"
+import {API_BASE_URL} from "../utils/constants";
 
 export const instance = axios.create({
-    baseURL,
+    baseURL: API_BASE_URL,
     withCredentials: true
 })
 
@@ -12,6 +11,8 @@ instance.interceptors.request.use(async req => {
     if (token) req.headers.Authorization = "Bearer " + token
     return req
 })
+
+export const authGetUser = async () => await instance.get("me")
 
 export const authLogin = async (data) => await instance.post("login", data)
 

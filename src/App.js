@@ -10,7 +10,7 @@ import CollectionForm from "./components/forms/CollectionForm";
 import ConfirmDialog from "./components/dialogs/ConfirmDialog";
 import {useTheme} from "./hooks/useTheme";
 import {useDispatch, useSelector} from "react-redux";
-import {authSelector, dialogsSelector} from "./store/selectors";
+import {dialogsSelector} from "./store/selectors";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "./store/slices/dialogsSlice";
 import ItemsID from "./pages/Items/ItemsID";
 import Home from "./pages/Home";
@@ -18,10 +18,10 @@ import Dashboard from "./pages/admin/Dashboard";
 import Items from "./pages/Items";
 import Collections from "./pages/Collections";
 import CommonSnackbar from "./components/commons/CommonSnackbar";
-import {isExpired} from "react-jwt";
-import {logout} from "./store/slices/authSlice";
 import Protected from "./pages/Protected";
 import {useEffect} from "react";
+import OAuth2RedirectHandler from "./oauth2/OAuth2RedirectHandler";
+import {getUser} from "./store/asyncThunk/userAsyncThunk";
 
 const App = () => {
 
@@ -29,13 +29,10 @@ const App = () => {
 
     const { theme } = useTheme()
     const { collection } = useSelector(dialogsSelector)
-    const { token } = useSelector(authSelector)
 
     useEffect(() => {
-        if (isExpired(token)) {
-            dispatch(logout())
-        }
-    }, [dispatch, token])
+        dispatch(getUser())
+    }, [dispatch])
 
     const toggleCreateCollectionDialog = () => {
         dispatch(toggleCreateCollection())
@@ -64,6 +61,7 @@ const App = () => {
                         <Route index element={<Dashboard/>}/>
                     </Route>
                 </Route>
+                <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>
             </Routes>
             <CommonSnackbar/>
             <CommonDialog

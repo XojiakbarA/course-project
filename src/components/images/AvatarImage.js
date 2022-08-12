@@ -4,13 +4,13 @@ import {Avatar} from "@mui/material";
 const AvatarImage = ({ publicId, size }) => {
 
     return (
-        publicId
+        publicId && !publicId.startsWith("https://")
         ?
         <Image publicId={publicId + ".png"}>
             <Transformation width={size} height={size} crop={"thumb"}  radius={"max"}/>
         </Image>
         :
-        <Avatar sx={{ width: size, height: size }}/>
+        <Avatar src={publicId} sx={{ width: size, height: size }}/>
     )
 }
 

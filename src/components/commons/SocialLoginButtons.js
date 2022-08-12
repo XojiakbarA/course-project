@@ -1,27 +1,40 @@
-import {Button, Stack} from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
-import FacebookIcon from "@mui/icons-material/Facebook";
+import {IconButton, Link, Stack} from "@mui/material";
+import GitHubIcon from '@mui/icons-material/GitHub';
+import GoogleIcon from "../icons/GoogleIcon";
+import FacebookIcon from "../icons/FacebookIcon"
+import {FACEBOOK_AUTH_URL, GOOGLE_AUTH_URL, GITHUB_AUTH_URL} from "../../utils/constants";
 
 const SocialLoginButtons = ({ disabled }) => {
 
     return (
-        <Stack spacing={2}>
-            <Button
-                startIcon={<GoogleIcon color={"action"}/>}
-                variant={"outlined"}
-                color={"inherit"}
+        <Stack direction={"row"} justifyContent={"center"} alignItems={"center"} spacing={2}>
+            <IconButton
+                size={"large"}
+                color={"error"}
                 disabled={disabled}
+                component={Link}
+                href={GOOGLE_AUTH_URL}
             >
-                Login with Google
-            </Button>
-            <Button
-                startIcon={<FacebookIcon color={"primary"}/>}
-                variant={"outlined"}
+                <GoogleIcon color={"inherit"} fontSize={"inherit"}/>
+            </IconButton>
+            <IconButton
+                size={"large"}
                 color={"primary"}
                 disabled={disabled}
+                component={Link}
+                href={FACEBOOK_AUTH_URL}
             >
-                Login with Facebook
-            </Button>
+                <FacebookIcon color={"inherit"} fontSize={"inherit"}/>
+            </IconButton>
+            <IconButton
+                size={"large"}
+                color={"inherit"}
+                disabled={disabled}
+                component={Link}
+                href={GITHUB_AUTH_URL}
+            >
+                <GitHubIcon color={"inherit"} fontSize={"inherit"}/>
+            </IconButton>
         </Stack>
     )
 }

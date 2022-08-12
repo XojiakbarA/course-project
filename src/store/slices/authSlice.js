@@ -1,9 +1,8 @@
 import {createSlice} from "@reduxjs/toolkit"
-import {login, register} from "../asyncThunk/userAsyncThunk";
+import {getUser, login, register} from "../asyncThunk/userAsyncThunk";
 
 const initialState = {
-    token: JSON.parse(localStorage.getItem("token")),
-    user: JSON.parse(localStorage.getItem("user")),
+    user: null,
     error: null,
     authLoading: false,
     getLoading: false,
@@ -15,18 +14,28 @@ export const authSlice = createSlice({
     reducers: {
         logout: (state, action) => {
             localStorage.removeItem("token")
-            localStorage.removeItem("user")
-            state.token = null
             state.user = null
         }
     },
     extraReducers: {
+        [getUser.pending]: (state) => {
+            state.getLoading = true
+        },
+        [getUser.fulfilled]: (state, action) => {
+            state.getLoading = false
+            state.user = action.payload
+            state.error = null
+        },
+        [getUser.rejected]: (state, action) => {
+            state.getLoading = false
+            state.error = action.payload
+        },
         [login.pending]: (state) => {
             state.authLoading = true
         },
         [login.fulfilled]: (state, action) => {
             state.authLoading = false
-            state.token = action.payload.token
+            localStorage.setItem("token", action.payload.token)
             state.user = action.payload.user
             state.error = null
         },
