@@ -1,11 +1,14 @@
 import {createSlice} from "@reduxjs/toolkit"
-import {getUser, login, register} from "../asyncThunk/userAsyncThunk";
+import {editUser, getUser, login, register} from "../asyncThunk/authAsyncThunk";
+import {isExpired} from "react-jwt";
 
 const initialState = {
     user: null,
+    isAuth: !isExpired(localStorage.getItem("token")),
     error: null,
     authLoading: false,
     getLoading: false,
+    editLoading: false
 }
 
 export const authSlice = createSlice({
@@ -15,6 +18,11 @@ export const authSlice = createSlice({
         logout: (state, action) => {
             localStorage.removeItem("token")
             state.user = null
+            state.isAuth = false
+        },
+        oAuth2Login: (state, action) => {
+            localStorage.setItem("token", action.payload.token)
+            state.isAuth = true
         }
     },
     extraReducers: {
@@ -36,6 +44,7 @@ export const authSlice = createSlice({
         [login.fulfilled]: (state, action) => {
             state.authLoading = false
             localStorage.setItem("token", action.payload.token)
+            state.isAuth = true
             state.user = action.payload.user
             state.error = null
         },
@@ -54,9 +63,21 @@ export const authSlice = createSlice({
             state.authLoading = false
             state.error = action.payload
         },
+        [editUser.pending]: (state) => {
+            state.editLoading = true
+        },
+        [editUser.fulfilled]: (state, action) => {
+            state.editLoading = false
+            state.user = action.payload
+            state.error = null
+        },
+        [editUser.rejected]: (state, action) => {
+            state.editLoading = false
+            state.error = action.payload
+        },
     }
 })
 
-export const { logout } = authSlice.actions
+export const { logout, oAuth2Login } = authSlice.actions
 
 export default authSlice.reducer

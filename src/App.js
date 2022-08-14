@@ -21,7 +21,7 @@ import CommonSnackbar from "./components/commons/CommonSnackbar";
 import Protected from "./pages/Protected";
 import {useEffect} from "react";
 import OAuth2RedirectHandler from "./oauth2/OAuth2RedirectHandler";
-import {getUser} from "./store/asyncThunk/userAsyncThunk";
+import {getUser} from "./store/asyncThunk/authAsyncThunk";
 
 const App = () => {
 

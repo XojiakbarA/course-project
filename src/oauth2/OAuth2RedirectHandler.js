@@ -3,6 +3,7 @@ import {useSearchParams} from "react-router-dom";
 import {useEffect} from "react";
 import {useDispatch} from "react-redux";
 import {setSnackbar} from "../store/slices/snackbarSlice";
+import {oAuth2Login} from "../store/slices/authSlice";
 
 const OAuth2RedirectHandler = () => {
 
@@ -15,7 +16,7 @@ const OAuth2RedirectHandler = () => {
 
     useEffect(() => {
         if (token) {
-            localStorage.setItem("token", token)
+            dispatch(oAuth2Login({ token }))
             dispatch(setSnackbar({ data: "You are logged in!", open: true, color: "success" }))
         }
         if (error) {

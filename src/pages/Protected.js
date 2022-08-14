@@ -4,11 +4,9 @@ import {authSelector} from "../store/selectors";
 
 const Protected = () => {
 
-    const { user } = useSelector(authSelector)
+    const { isAuth } = useSelector(authSelector)
 
-    if (!user) {
-        return <Navigate to="/"/>
-    }
+    if (!isAuth) return <Navigate to="/"/>
 
     return <Outlet/>
 }

@@ -11,7 +11,7 @@ import PasswordInput from "../inputs/PasswordInput";
 import {useFormik} from "formik";
 import {loginValidationSchema} from "../../utils/validate";
 import {useDispatch, useSelector} from "react-redux";
-import {login} from "../../store/asyncThunk/userAsyncThunk";
+import {login} from "../../store/asyncThunk/authAsyncThunk";
 import {authSelector} from "../../store/selectors";
 
 const LoginForm = () => {

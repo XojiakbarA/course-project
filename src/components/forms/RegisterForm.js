@@ -7,7 +7,7 @@ import {useFormik} from "formik";
 import {registerValidationSchema} from "../../utils/validate";
 import {appendToFormData} from "../../utils/helpers";
 import {useDispatch, useSelector} from "react-redux";
-import {register} from "../../store/asyncThunk/userAsyncThunk";
+import {register} from "../../store/asyncThunk/authAsyncThunk";
 import {authSelector} from "../../store/selectors";
 
 const RegisterForm = () => {
@@ -47,6 +47,8 @@ const RegisterForm = () => {
                 name='image'
                 preview={preview}
                 size={isDownSm ? 60 : 70}
+                error={ Boolean(errors.image) }
+                helperText={ errors.image }
             />
             <TextField
                 fullWidth

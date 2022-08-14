@@ -41,5 +41,38 @@ export const registerValidationSchema = yup.object({
                     [yup.ref('password')],
                     'Both password need to be the same'
                 )
-            })
+            }),
+    image: yup
+        .mixed()
+        .test('fileSize', "File Size is too large", value => (
+            value ? value.size <= 1024*2*1024 : true
+        ))
+        .test('fileType', "Unsupported File Format", value => (
+            value
+                ?
+                ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].includes(value.type)
+                :
+                true
+        ))
+})
+
+export const editUserValidationSchema = yup.object({
+    firstName: yup
+        .string('Enter Your First Name')
+        .required('First Name is required'),
+    lastName: yup
+        .string('Enter Your Last Name')
+        .required('Last Name is required'),
+    image: yup
+        .mixed()
+        .test('fileSize', "File Size is too large", value => (
+            value ? value.size <= 1024*2*1024 : true
+        ))
+        .test('fileType', "Unsupported File Format", value => (
+            value
+            ?
+            ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].includes(value.type)
+            :
+            true
+        ))
 })

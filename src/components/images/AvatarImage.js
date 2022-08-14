@@ -1,16 +1,16 @@
 import {Image, Transformation} from "cloudinary-react";
 import {Avatar} from "@mui/material";
 
-const AvatarImage = ({ publicId, size }) => {
+const AvatarImage = ({ publicId, size, error }) => {
 
     return (
-        publicId && !publicId.startsWith("https://")
+        publicId && !publicId.includes("http")
         ?
         <Image publicId={publicId + ".png"}>
-            <Transformation width={size} height={size} crop={"thumb"}  radius={"max"}/>
+            <Transformation width={size} height={size} crop={"fill"}  radius={"max"}/>
         </Image>
         :
-        <Avatar src={publicId} sx={{ width: size, height: size }}/>
+        <Avatar src={publicId} sx={{ width: size, height: size, outline: error ? "1px solid red" : "0px" }}/>
     )
 }
 

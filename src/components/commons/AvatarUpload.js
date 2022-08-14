@@ -1,11 +1,12 @@
-import {Box, Avatar, IconButton, CircularProgress, Badge} from '@mui/material'
+import {IconButton, CircularProgress, Badge, FormHelperText, Stack} from '@mui/material'
 import {useState} from 'react'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import UploadMenu from '../menu/UploadMenu'
+import AvatarImage from "../images/AvatarImage";
 
 const AvatarUpload = ({
     handlePrewiewDeleteClick, handleUploadChange, handleDeleteImage,
-    isLoading, name, src, preview, size, ...others
+    isLoading, name, src, preview, size, error, helperText, ...others
 }) => {
 
     const [anchorEl, setAnchorEl] = useState(null)
@@ -19,7 +20,7 @@ const AvatarUpload = ({
     }
 
     return (
-        <Box {...others}>
+        <Stack spacing={1} alignItems={"center"} {...others}>
             <Badge
                 overlap='circular'
                 anchorOrigin={{vertical: 'top', horizontal: 'right'}}
@@ -38,16 +39,14 @@ const AvatarUpload = ({
                     aria-expanded={open ? 'true' : undefined}
                     disabled={isLoading}
                 >
-                    <Avatar
-                        sx={{ width: size, height: size }}
-                        src={preview || src}
-                    />
+                    <AvatarImage publicId={preview || src} size={size} error={error} />
                     {
                         isLoading &&
                         <CircularProgress sx={{position: 'absolute'}}/>
                     }
                 </IconButton>
             </Badge>
+            <FormHelperText error={error}>{helperText}</FormHelperText>
             <UploadMenu
                 open={open}
                 anchorEl={anchorEl}
@@ -57,7 +56,7 @@ const AvatarUpload = ({
                 handleDeleteImage={handleDeleteImage}
                 handleUploadChange={handleUploadChange}
             />
-        </Box>
+        </Stack>
     );
 }
 

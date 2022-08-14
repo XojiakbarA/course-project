@@ -12,8 +12,8 @@ instance.interceptors.request.use(async req => {
     return req
 })
 
-export const authGetUser = async () => await instance.get("me")
+export const authGetUser = async () => await instance.get("/auth/me")
 
-export const authLogin = async (data) => await instance.post("login", data)
+export const authLogin = async (data) => await instance.post("/auth/login", data)
 
-export const authRegister = async (data) => await instance.post("register", data)
+export const authRegister = async (data) => await instance.post("/auth/register", data)

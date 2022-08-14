@@ -44,7 +44,7 @@ const MyAppBar = ({ onMenuClick }) => {
     const location = useLocation()
     const navigate = useNavigate()
     const { mode, handleModeChange } = useTheme()
-    const { getLoading, user } = useSelector(authSelector)
+    const { getLoading, user, isAuth } = useSelector(authSelector)
     const { auth } = useSelector(dialogsSelector)
 
     const [anchorProfileEl, setAnchorProfileEl] = useState(null)
@@ -53,13 +53,13 @@ const MyAppBar = ({ onMenuClick }) => {
 
     const profileIcon = useMemo(() => {
         return getLoading ?
-            <CircularProgress size={20}/> :
+            <CircularProgress size={20} color={"inherit"}/> :
         (
-            !user ?
-            <AccountCircle fontSize={"large"}/> :
-            <AvatarImage publicId={user?.image} size={35}/>
+            isAuth ?
+            <AvatarImage publicId={user?.image} size={35}/> :
+            <AccountCircle fontSize={"large"}/>
         )
-    }, [user, getLoading])
+    }, [user, getLoading, isAuth])
 
     const menu = useMemo(() => {
         let buttons = [
@@ -102,7 +102,7 @@ const MyAppBar = ({ onMenuClick }) => {
         if (!user) {
             buttons = buttons.filter(button => button.title !== "Logout")
         }
-        if (!user?.authorities?.find(a => a.authority === "ADMIN")) {
+        if (!user?.roles?.find(r => r.name === "ADMIN")) {
             buttons = buttons.filter(button => button.title !== "Admin Panel")
         }
         return buttons
