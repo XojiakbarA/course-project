@@ -4,10 +4,10 @@ export const updateUser = async (id, data) => {
     return await instance.put(`/api/users/${id}`, data)
 }
 
-export const updateUserImage = async (userId, imageId, data) => {
-    return await instance.put(`/api/users/${userId}/images/${imageId}`, data)
+export const updateUserImage = async (userId, data) => {
+    return await instance.put(`/api/users/${userId}/images`, data)
 }
 
-export const destroyUserImage = async (userId, imageId) => {
-    return await instance.delete(`/api/users/${userId}/images/${imageId}`)
+export const destroyUserImage = async (userId) => {
+    return await instance.delete(`/api/users/${userId}/images`)
 }

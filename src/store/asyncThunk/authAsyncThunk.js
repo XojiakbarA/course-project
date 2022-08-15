@@ -66,7 +66,7 @@ export const editUser = createAsyncThunk("auth/edit",
 export const editUserImage = createAsyncThunk("auth/editImage",
     async ({ userId, imageId, data, setEditOpen }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await updateUserImage(userId, imageId, data)
+            const res = await updateUserImage(userId, data)
             if (res.status === 200) {
                 setEditOpen(false)
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
@@ -80,9 +80,9 @@ export const editUserImage = createAsyncThunk("auth/editImage",
 )
 
 export const deleteUserImage = createAsyncThunk("auth/deleteImage",
-    async ({ userId, imageId, setDeleteOpen }, { dispatch, rejectWithValue }) => {
+    async ({ userId, setDeleteOpen }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await destroyUserImage(userId, imageId)
+            const res = await destroyUserImage(userId)
             if (res.status === 200) {
                 setDeleteOpen(false)
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))

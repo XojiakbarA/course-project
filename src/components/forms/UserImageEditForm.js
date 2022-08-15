@@ -29,7 +29,7 @@ const UserImageEditForm = () => {
         onSubmit: (data) => {
             const formData = new FormData()
             formData.append("image", data.image)
-            dispatch(editUserImage({ userId: user.id, imageId: user?.image?.id, data: formData, setEditOpen }))
+            dispatch(editUserImage({ userId: user.id, data: formData, setEditOpen }))
         }
     })
 
@@ -55,7 +55,7 @@ const UserImageEditForm = () => {
         setDeleteOpen(true)
     }
     const handleConfirmClick = () => {
-        dispatch(deleteUserImage({ userId: user?.id, imageId: user?.image?.id, setDeleteOpen }))
+        dispatch(deleteUserImage({ userId: user?.id, setDeleteOpen }))
     }
 
     return (
