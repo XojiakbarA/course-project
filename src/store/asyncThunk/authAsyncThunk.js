@@ -2,7 +2,7 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import {authGetUser, authLogin, authRegister} from "../../api/auth";
 import {setSnackbar} from "../slices/snackbarSlice";
 import {toggleAuth, toggleAuthForm} from "../slices/dialogsSlice";
-import {updateUser} from "../../api/users";
+import {destroyUserImage, updateUser, updateUserImage} from "../../api/users";
 
 export const getUser = createAsyncThunk("auth/get",
     async (_, { dispatch, rejectWithValue }) => {
@@ -12,7 +12,6 @@ export const getUser = createAsyncThunk("auth/get",
                 return res.data
             }
         } catch ({response}) {
-
             return rejectWithValue(response.data.message)
         }
     }
@@ -56,6 +55,38 @@ export const editUser = createAsyncThunk("auth/edit",
             if (res.status === 200) {
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
                 return res.data.content
+            }
+        } catch ({ response }) {
+            dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
+            return rejectWithValue(response.data.message)
+        }
+    }
+)
+
+export const editUserImage = createAsyncThunk("auth/editImage",
+    async ({ userId, imageId, data, setEditOpen }, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await updateUserImage(userId, imageId, data)
+            if (res.status === 200) {
+                setEditOpen(false)
+                dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
+                return res.data.content
+            }
+        } catch ({ response }) {
+            dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
+            return rejectWithValue(response.data.message)
+        }
+    }
+)
+
+export const deleteUserImage = createAsyncThunk("auth/deleteImage",
+    async ({ userId, imageId, setDeleteOpen }, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await destroyUserImage(userId, imageId)
+            if (res.status === 200) {
+                setDeleteOpen(false)
+                dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
+                return res.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

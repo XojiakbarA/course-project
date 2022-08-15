@@ -63,6 +63,9 @@ export const editUserValidationSchema = yup.object({
     lastName: yup
         .string('Enter Your Last Name')
         .required('Last Name is required'),
+})
+
+export const editImageValidationSchema = yup.object({
     image: yup
         .mixed()
         .test('fileSize', "File Size is too large", value => (
@@ -70,9 +73,9 @@ export const editUserValidationSchema = yup.object({
         ))
         .test('fileType', "Unsupported File Format", value => (
             value
-            ?
-            ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].includes(value.type)
-            :
-            true
+                ?
+                ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].includes(value.type)
+                :
+                true
         ))
 })

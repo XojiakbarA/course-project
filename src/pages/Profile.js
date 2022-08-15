@@ -6,6 +6,7 @@ import PageTitle from "../components/commons/PageTitle";
 import CollectionListCard from "../components/cards/CollectionListCard";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "../store/slices/dialogsSlice";
 import {useDispatch} from "react-redux";
+import UserImageEditForm from "../components/forms/UserImageEditForm";
 
 const Profile = () => {
 
@@ -70,6 +71,7 @@ const Profile = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={3} order={{ xs: 3, sm: 4 }}>
                 <Paper sx={{ p: 3 }}>
+                    <UserImageEditForm/>
                     <UserEditForm/>
                 </Paper>
             </Grid>

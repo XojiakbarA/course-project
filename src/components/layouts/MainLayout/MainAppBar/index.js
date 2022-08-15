@@ -56,7 +56,7 @@ const MyAppBar = ({ onMenuClick }) => {
             <CircularProgress size={20} color={"inherit"}/> :
         (
             isAuth ?
-            <AvatarImage publicId={user?.image} size={35}/> :
+            <AvatarImage publicId={user?.image?.value} size={35}/> :
             <AccountCircle fontSize={"large"}/>
         )
     }, [user, getLoading, isAuth])
