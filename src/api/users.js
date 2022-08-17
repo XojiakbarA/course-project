@@ -11,3 +11,7 @@ export const updateUserImage = async (userId, data) => {
 export const destroyUserImage = async (userId) => {
     return await instance.delete(`/api/users/${userId}/images`)
 }
+
+export const fetchUserCollections = async (id) => {
+    return await instance.get(`/api/users/${id}/collections`)
+}

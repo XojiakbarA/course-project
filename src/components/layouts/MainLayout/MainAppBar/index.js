@@ -35,6 +35,7 @@ import {authSelector, dialogsSelector} from "../../../../store/selectors";
 import AvatarImage from "../../../images/AvatarImage";
 import {logout} from "../../../../store/slices/authSlice";
 import {toggleAuth, toggleAuthForm} from "../../../../store/slices/dialogsSlice";
+import {isAdmin} from "../../../../utils/helpers";
 
 const MyAppBar = ({ onMenuClick }) => {
 
@@ -102,7 +103,7 @@ const MyAppBar = ({ onMenuClick }) => {
         if (!user) {
             buttons = buttons.filter(button => button.title !== "Logout")
         }
-        if (!user?.roles?.find(r => r.name === "ADMIN")) {
+        if (!isAdmin(user)) {
             buttons = buttons.filter(button => button.title !== "Admin Panel")
         }
         return buttons

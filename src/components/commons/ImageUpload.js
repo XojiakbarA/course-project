@@ -1,12 +1,12 @@
-import {Avatar, Badge, Box, Button, IconButton} from "@mui/material";
+import {Badge, Box, Button, FormHelperText, IconButton} from "@mui/material";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import UploadMenu from "../menu/UploadMenu";
 import {useState} from "react";
+import CardImage from "../images/CardImage";
 
 const ImageUpload = ({
      handlePrewiewDeleteClick, handleUploadChange, handleDeleteImage,
-     isLoading, name, src, preview, width, height, ...others
+     isLoading, name, src, preview, width, height, error, helperText, ...others
  }) => {
 
     const [anchorEl, setAnchorEl] = useState(null)
@@ -37,15 +37,15 @@ const ImageUpload = ({
                     sx={{ width }}
                     onClick={handleClick}
                 >
-                    <Avatar
-                        src={preview || src}
-                        sx={{ width, height }}
-                        variant={"rounded"}
-                    >
-                        <AddPhotoAlternateIcon sx={{ transform: "scale(2)" }}/>
-                    </Avatar>
+                    <CardImage
+                        publicId={src}
+                        width={width}
+                        height={height}
+                        preview={preview}
+                    />
                 </Button>
             </Badge>
+            <FormHelperText error={error}>{helperText}</FormHelperText>
             <UploadMenu
                 open={open}
                 anchorEl={anchorEl}

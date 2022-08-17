@@ -14,3 +14,7 @@ export const appendToFormData = (data) => {
     }
     return formData
 }
+
+export const isAdmin = (user) => {
+    return user?.roles?.find(r => r.name === "ADMIN")
+}

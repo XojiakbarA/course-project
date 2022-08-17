@@ -18,7 +18,7 @@ const RegisterForm = () => {
 
     const { authLoading } = useSelector(authSelector)
 
-    const { handleSubmit, setValues, touched, errors, getFieldProps } = useFormik({
+    const { handleSubmit, setValues, setTouched, touched, errors, getFieldProps } = useFormik({
         initialValues: {
             firstName: "",
             lastName: "",
@@ -35,7 +35,7 @@ const RegisterForm = () => {
         }
     })
 
-    const { preview, handleUploadChange, handlePreviewDeleteClick } = useSinglePreview(setValues)
+    const { preview, handleUploadChange, handlePreviewDeleteClick } = useSinglePreview(setValues, setTouched)
 
     return (
         <form onSubmit={handleSubmit}>
@@ -43,7 +43,6 @@ const RegisterForm = () => {
             <AvatarUpload
                 handlePrewiewDeleteClick={handlePreviewDeleteClick}
                 handleUploadChange={handleUploadChange}
-                handleDeleteImage={ e => setValues(prev => ({ ...prev, image: null })) }
                 name='image'
                 preview={preview}
                 size={isDownSm ? 60 : 70}

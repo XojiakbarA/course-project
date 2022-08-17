@@ -12,50 +12,54 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {Link} from "react-router-dom";
+import {useEffect, useRef, useState} from "react";
+import CardImage from "../images/CardImage";
 
-const CollectionListCard = ({ onEditClick, onDeleteClick }) => {
+const CollectionListCard = ({ onEditClick, onDeleteClick, collection }) => {
+
+    const ref = useRef(null)
+
+    const [cardWidth, setCardWidth] = useState(null)
+
+    useEffect(() => {
+        setCardWidth(ref.current.offsetWidth)
+    }, [])
 
     return (
-        <Card sx={{ position: "relative"}}>
+        <Card sx={{ position: "relative"}} ref={ref}>
             <CardActionArea
                 component={Link}
-                to={`/collections/${1}`}
+                to={`/collections/${collection?.id}`}
                 sx={{ pb: 5 }}
             >
-                <CardMedia
-                    component="img"
-                    height="194"
-                    image="/static/images/cards/paella.jpg"
-                    alt="Paella dish"
-                />
+                <CardMedia component="div" height="194">
+                {
+                    <CardImage
+                        publicId={collection?.image?.value}
+                        width={cardWidth}
+                        height={194}
+                    />
+                }
+                </CardMedia>
                 <CardContent>
                     <Stack direction={"row"} justifyContent={"space-between"} alignItems={"end"}>
                         <Stack>
-                            <Typography variant={"h5"} color={"primary.main"}>Collection 1</Typography>
-                            <Typography gutterBottom color={"grey.400"}>Xojiakbar</Typography>
+                            <Typography variant={"h5"} color={"primary.main"}>{collection?.name}</Typography>
+                            <Typography gutterBottom color={"grey.400"}>{collection?.user?.firstName}</Typography>
                         </Stack>
                         <Typography color={"secondary.dark"}>10 Items</Typography>
                     </Stack>
-                    <Typography variant={"body2"} color={"text.disabled"}>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci cum deserunt dignissimos fugit hic impedit possimus repellat repellendus sint, voluptates! Harum minima perspiciatis quod temporibus veniam. Aspernatur iusto rem tempore!
-                    </Typography>
+                    <Typography variant={"body2"} color={"text.disabled"}>{collection?.description}</Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions sx={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-                display: "flex",
-                justifyContent: "flex-end"
-            }}>
+            <CardActions sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", display: "flex", justifyContent: "flex-end"}}>
                 <Tooltip title={"Edit"}>
-                    <IconButton onClick={onEditClick}>
+                    <IconButton onClick={ e => onEditClick(collection) }>
                         <EditIcon/>
                     </IconButton>
                 </Tooltip>
                 <Tooltip title={"Delete"}>
-                    <IconButton onClick={onDeleteClick}>
+                    <IconButton onClick={ e => onDeleteClick(collection) }>
                         <DeleteIcon/>
                     </IconButton>
                 </Tooltip>

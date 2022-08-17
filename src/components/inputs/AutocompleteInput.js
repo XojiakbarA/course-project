@@ -2,10 +2,10 @@ import { Autocomplete, CircularProgress, TextField } from "@mui/material"
 
 const AutocompleteInput = ({
     name, label, error, helperText,
-    options, option, getOptionLabel, loading,
-    handleChange, handleBlur, disabled, size, variant
+    options, value, getOptionLabel, loading,
+    onChange, onBlur, disabled, size, variant
 }) => {
-    
+
     return (
         <Autocomplete
             size={size}
@@ -33,9 +33,9 @@ const AutocompleteInput = ({
                     }}
                 />
             )}
-            onBlur={handleBlur}
-            value={option}
-            onChange={handleChange}
+            onBlur={onBlur}
+            value={value}
+            onChange={onChange}
         />
     )
 }

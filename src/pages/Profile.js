@@ -1,30 +1,47 @@
-import {Card, CardActionArea, Grid, Paper, Stack, Typography, useMediaQuery} from "@mui/material";
+import {CircularProgress, Grid, Paper, useMediaQuery} from "@mui/material";
 import CategoryIcon from '@mui/icons-material/Category';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import UserEditForm from "../components/forms/UserEditForm";
 import PageTitle from "../components/commons/PageTitle";
 import CollectionListCard from "../components/cards/CollectionListCard";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "../store/slices/dialogsSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import UserImageEditForm from "../components/forms/UserImageEditForm";
+import {useEffect} from "react";
+import {getUserCollections} from "../store/asyncThunk/collectionsAsyncThunk";
+import {authSelector, collectionsSelector} from "../store/selectors";
+import CollectionAddCard from "../components/cards/CollectionAddCard";
+import {setCollection, setCollections} from "../store/slices/collectionsSlice";
 
 const Profile = () => {
 
     const dispatch = useDispatch()
 
+    const { content: collections, loading } = useSelector(collectionsSelector)
+
     const toggleCreateCollectionDialog = () => {
         dispatch(toggleCreateCollection())
     }
-    const toggleEditCollectionDialog = () => {
+    const toggleEditCollectionDialog = (collection) => {
+        dispatch(setCollection(collection))
         dispatch(toggleEditCollection())
     }
-    const toggleDeleteCollectionDialog = () => {
+    const toggleDeleteCollectionDialog = (collection) => {
+        dispatch(setCollection(collection))
         dispatch(toggleDeleteCollection())
     }
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
-    const array = [1, 2, 3, 4, 5, 6, 7, 8]
+    const { user } = useSelector(authSelector)
+
+    useEffect(() => {
+        if (user?.id) {
+            dispatch(getUserCollections({ id: user?.id }))
+        }
+        return () => {
+            dispatch(setCollections([]))
+        }
+    }, [dispatch, user?.id])
 
     return (
         <Grid container spacing={2} direction={isDownSm ? "column-reverse" : "row"}>
@@ -40,33 +57,29 @@ const Profile = () => {
             <Grid item xs={12} sm={6} md={8} lg={9} order={{ xs: 1, sm: 3 }}>
                 <Grid container spacing={2}>
                     {
-                        array.map(item => (
-                            <Grid key={item} item xs={12} md={6} lg={4}>
+                        loading
+                        ?
+                        <Grid item  xs={12} md={6} lg={4}>
+                            <CircularProgress/>
+                        </Grid>
+                        :
+                        collections.map(collection => (
+                            <Grid key={collection.id} item xs={12} md={6} lg={4}>
                                 <CollectionListCard
                                     onEditClick={toggleEditCollectionDialog}
                                     onDeleteClick={toggleDeleteCollectionDialog}
+                                    collection={collection}
                                 />
                             </Grid>
                         ))
                     }
-                    <Grid item xs={12} md={6} lg={4}>
-                        <Card sx={{ height: "100%", minHeight: 400 }}>
-                            <CardActionArea
-                                sx={{
-                                    height: "100%",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center"
-                                }}
-                                onClick={toggleCreateCollectionDialog}
-                            >
-                                <Stack spacing={3} alignItems={"center"}>
-                                    <AddToPhotosIcon sx={{ transform: "scale(2)" }} color={"primary"}/>
-                                    <Typography variant={"body2"} color={"primary"}>Create Collection</Typography>
-                                </Stack>
-                            </CardActionArea>
-                        </Card>
-                    </Grid>
+                    {
+                        !loading
+                        &&
+                        <Grid item xs={12} md={6} lg={4}>
+                            <CollectionAddCard onClick={toggleCreateCollectionDialog}/>
+                        </Grid>
+                    }
                 </Grid>
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={3} order={{ xs: 3, sm: 4 }}>

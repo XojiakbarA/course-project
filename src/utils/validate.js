@@ -45,7 +45,7 @@ export const registerValidationSchema = yup.object({
     image: yup
         .mixed()
         .test('fileSize', "File Size is too large", value => (
-            value ? value.size <= 1024*2*1024 : true
+            value ? value.size <= 1048576 : true
         ))
         .test('fileType', "Unsupported File Format", value => (
             value
@@ -69,7 +69,34 @@ export const editImageValidationSchema = yup.object({
     image: yup
         .mixed()
         .test('fileSize', "File Size is too large", value => (
-            value ? value.size <= 1024*2*1024 : true
+            value ? value.size <= 1048576 : true
+        ))
+        .test('fileType', "Unsupported File Format", value => (
+            value
+                ?
+                ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].includes(value.type)
+                :
+                true
+        ))
+})
+
+export const collectionValidationSchema = yup.object({
+    name: yup
+        .string('Enter Name')
+        .required('Name is required'),
+    description: yup
+        .string('Enter Description')
+        .required('Description is required'),
+    topicId: yup
+        .number('Select Topic')
+        .required('Topic is required'),
+    userId: yup
+        .number('Select User')
+        .required('User is required'),
+    image: yup
+        .mixed()
+        .test('fileSize', "File Size is too large", value => (
+            value ? value.size <= 1048576 : true
         ))
         .test('fileType', "Unsupported File Format", value => (
             value
