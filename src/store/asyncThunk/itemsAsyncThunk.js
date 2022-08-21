@@ -1,24 +1,19 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {fetchUserCollections} from "../../api/users";
+import {destroyCollectionImage, fetchCollectionItems} from "../../api/collections";
 import {setSnackbar} from "../slices/snackbarSlice";
+import {destroyItem, destroyItemImage, storeItem, updateItem} from "../../api/items";
 import {
-    destroyCollection,
-    destroyCollectionImage,
-    fetchCollection,
-    storeCollection,
-    updateCollection
-} from "../../api/collections";
-import {
-    toggleCreateCollection,
-    toggleDeleteCollection,
+    toggleCreateItem,
     toggleDeleteCollectionImage,
-    toggleEditCollection
+    toggleDeleteItem,
+    toggleDeleteItemImage,
+    toggleEditItem
 } from "../slices/dialogsSlice";
 
-export const getUserCollections = createAsyncThunk("collections/userGet",
+export const getCollectionItems = createAsyncThunk("items/CollectionGet",
     async ({ id }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await fetchUserCollections(id)
+            const res = await fetchCollectionItems(id)
             if (res.status === 200) {
                 return res.data.content
             }
@@ -29,26 +24,12 @@ export const getUserCollections = createAsyncThunk("collections/userGet",
     }
 )
 
-export const getCollection = createAsyncThunk("collections/get",
-    async ({ id }, { dispatch, rejectWithValue }) => {
-        try {
-            const res = await fetchCollection(id)
-            if (res.status === 200) {
-                return res.data.content
-            }
-        } catch ({ response }) {
-            dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
-            return rejectWithValue(response.data.message)
-        }
-    }
-)
-
-export const createCollection = createAsyncThunk("collections/create",
+export const createItem = createAsyncThunk("items/create",
     async ({ data }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await storeCollection(data)
+            const res = await storeItem(data)
             if (res.status === 201) {
-                dispatch(toggleCreateCollection())
+                dispatch(toggleCreateItem())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
                 return res.data.content
             }
@@ -59,12 +40,12 @@ export const createCollection = createAsyncThunk("collections/create",
     }
 )
 
-export const editCollection = createAsyncThunk("collections/edit",
+export const editItem = createAsyncThunk("items/edit",
     async ({ id, data }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await updateCollection(id, data)
+            const res = await updateItem(id, data)
             if (res.status === 200) {
-                dispatch(toggleEditCollection())
+                dispatch(toggleEditItem())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
                 return res.data.content
             }
@@ -75,12 +56,12 @@ export const editCollection = createAsyncThunk("collections/edit",
     }
 )
 
-export const deleteCollection = createAsyncThunk("collections/delete",
+export const deleteItem = createAsyncThunk("items/delete",
     async ({ id, shouldCallNavigate, navigate }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await destroyCollection(id)
+            const res = await destroyItem(id)
             if (res.status === 200) {
-                dispatch(toggleDeleteCollection())
+                dispatch(toggleDeleteItem())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
                 shouldCallNavigate && navigate(-1)
                 return id
@@ -92,12 +73,12 @@ export const deleteCollection = createAsyncThunk("collections/delete",
     }
 )
 
-export const deleteCollectionImage = createAsyncThunk("collections/deleteImage",
+export const deleteItemImage = createAsyncThunk("items/deleteImage",
     async ({ id }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await destroyCollectionImage(id)
+            const res = await destroyItemImage(id)
             if (res.status === 200) {
-                dispatch(toggleDeleteCollectionImage())
+                dispatch(toggleDeleteItemImage())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
                 return id
             }

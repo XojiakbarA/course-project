@@ -3,7 +3,7 @@ import { Autocomplete, CircularProgress, TextField } from "@mui/material"
 const AutocompleteInput = ({
     name, label, error, helperText,
     options, value, getOptionLabel, loading,
-    onChange, onBlur, disabled, size, variant
+    onChange, onBlur, disabled, size, variant, multiple
 }) => {
 
     return (
@@ -12,6 +12,7 @@ const AutocompleteInput = ({
             disabled={disabled}
             options={options}
             loading={loading}
+            multiple={multiple}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             getOptionLabel={getOptionLabel}
             renderInput={params => (
@@ -36,6 +37,7 @@ const AutocompleteInput = ({
             onBlur={onBlur}
             value={value}
             onChange={onChange}
+            ChipProps={{ size: "small" }}
         />
     )
 }

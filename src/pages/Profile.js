@@ -16,7 +16,7 @@ const Profile = () => {
 
     const dispatch = useDispatch()
 
-    const { content: collections, loading } = useSelector(collectionsSelector)
+    const { content: collections, getLoading } = useSelector(collectionsSelector)
 
     const toggleCreateCollectionDialog = () => {
         dispatch(toggleCreateCollection())
@@ -40,6 +40,7 @@ const Profile = () => {
         }
         return () => {
             dispatch(setCollections([]))
+            dispatch(setCollection(null))
         }
     }, [dispatch, user?.id])
 
@@ -57,7 +58,7 @@ const Profile = () => {
             <Grid item xs={12} sm={6} md={8} lg={9} order={{ xs: 1, sm: 3 }}>
                 <Grid container spacing={2}>
                     {
-                        loading
+                        getLoading
                         ?
                         <Grid item  xs={12} md={6} lg={4}>
                             <CircularProgress/>
@@ -74,7 +75,7 @@ const Profile = () => {
                         ))
                     }
                     {
-                        !loading
+                        !getLoading
                         &&
                         <Grid item xs={12} md={6} lg={4}>
                             <CollectionAddCard onClick={toggleCreateCollectionDialog}/>

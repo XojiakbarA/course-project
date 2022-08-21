@@ -13,7 +13,6 @@ export const useTheme = () => {
 
     const handleModeChange = (e, newMode) => {
         if (newMode !== null) {
-            console.log(newMode)
             localStorage.setItem('theme', newMode)
             dispatch(setTheme(newMode))
         }

@@ -1,19 +1,48 @@
-import {Avatar, Chip, Grid, IconButton, Link, Paper, Stack, Tooltip, Typography} from "@mui/material";
+import {
+    Box,
+    Chip,
+    CircularProgress,
+    Grid,
+    IconButton,
+    Link,
+    Paper,
+    Stack,
+    Tooltip,
+    Typography
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ImageIcon from '@mui/icons-material/Image';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import CommentIcon from '@mui/icons-material/Comment';
 import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
 import CollectionSingleCard from "../../components/cards/CollectionSingleCard";
-import {toggleDeleteCollection, toggleEditCollection} from "../../store/slices/dialogsSlice";
-import {useDispatch} from "react-redux";
+import {
+    toggleCreateItem,
+    toggleDeleteCollection, toggleDeleteItem,
+    toggleEditCollection,
+    toggleEditItem
+} from "../../store/slices/dialogsSlice";
+import {useDispatch, useSelector} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
+import {useCallback, useEffect, useMemo} from "react";
+import {useParams} from "react-router";
+import {getCollectionItems} from "../../store/asyncThunk/itemsAsyncThunk";
+import {collectionsSelector, itemsSelector, tagsSelector} from "../../store/selectors";
+import {setItem, setItems} from "../../store/slices/itemsSlice";
+import {getCollection} from "../../store/asyncThunk/collectionsAsyncThunk";
+import {setCollection} from "../../store/slices/collectionsSlice";
+import AvatarImage from "../../components/images/AvatarImage";
+import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
+import {setTags} from "../../store/slices/tagsSlice";
 
 const CollectionsID = () => {
 
     const dispatch = useDispatch()
+    const { id } = useParams()
+    const { content: items, getLoading } = useSelector(itemsSelector)
+    const { single: collection, getSingleLoading } = useSelector(collectionsSelector)
+    const { content: tags } = useSelector(tagsSelector)
 
     const toggleEditCollectionDialog = () => {
         dispatch(toggleEditCollection())
@@ -21,119 +50,168 @@ const CollectionsID = () => {
     const toggleDeleteCollectionDialog = () => {
         dispatch(toggleDeleteCollection())
     }
+    const toggleCreateItemDialog = () => {
+        dispatch(toggleCreateItem())
+    }
+    const toggleEditItemDialog = useCallback((item) => {
+        dispatch(setItem(item))
+        dispatch(toggleEditItem())
+    }, [dispatch])
+    const toggleDeleteItemDialog = useCallback((item) => {
+        dispatch(setItem(item))
+        dispatch(toggleDeleteItem())
+    }, [dispatch])
 
-    const columns = [
-        {
-            flex: 1,
-            minWidth: 80,
-            field: 'id',
-            headerName: 'ID'
-        },
-        {
-            flex: 2,
-            minWidth: 150,
-            field: 'title',
-            headerName: 'Title',
-            renderCell: ({ row }) => <Link component={RouterLink} to={`/items/${row.id}`}>{row.title}</Link>
-        },
-        {
-            flex: 1,
-            minWidth: 80,
-            field: 'image',
-            headerName: 'Image',
-            renderCell: () => <Avatar sx={{ width: 30, height: 30 }}><ImageIcon fontSize={"small"}/></Avatar>
-        },
-        {
-            flex: 2,
-            minWidth: 250,
-            field: 'tags',
-            headerName: 'Tags',
-            sortable: false,
-            renderCell: ({ value }) => (
-                <Stack direction={"row"} spacing={1}>
-                    {
-                        value.map(item => (
-                            <Chip size={"small"} key={item} label={item}/>
-                        ))
-                    }
-                </Stack>
-            )
-        },
-        {
-            flex: 1,
-            minWidth: 100,
-            field: 'likes',
-            renderHeader: () => (
-                <Stack direction={"row"} spacing={1}>
-                    <ThumbUpIcon fontSize={"small"}/>
-                    <Typography variant={"body2"}>Likes</Typography>
-                </Stack>
-            ),
-            renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
-        },
-        {
-            flex: 1,
-            minWidth: 100,
-            field: 'comments',
-            renderHeader: () => (
-                <Stack direction={"row"} spacing={1}>
-                    <CommentIcon fontSize={"small"}/>
-                    <Typography variant={"body2"}>Comments</Typography>
-                </Stack>
-            ),
-            renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
-        },
-        {
-            width: 120,
-            field: "actions",
-            headerName: 'Actions',
-            filterable: false,
-            sortable: false,
-            renderCell: () => (
-                <Stack direction={"row"} spacing={1}>
-                    <Tooltip title={"Edit"}>
-                        <IconButton>
-                            <EditIcon/>
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title={"Delete"}>
-                        <IconButton>
-                            <DeleteIcon/>
-                        </IconButton>
-                    </Tooltip>
-                </Stack>
-            )
+    useEffect(() => {
+        dispatch(getCollection({ id }))
+        dispatch(getCollectionItems({ id }))
+        dispatch(getTags())
+        return () => {
+            dispatch(setCollection(null))
+            dispatch(setItems([]))
+            dispatch(setItem(null))
+            dispatch(setTags([]))
         }
-    ]
-    const rows = [
-        { id: 1, title: "Xiaomi Mi 9T Pro", tags: ["#smartphones", "#gadgets"], likes: 143, comments: 84 },
-        { id: 2, title: "Xiaomi Mi Band 3", tags: ["#smartwatches", "#gadgets"], likes: 45, comments: 12 },
-    ]
+    }, [dispatch, id])
+
+    const columns = useMemo(() => (
+        [
+            {
+                flex: 1,
+                minWidth: 80,
+                field: 'id',
+                headerName: 'ID',
+                type: "number",
+                filterable: false,
+                sortable: false
+            },
+            {
+                flex: 2,
+                minWidth: 150,
+                field: 'name',
+                headerName: 'Name',
+                type: "string",
+                renderCell: ({ row }) => <Link component={RouterLink} to={`/items/${row.id}`}>{row.name}</Link>
+            },
+            {
+                flex: 1,
+                minWidth: 80,
+                field: 'image',
+                headerName: 'Image',
+                type: "string",
+                filterable: false,
+                sortable: false,
+                renderCell: ({ value }) => <AvatarImage size={30} publicId={value?.value} itemImage/>
+            },
+            {
+                flex: 2,
+                minWidth: 250,
+                field: 'tags',
+                headerName: 'Tags',
+                type: "singleSelect",
+                sortable: false,
+                valueOptions: tags?.map(i => i.name),
+                renderCell: ({ value }) => (
+                    <Stack direction={"row"} spacing={1} overflow={"scroll"} py={2}>
+                        {
+                            value.map(tag => (
+                                <Chip size={"small"} key={tag.id} label={tag.name}/>
+                            ))
+                        }
+                    </Stack>
+                )
+            },
+            {
+                flex: 1,
+                minWidth: 100,
+                field: 'likesCount',
+                headerName: "Likes",
+                type: "number",
+                renderHeader: () => (
+                    <Stack direction={"row"} spacing={1}>
+                        <ThumbUpIcon fontSize={"small"}/>
+                        <Typography variant={"body2"}>Likes</Typography>
+                    </Stack>
+                ),
+                renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
+            },
+            {
+                flex: 1,
+                minWidth: 100,
+                field: 'commentsCount',
+                headerName: "Comments",
+                type: "number",
+                renderHeader: () => (
+                    <Stack direction={"row"} spacing={1}>
+                        <CommentIcon fontSize={"small"}/>
+                        <Typography variant={"body2"}>Comments</Typography>
+                    </Stack>
+                ),
+                renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
+            },
+            {
+                flex: 1.5,
+                minWidth: 150,
+                field: 'createdAt',
+                headerName: 'Created At',
+                type: "dateTime",
+                renderCell: ({ value }) => value ? new Date(value).toLocaleString() : null
+            },
+            {
+                width: 120,
+                field: "actions",
+                headerName: 'Actions',
+                filterable: false,
+                sortable: false,
+                renderCell: ({ row }) => (
+                    <Stack direction={"row"} spacing={1}>
+                        <Tooltip title={"Edit"}>
+                            <IconButton onClick={ e => toggleEditItemDialog(row) }>
+                                <EditIcon/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={"Delete"}>
+                            <IconButton onClick={ e => toggleDeleteItemDialog(row) }>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
+                )
+            }
+        ]
+    ), [tags, toggleDeleteItemDialog, toggleEditItemDialog])
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} md={5} lg={4}>
-                <Avatar
-                    variant={"rounded"}
-                    sx={{ width: "100%", minHeight: 250 }}
-                >
-                    <ImageIcon sx={{ transform: "scale(3)" }}/>
-                </Avatar>
-            </Grid>
-            <Grid item xs={12} md={7} lg={8}>
-                <CollectionSingleCard
-                    onEditClick={toggleEditCollectionDialog}
-                    onDeleteClick={toggleDeleteCollectionDialog}
-                />
+            <Grid item xs={12}>
+                {
+                    getSingleLoading
+                    ?
+                    <Box height={250}>
+                        <CircularProgress/>
+                    </Box>
+                    :
+                    <CollectionSingleCard
+                        collection={collection}
+                        onEditClick={toggleEditCollectionDialog}
+                        onDeleteClick={toggleDeleteCollectionDialog}
+                    />
+                }
             </Grid>
             <Grid item xs={12}>
                 <Paper>
                     <DataGrid
                         autoHeight
                         disableColumnMenu
+                        hideFooter
+                        loading={getLoading}
                         columns={columns}
-                        rows={rows}
+                        rows={items}
                         components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
+                        componentsProps={{
+                            toolbar: { onClick: toggleCreateItemDialog },
+                            filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
+                        }}
                     />
                 </Paper>
             </Grid>

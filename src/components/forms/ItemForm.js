@@ -1,25 +1,25 @@
 import {Button, CardMedia, Grid, Stack, TextField, useMediaQuery} from "@mui/material";
-import CancelIcon from '@mui/icons-material/Cancel';
-import {LoadingButton} from "@mui/lab";
 import ImageUpload from "../commons/ImageUpload";
-import {useSinglePreview} from "../../hooks/useSinglePreview";
-import AutocompleteInput from "../inputs/AutocompleteInput";
-import {useEffect, useState, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getTopics} from "../../store/asyncThunk/topicsAsyncThunk";
-import {authSelector, topicsSelector} from "../../store/selectors";
+import {useSinglePreview} from "../../hooks/useSinglePreview";
+import {useItemFormik} from "../../hooks/useItemFormik";
 import {isAdmin} from "../../utils/helpers";
-import {useCollectionFormik} from "../../hooks/useCollectionFormik";
-import {toggleDeleteCollectionImage} from "../../store/slices/dialogsSlice";
+import AutocompleteInput from "../inputs/AutocompleteInput";
+import {authSelector, collectionsSelector, tagsSelector} from "../../store/selectors";
+import CancelIcon from "@mui/icons-material/Cancel";
+import {LoadingButton} from "@mui/lab";
+import {toggleDeleteItemImage} from "../../store/slices/dialogsSlice";
 
-const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSumbit, collection }) => {
+const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubmit, item }) => {
 
     const dispatch = useDispatch()
 
-    const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
-
-    const { content: topics, getLoading } = useSelector(topicsSelector)
+    const { single: collection, getSingleLoading } = useSelector(collectionsSelector)
+    const { content: tags, getLoading } = useSelector(tagsSelector)
     const { user } = useSelector(authSelector)
+
+    const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     const [gridWidth, setGridWidth] = useState(null)
 
@@ -27,18 +27,17 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, 
 
     useEffect(() => {
         setGridWidth(ref.current.offsetWidth)
-        dispatch(getTopics())
     }, [dispatch])
 
     const {
         handleSubmit, getFieldProps, handleBlur, errors, touched,
-        setValues, setTouched, userValue, topicValue, handleUserChange, handleTopicChange
-    } = useCollectionFormik(onSumbit, collection)
+        setTouched, setValues, collectionValue, tagsValue, handleCollectionChange, handleTagsChange
+    } = useItemFormik(onSubmit, item)
 
     const { preview, handleUploadChange, handlePreviewDeleteClick } = useSinglePreview(setValues, setTouched)
 
-    const toggleDeleteCollectionImageDialog = () => {
-        dispatch(toggleDeleteCollectionImage())
+    const toggleDeleteItemImageDialog = () => {
+        dispatch(toggleDeleteItemImage())
     }
 
     return (
@@ -49,10 +48,10 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, 
                         <ImageUpload
                             handlePrewiewDeleteClick={handlePreviewDeleteClick}
                             handleUploadChange={handleUploadChange}
-                            handleDeleteImage={toggleDeleteCollectionImageDialog}
+                            handleDeleteImage={toggleDeleteItemImageDialog}
                             name='image'
                             preview={preview}
-                            src={collection?.image?.value}
+                            src={item?.image?.value}
                             width={gridWidth}
                             height={200}
                             error={ Boolean(errors.image) }
@@ -74,43 +73,33 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, 
                         <AutocompleteInput
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"User"}
-                            options={[user]}
-                            value={userValue}
-                            loading={getLoading}
-                            disabled={getLoading || !isAdmin(user)}
-                            name="userId"
-                            onChange={handleUserChange}
+                            label={"Collection"}
+                            options={[collection]}
+                            value={collectionValue}
+                            loading={getSingleLoading}
+                            disabled={getSingleLoading || !isAdmin(user)}
+                            name="collectionId"
+                            onChange={handleCollectionChange}
                             onBlur={handleBlur}
-                            error={ touched.userId && Boolean(errors.userId) }
-                            helperText={ touched.userId && errors.userId }
-                            getOptionLabel={option => option.firstName}
-                        />
-                        <AutocompleteInput
-                            size={isDownSm ? "small" : "medium"}
-                            variant={"filled"}
-                            label={"Topic"}
-                            options={topics}
-                            value={topicValue}
-                            loading={getLoading}
-                            disabled={getLoading}
-                            name="topicId"
-                            onChange={handleTopicChange}
-                            onBlur={handleBlur}
-                            error={ touched.topicId && Boolean(errors.topicId) }
-                            helperText={ touched.topicId && errors.topicId }
+                            error={ touched.collectionId && Boolean(errors.collectionId) }
+                            helperText={ touched.collectionId && errors.collectionId }
                             getOptionLabel={option => option.name}
                         />
-                        <TextField
-                            fullWidth
+                        <AutocompleteInput
+                            multiple
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"Description"}
-                            multiline
-                            rows={5}
-                            error={ touched.description && Boolean(errors.description) }
-                            helperText={ touched.description && errors.description }
-                            { ...getFieldProps("description") }
+                            label={"Tags"}
+                            options={tags}
+                            value={tagsValue}
+                            loading={getLoading}
+                            disabled={getLoading}
+                            name="tagIds"
+                            onChange={handleTagsChange}
+                            onBlur={handleBlur}
+                            error={ touched.tagIds && Boolean(errors.tagIds) }
+                            helperText={ touched.tagIds && errors.tagIds }
+                            getOptionLabel={option => option.name}
                         />
                         <Stack direction={"row"} spacing={2} justifyContent={"flex-end"}>
                             <Button
@@ -138,4 +127,4 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, 
     )
 }
 
-export default CollectionForm
+export default ItemForm

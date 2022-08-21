@@ -47,7 +47,7 @@ const CollectionListCard = ({ onEditClick, onDeleteClick, collection }) => {
                             <Typography variant={"h5"} color={"primary.main"}>{collection?.name}</Typography>
                             <Typography gutterBottom color={"grey.400"}>{collection?.user?.firstName}</Typography>
                         </Stack>
-                        <Typography color={"secondary.dark"}>10 Items</Typography>
+                        <Typography color={"secondary.dark"}>{ collection?.itemsCount } Items</Typography>
                     </Stack>
                     <Typography variant={"body2"} color={"text.disabled"}>{collection?.description}</Typography>
                 </CardContent>

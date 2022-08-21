@@ -1,7 +1,7 @@
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import EditIcon from "@mui/icons-material/Edit";
-import {Route, Routes} from "react-router";
+import {Route, Routes, useLocation, useNavigate} from "react-router";
 import MainLayout from "./components/layouts/MainLayout";
 import Profile from "./pages/Profile";
 import CollectionsID from "./pages/Collections/CollectionsID";
@@ -10,8 +10,13 @@ import CollectionForm from "./components/forms/CollectionForm";
 import ConfirmDialog from "./components/dialogs/ConfirmDialog";
 import {useTheme} from "./hooks/useTheme";
 import {useDispatch, useSelector} from "react-redux";
-import {collectionsSelector, dialogsSelector} from "./store/selectors";
-import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "./store/slices/dialogsSlice";
+import {collectionsSelector, dialogsSelector, itemsSelector} from "./store/selectors";
+import {
+    toggleCreateCollection,
+    toggleCreateItem,
+    toggleDeleteCollection, toggleDeleteCollectionImage, toggleDeleteItem, toggleDeleteItemImage,
+    toggleEditCollection, toggleEditItem
+} from "./store/slices/dialogsSlice";
 import ItemsID from "./pages/Items/ItemsID";
 import Home from "./pages/Home";
 import Dashboard from "./pages/admin/Dashboard";
@@ -22,7 +27,6 @@ import Protected from "./pages/Protected";
 import {useEffect} from "react";
 import OAuth2RedirectHandler from "./oauth2/OAuth2RedirectHandler";
 import {getUser} from "./store/asyncThunk/authAsyncThunk";
-import {setCollection} from "./store/slices/collectionsSlice";
 import {appendToFormData} from "./utils/helpers";
 import {
     createCollection,
@@ -30,14 +34,19 @@ import {
     deleteCollectionImage,
     editCollection
 } from "./store/asyncThunk/collectionsAsyncThunk";
+import ItemForm from "./components/forms/ItemForm";
+import {createItem, deleteItem, deleteItemImage, editItem} from "./store/asyncThunk/itemsAsyncThunk";
 
 const App = () => {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const location = useLocation()
 
     const { theme } = useTheme()
-    const { collection: collectionDialog } = useSelector(dialogsSelector)
-    const { single: collection, createLoading, editLoading, deleteLoading, deleteImageLoading } = useSelector(collectionsSelector)
+    const { collection: collectionDialog, item: itemDialog } = useSelector(dialogsSelector)
+    const { single: collection, createLoading: collectionCreateLoading, editLoading: collectionEditLoading, deleteLoading: collectionDeleteLoading, deleteImageLoading: collectionDeleteImageLoading } = useSelector(collectionsSelector)
+    const { single: item, createLoading: itemCreateLoading, editLoading: itemEditLoading, deleteLoading: itemDeleteLoading, deleteImageLoading: itemDeleteImageLoading } = useSelector(itemsSelector)
 
     useEffect(() => {
         dispatch(getUser())
@@ -47,26 +56,61 @@ const App = () => {
         dispatch(toggleCreateCollection())
     }
     const toggleEditCollectionDialog = () => {
-        dispatch(setCollection(null))
         dispatch(toggleEditCollection())
     }
     const toggleDeleteCollectionDialog = () => {
-        dispatch(setCollection(null))
         dispatch(toggleDeleteCollection())
     }
-    const handleCreateSumbit = (data) => {
+    const toggleDeleteCollectionImageDialog = () => {
+        dispatch(toggleDeleteCollectionImage())
+    }
+    const toggleCreateItemDialog = () => {
+        dispatch(toggleCreateItem())
+    }
+    const toggleEditItemDialog = () => {
+        dispatch(toggleEditItem())
+    }
+    const toggleDeleteItemDialog = () => {
+        dispatch(toggleDeleteItem())
+    }
+    const toggleDeleteItemImageDialog = () => {
+        dispatch(toggleDeleteItemImage())
+    }
+    const handleCollectionCreateSubmit = (data) => {
         const formData = appendToFormData(data)
         dispatch(createCollection({ data: formData }))
     }
-    const handleEditSumbit = (data) => {
+    const handleItemCreateSubmit = (data) => {
+        const formData = appendToFormData(data)
+        dispatch(createItem({ data: formData }))
+    }
+    const handleCollectionEditSubmit = (data) => {
         const formData = appendToFormData(data)
         dispatch(editCollection({ id: collection?.id, data: formData }))
     }
-    const handleDeleteClick = () => {
-        dispatch(deleteCollection({ id: collection?.id }))
+    const handleItemEditSubmit = (data) => {
+        const formData = appendToFormData(data)
+        dispatch(editItem({ id: item?.id, data: formData }))
     }
-    const handleDeleteImageClick = () => {
+    const handleCollectionDeleteClick = () => {
+        dispatch(deleteCollection({
+            id: collection?.id,
+            shouldCallNavigate: location.pathname === `/collections/${collection?.id}`,
+            navigate,
+        }))
+    }
+    const handleItemDeleteClick = () => {
+        dispatch(deleteItem({
+            id: item?.id,
+            shouldCallNavigate: location.pathname === `/items/${item?.id}`,
+            navigate
+        }))
+    }
+    const handleDeleteCollectionImageClick = () => {
         dispatch(deleteCollectionImage({ id: collection?.id }))
+    }
+    const handleItemDeleteImageClick = () => {
+        dispatch(deleteItemImage({ id: item?.id }))
     }
 
     return (
@@ -98,9 +142,9 @@ const App = () => {
                 <CollectionForm
                     buttonText={"Create"}
                     buttonIcon={<AddToPhotosIcon/>}
-                    buttonLoading={createLoading}
+                    buttonLoading={collectionCreateLoading}
                     onCancelClick={toggleCreateCollectionDialog}
-                    onSumbit={handleCreateSumbit}
+                    onSumbit={handleCollectionCreateSubmit}
                 />
             </CommonDialog>
             <CommonDialog
@@ -112,24 +156,67 @@ const App = () => {
                 <CollectionForm
                     buttonText={"Edit"}
                     buttonIcon={<EditIcon/>}
-                    buttonLoading={editLoading}
+                    buttonLoading={collectionEditLoading}
                     onCancelClick={toggleEditCollectionDialog}
-                    onSumbit={handleEditSumbit}
+                    onSumbit={handleCollectionEditSubmit}
                     collection={collection}
                 />
             </CommonDialog>
             <ConfirmDialog
                 open={collectionDialog.delete}
                 onClose={toggleDeleteCollectionDialog}
-                onConfirmClick={handleDeleteClick}
-                loading={deleteLoading}
+                onConfirmClick={handleCollectionDeleteClick}
+                loading={collectionDeleteLoading}
                 content={"Do you really want to delete the collection?"}
             />
             <ConfirmDialog
                 open={collectionDialog.deleteImage}
-                onClose={toggleDeleteCollectionDialog}
-                onConfirmClick={handleDeleteImageClick}
-                loading={deleteImageLoading}
+                onClose={toggleDeleteCollectionImageDialog}
+                onConfirmClick={handleDeleteCollectionImageClick}
+                loading={collectionDeleteImageLoading}
+                content={"Do you really want to delete the image?"}
+            />
+            <CommonDialog
+                title={"Create Item"}
+                maxWidth={"md"}
+                open={itemDialog.create}
+                onClose={toggleCreateItemDialog}
+            >
+                <ItemForm
+                    buttonText={"Create"}
+                    buttonIcon={<AddToPhotosIcon/>}
+                    buttonLoading={itemCreateLoading}
+                    onCancelClick={toggleCreateItemDialog}
+                    onSubmit={handleItemCreateSubmit}
+                />
+            </CommonDialog>
+            <CommonDialog
+                title={"Edit Item"}
+                maxWidth={"md"}
+                open={itemDialog.edit}
+                onClose={toggleEditItemDialog}
+            >
+                <ItemForm
+                    buttonText={"Edit"}
+                    buttonIcon={<EditIcon/>}
+                    buttonLoading={itemEditLoading}
+                    onCancelClick={toggleEditItemDialog}
+                    onSubmit={handleItemEditSubmit}
+                    item={item}
+                />
+            </CommonDialog>
+            <ConfirmDialog
+                open={itemDialog.delete}
+                onClose={toggleDeleteItemDialog}
+                onConfirmClick={handleItemDeleteClick}
+                loading={itemDeleteLoading}
+                content={"Do you really want to delete the item?"}
+            />
+            <ConfirmDialog
+                open={itemDialog.deleteImage}
+                onClose={toggleDeleteItemImageDialog}
+                onConfirmClick={handleItemDeleteImageClick}
+                loading={itemDeleteImageLoading}
                 content={"Do you really want to delete the image?"}
             />
         </ThemeProvider>

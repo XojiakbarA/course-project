@@ -106,3 +106,29 @@ export const collectionValidationSchema = yup.object({
                 true
         ))
 })
+
+export const itemValidationSchema = yup.object({
+    name: yup
+        .string('Enter Name')
+        .required('Name is required'),
+    collectionId: yup
+        .number('Select Collection')
+        .required('Collection is required'),
+    tagIds: yup
+        .array('Choose Tags')
+        .of(yup.number('ID must be a integer'))
+        .min(1, 'Choose Tags')
+        .required('Tags is Required'),
+    image: yup
+        .mixed()
+        .test('fileSize', "File Size is too large", value => (
+            value ? value.size <= 1048576 : true
+        ))
+        .test('fileType', "Unsupported File Format", value => (
+            value
+                ?
+                ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].includes(value.type)
+                :
+                true
+        ))
+})

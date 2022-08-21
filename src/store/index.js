@@ -5,6 +5,8 @@ import snackbarReducer from "./slices/snackbarSlice";
 import authReducer from "./slices/authSlice";
 import collectionsReducer from "./slices/collectionsSlice";
 import topicsReducer from "./slices/topicsSlice";
+import itemsReducer from "./slices/itemsSlice";
+import tagsReducer from "./slices/tagsSlice";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +15,8 @@ export const store = configureStore({
         snackbar: snackbarReducer,
         auth: authReducer,
         collections: collectionsReducer,
-        topics: topicsReducer
+        topics: topicsReducer,
+        tags: tagsReducer,
+        items: itemsReducer,
     }
 })

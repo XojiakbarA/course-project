@@ -1,9 +1,8 @@
 import {
-    Avatar,
     Box, Breadcrumbs,
     Card,
     CardContent,
-    Divider,
+    Divider, Grid,
     IconButton,
     Stack,
     Tooltip,
@@ -14,23 +13,31 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import EventIcon from "@mui/icons-material/Event";
+import CardImage from "../images/CardImage";
+import {useEffect, useRef, useState} from "react";
+import AvatarImage from "../images/AvatarImage";
 
-const CollectionSingleCard = ({ onEditClick, onDeleteClick }) => {
+const CollectionSingleCard = ({ collection, onEditClick, onDeleteClick }) => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
+    const ref = useRef(null)
+
+    const [cardWidth, setCardWidth] = useState(null)
+
+    useEffect(() => {
+        setCardWidth(ref.current.offsetWidth)
+    }, [])
+
     return (
-        <Card sx={{ minHeight: "100%" }}>
-            <CardContent>
-                <Stack spacing={4}>
-                    <Stack direction={"row"} justifyContent={"space-between"}>
-                        <Stack direction={"row"} spacing={1} alignItems={"end"}>
-                            <Breadcrumbs>
-                                <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>Topic 1</Typography>
-                                <Typography variant={isDownSm ? "h5" : "h4"}>Collection 1</Typography>
-                            </Breadcrumbs>
-                        </Stack>
-                        <Stack direction={"row"} spacing={1}>
+        <Card>
+            <Grid container>
+                <Grid item xs={12} md={5} lg={4} ref={ref}>
+                    <CardImage publicId={collection?.image?.value} width={cardWidth} height={250}/>
+                </Grid>
+                <Grid item xs={12} md={7} lg={8}>
+                    <CardContent>
+                        <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
                             <Tooltip title={"Edit"}>
                                 <IconButton onClick={onEditClick}>
                                     <EditIcon/>
@@ -42,41 +49,57 @@ const CollectionSingleCard = ({ onEditClick, onDeleteClick }) => {
                                 </IconButton>
                             </Tooltip>
                         </Stack>
-                    </Stack>
-                    <Stack
-                        direction={"row"}
-                        spacing={4}
-                        overflow={"scroll"}
-                        pb={1}
-                        divider={<Divider orientation={"vertical"} flexItem/>}
-                    >
-                        <Stack spacing={2} direction={"row"} alignItems={"center"}>
-                            <Avatar sx={{ width: isDownSm ? 30 : 40, height: isDownSm ? 30 : 40 }}/>
-                            <Box>
-                                <Typography variant={"caption"} color={"primary"}>User</Typography>
-                                <Typography variant={isDownSm ? "body2" : "body1"}>Xojiakbar</Typography>
-                            </Box>
+                        <Stack spacing={2}>
+                            <Stack direction={"row"} justifyContent={"space-between"}>
+                                <Stack direction={"row"} spacing={1} alignItems={"end"}>
+                                    <Breadcrumbs>
+                                        <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>{ collection?.topic.name }</Typography>
+                                        <Typography variant={isDownSm ? "h5" : "h4"}>{ collection?.name }</Typography>
+                                    </Breadcrumbs>
+                                </Stack>
+                            </Stack>
+                            <Stack
+                                direction={"row"}
+                                spacing={4}
+                                overflow={"scroll"}
+                                pb={1}
+                                divider={<Divider orientation={"vertical"} flexItem/>}
+                            >
+                                <Stack spacing={2} direction={"row"} alignItems={"center"}>
+                                    <AvatarImage publicId={ collection?.user?.image?.value } size={isDownSm ? 30 : 40}/>
+                                    <Box>
+                                        <Typography variant={"caption"} color={"primary"}>User</Typography>
+                                        <Typography variant={isDownSm ? "body2" : "body1"}>
+                                            { collection?.user.firstName }
+                                        </Typography>
+                                    </Box>
+                                </Stack>
+                                <Stack spacing={2} direction={"row"} alignItems={"center"}>
+                                    <AttachFileIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
+                                    <Box>
+                                        <Typography variant={"caption"} color={"primary"}>Items</Typography>
+                                        <Typography variant={isDownSm ? "body2" : "body1"}>
+                                            { collection?.itemsCount }
+                                        </Typography>
+                                    </Box>
+                                </Stack>
+                                <Stack spacing={2} direction={"row"} alignItems={"center"}>
+                                    <EventIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
+                                    <Box>
+                                        <Typography variant={"caption"} color={"primary"}>Created at</Typography>
+                                        <Typography variant={isDownSm ? "body2" : "body1"} whiteSpace={"nowrap"}>
+                                            { new Date(collection?.createdAt).toLocaleString() }
+                                        </Typography>
+                                    </Box>
+                                </Stack>
+                            </Stack>
+                            <Typography variant={"body2"}>
+                                { collection?.description }
+                            </Typography>
                         </Stack>
-                        <Stack spacing={2} direction={"row"} alignItems={"center"}>
-                            <AttachFileIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
-                            <Box>
-                                <Typography variant={"caption"} color={"primary"}>Items</Typography>
-                                <Typography variant={isDownSm ? "body2" : "body1"}>10</Typography>
-                            </Box>
-                        </Stack>
-                        <Stack spacing={2} direction={"row"} alignItems={"center"}>
-                            <EventIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
-                            <Box>
-                                <Typography variant={"caption"} color={"primary"}>Created at</Typography>
-                                <Typography variant={isDownSm ? "body2" : "body1"}>07.08.2022 14:00</Typography>
-                            </Box>
-                        </Stack>
-                    </Stack>
-                    <Typography variant={"body2"}>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci cum deserunt dignissimos fugit hic impedit possimus repellat repellendus sint, voluptates! Harum minima perspiciatis quod temporibus veniam. Aspernatur iusto rem tempore!
-                </Typography>
-            </Stack>
-            </CardContent>
+                    </CardContent>
+                </Grid>
+            </Grid>
         </Card>
     )
 }

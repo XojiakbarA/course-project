@@ -3,7 +3,7 @@ import {createSlice} from "@reduxjs/toolkit"
 const initialState = {
     auth: { isOpen: false, isLogin: true },
     collection: { create: false, edit: false, delete: false, deleteImage: false },
-    item: { create: false, edit: false, delete: false }
+    item: { create: false, edit: false, delete: false, deleteImage: false }
 }
 
 export const dialogsSlice = createSlice({
@@ -25,6 +25,9 @@ export const dialogsSlice = createSlice({
         toggleDeleteCollection: (state) => {
             state.collection.delete = !state.collection.delete
         },
+        toggleDeleteCollectionImage: (state) => {
+            state.collection.deleteImage = !state.collection.deleteImage
+        },
         toggleCreateItem: (state) => {
             state.item.create = !state.item.create
         },
@@ -34,12 +37,16 @@ export const dialogsSlice = createSlice({
         toggleDeleteItem: (state) => {
             state.item.delete = !state.item.delete
         },
-        toggleDeleteCollectionImage: (state) => {
-            state.collection.deleteImage = !state.collection.deleteImage
+        toggleDeleteItemImage: (state) => {
+            state.item.deleteImage = !state.item.deleteImage
         }
     }
 })
 
-export const { toggleAuthForm, toggleAuth, toggleCreateCollection, toggleEditCollection, toggleDeleteCollection, toggleDeleteCollectionImage } = dialogsSlice.actions
+export const {
+    toggleAuthForm, toggleAuth,
+    toggleCreateCollection, toggleEditCollection, toggleDeleteCollection, toggleDeleteCollectionImage,
+    toggleCreateItem, toggleEditItem, toggleDeleteItem, toggleDeleteItemImage
+} = dialogsSlice.actions
 
 export default dialogsSlice.reducer
