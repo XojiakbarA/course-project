@@ -7,7 +7,7 @@ export const getTopics = createAsyncThunk("topics/get",
         try {
             const res = await fetchTopics()
             if (res.status === 200) {
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

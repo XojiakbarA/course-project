@@ -20,7 +20,7 @@ export const getUserCollections = createAsyncThunk("collections/userGet",
         try {
             const res = await fetchUserCollections(id)
             if (res.status === 200) {
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -34,7 +34,7 @@ export const getCollection = createAsyncThunk("collections/get",
         try {
             const res = await fetchCollection(id)
             if (res.status === 200) {
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -50,7 +50,7 @@ export const createCollection = createAsyncThunk("collections/create",
             if (res.status === 201) {
                 dispatch(toggleCreateCollection())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -66,7 +66,7 @@ export const editCollection = createAsyncThunk("collections/edit",
             if (res.status === 200) {
                 dispatch(toggleEditCollection())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

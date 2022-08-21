@@ -7,7 +7,7 @@ export const getTags = createAsyncThunk("tags/get",
         try {
             const res = await fetchTags()
             if (res.status === 200) {
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

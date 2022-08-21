@@ -54,7 +54,7 @@ export const editUser = createAsyncThunk("auth/edit",
             const res = await updateUser(id, data)
             if (res.status === 200) {
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -70,7 +70,7 @@ export const editUserImage = createAsyncThunk("auth/editImage",
             if (res.status === 200) {
                 setEditOpen(false)
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

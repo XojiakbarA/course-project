@@ -15,7 +15,7 @@ export const getCollectionItems = createAsyncThunk("items/CollectionGet",
         try {
             const res = await fetchCollectionItems(id)
             if (res.status === 200) {
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -31,7 +31,7 @@ export const createItem = createAsyncThunk("items/create",
             if (res.status === 201) {
                 dispatch(toggleCreateItem())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -47,7 +47,7 @@ export const editItem = createAsyncThunk("items/edit",
             if (res.status === 200) {
                 dispatch(toggleEditItem())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                return res.data.content
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
