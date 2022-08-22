@@ -16,8 +16,15 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import CommentIcon from '@mui/icons-material/Comment';
 import CardImage from "../images/CardImage";
 import {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {editItemLikes} from "../../store/asyncThunk/itemsAsyncThunk";
+import {authSelector} from "../../store/selectors";
 
-const ItemListCard = ({ onLikeClick, item }) => {
+const ItemListCard = ({ item }) => {
+
+    const dispatch = useDispatch()
+
+    const { user } = useSelector(authSelector)
 
     const ref = useRef(null)
 
@@ -26,6 +33,10 @@ const ItemListCard = ({ onLikeClick, item }) => {
     useEffect(() => {
         setCardWidth(ref.current.offsetWidth)
     }, [])
+
+    const handleLikeClick = () => {
+        dispatch(editItemLikes({ itemId: item?.id, userId: user?.id }))
+    }
 
     return (
         <Card sx={{ position: "relative", height: "100%" }} ref={ref}>
@@ -51,7 +62,7 @@ const ItemListCard = ({ onLikeClick, item }) => {
                                 <Typography color={"grey.400"}>{ item?.collection?.name }</Typography>
                             </Stack>
                             <Stack spacing={1} alignItems={"end"}>
-                                <Rating readOnly value={4} size={"small"}/>
+                                <Rating readOnly value={item?.rating} size={"small"}/>
                                 <Stack direction={"row"} spacing={2}>
                                     <Stack direction={"row"} spacing={1} alignItems={"center"}>
                                         <ThumbUpIcon fontSize={"small"} color={"disabled"}/>
@@ -83,8 +94,8 @@ const ItemListCard = ({ onLikeClick, item }) => {
                 justifyContent: "flex-end"
             }}>
                 <Tooltip title={"Like"}>
-                    <IconButton onClick={onLikeClick}>
-                        <ThumbUpOffAltIcon/>
+                    <IconButton onClick={handleLikeClick}>
+                        { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
                     </IconButton>
                 </Tooltip>
             </CardActions>

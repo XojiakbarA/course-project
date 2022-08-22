@@ -1,7 +1,15 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {fetchCollectionItems} from "../../api/collections";
 import {setSnackbar} from "../slices/snackbarSlice";
-import {destroyItem, destroyItemImage, fetchItem, fetchItems, storeItem, updateItem} from "../../api/items";
+import {
+    destroyItem,
+    destroyItemImage,
+    fetchItem,
+    fetchItems,
+    storeItem,
+    updateItem,
+    updateItemLikes
+} from "../../api/items";
 import {
     toggleCreateItem,
     toggleDeleteItem,
@@ -108,6 +116,20 @@ export const deleteItemImage = createAsyncThunk("items/deleteImage",
                 dispatch(toggleDeleteItemImage())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
                 return id
+            }
+        } catch ({ response }) {
+            dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
+            return rejectWithValue(response.data.message)
+        }
+    }
+)
+
+export const editItemLikes = createAsyncThunk("items/editLikes",
+    async ({ itemId, userId }, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await updateItemLikes(itemId, userId)
+            if (res.status === 200) {
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

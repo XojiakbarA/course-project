@@ -3,7 +3,7 @@ import {
     createItem,
     deleteItem,
     deleteItemImage,
-    editItem,
+    editItem, editItemLikes,
     getCollectionItems, getItem,
     getItems
 } from "../asyncThunk/itemsAsyncThunk";
@@ -16,7 +16,8 @@ const initialState = {
     createLoading: false,
     editLoading: false,
     deleteLoading: false,
-    deleteImageLoading: false
+    deleteImageLoading: false,
+    likeLoading: false
 }
 
 export const itemsSlice = createSlice({
@@ -119,6 +120,22 @@ export const itemsSlice = createSlice({
         },
         [deleteItemImage.rejected]: (state, action) => {
             state.deleteImageLoading = false
+            state.error = action.payload
+        },
+        [editItemLikes.pending]: (state) => {
+            state.likeLoading = true
+        },
+        [editItemLikes.fulfilled]: (state, action) => {
+            state.likeLoading = false
+            const i = state.content.findIndex(i => i.id === action.payload.id)
+            state.content[i] = action.payload
+            if (state.single) {
+                state.single = action.payload
+            }
+            state.error = null
+        },
+        [editItemLikes.rejected]: (state, action) => {
+            state.likeLoading = false
             state.error = action.payload
         },
     }

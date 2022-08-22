@@ -27,3 +27,7 @@ export const destroyItem = async (id) => {
 export const destroyItemImage = async (id) => {
     return await instance.delete(`/api/items/${id}/images`)
 }
+
+export const updateItemLikes = async (itemId, userId) => {
+    return await instance.put(`/api/items/${itemId}/likes/${userId}`)
+}
