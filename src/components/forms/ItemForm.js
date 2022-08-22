@@ -10,12 +10,14 @@ import {authSelector, collectionsSelector, tagsSelector} from "../../store/selec
 import CancelIcon from "@mui/icons-material/Cancel";
 import {LoadingButton} from "@mui/lab";
 import {toggleDeleteItemImage} from "../../store/slices/dialogsSlice";
+import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
+import {setTags} from "../../store/slices/tagsSlice";
 
 const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubmit, item }) => {
 
     const dispatch = useDispatch()
 
-    const { single: collection, getSingleLoading } = useSelector(collectionsSelector)
+    const { single: collection } = useSelector(collectionsSelector)
     const { content: tags, getLoading } = useSelector(tagsSelector)
     const { user } = useSelector(authSelector)
 
@@ -26,7 +28,11 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
     const ref = useRef(null)
 
     useEffect(() => {
+        dispatch(getTags())
         setGridWidth(ref.current.offsetWidth)
+        return () => {
+            dispatch(setTags([]))
+        }
     }, [dispatch])
 
     const {
@@ -74,10 +80,9 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
                             label={"Collection"}
-                            options={[collection]}
+                            options={[item?.collection ?? collection]}
                             value={collectionValue}
-                            loading={getSingleLoading}
-                            disabled={getSingleLoading || !isAdmin(user)}
+                            disabled={!isAdmin(user)}
                             name="collectionId"
                             onChange={handleCollectionChange}
                             onBlur={handleBlur}

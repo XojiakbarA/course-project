@@ -8,13 +8,13 @@ export const useItemFormik = (onSubmit, item) => {
 
     const { single: collection } = useSelector(collectionsSelector)
 
-    const [collectionValue, setCollectionValue] = useState(collection)
+    const [collectionValue, setCollectionValue] = useState(item?.collection ?? collection)
     const [tagsValue, setTagsValue] = useState(item?.tags ?? [])
 
     const formik = useFormik({
         initialValues: {
             name: item?.name ?? "",
-            collectionId: collection?.id,
+            collectionId: item?.collection?.id ?? collection?.id ?? "",
             tagIds: item?.tags?.map(i => i.id) ?? [],
             image: null
         },
