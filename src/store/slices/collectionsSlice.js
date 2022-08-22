@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import {
     createCollection,
     deleteCollection, deleteCollectionImage,
-    editCollection, getCollection,
+    editCollection, getCollection, getCollections,
     getUserCollections
 } from "../asyncThunk/collectionsAsyncThunk";
 
@@ -29,6 +29,18 @@ export const collectionsSlice = createSlice({
         }
     },
     extraReducers: {
+        [getCollections.pending]: (state) => {
+            state.getLoading = true
+        },
+        [getCollections.fulfilled]: (state, action) => {
+            state.getLoading = false
+            state.content = action.payload
+            state.error = null
+        },
+        [getCollections.rejected]: (state, action) => {
+            state.getLoading = false
+            state.error = action.payload
+        },
         [getUserCollections.pending]: (state) => {
             state.getLoading = true
         },

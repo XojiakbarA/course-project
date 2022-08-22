@@ -1,14 +1,27 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {destroyCollectionImage, fetchCollectionItems} from "../../api/collections";
+import {fetchCollectionItems} from "../../api/collections";
 import {setSnackbar} from "../slices/snackbarSlice";
-import {destroyItem, destroyItemImage, storeItem, updateItem} from "../../api/items";
+import {destroyItem, destroyItemImage, fetchItems, storeItem, updateItem} from "../../api/items";
 import {
     toggleCreateItem,
-    toggleDeleteCollectionImage,
     toggleDeleteItem,
     toggleDeleteItemImage,
     toggleEditItem
 } from "../slices/dialogsSlice";
+
+export const getItems = createAsyncThunk("items/get",
+    async ({ params }, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await fetchItems(params)
+            if (res.status === 200) {
+                return res.data.data.content
+            }
+        } catch ({ response }) {
+            dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
+            return rejectWithValue(response.data.message)
+        }
+    }
+)
 
 export const getCollectionItems = createAsyncThunk("items/CollectionGet",
     async ({ id }, { dispatch, rejectWithValue }) => {

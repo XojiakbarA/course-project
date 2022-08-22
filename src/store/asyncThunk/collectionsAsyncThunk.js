@@ -4,7 +4,7 @@ import {setSnackbar} from "../slices/snackbarSlice";
 import {
     destroyCollection,
     destroyCollectionImage,
-    fetchCollection,
+    fetchCollection, fetchCollections,
     storeCollection,
     updateCollection
 } from "../../api/collections";
@@ -14,6 +14,20 @@ import {
     toggleDeleteCollectionImage,
     toggleEditCollection
 } from "../slices/dialogsSlice";
+
+export const getCollections = createAsyncThunk("collections/get",
+    async ({ params }, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await fetchCollections(params)
+            if (res.status === 200) {
+                console.log(res)
+            }
+        } catch ({ response }) {
+            dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
+            return rejectWithValue(response.data.message)
+        }
+    }
+)
 
 export const getUserCollections = createAsyncThunk("collections/userGet",
     async ({ id }, { dispatch, rejectWithValue }) => {
@@ -29,7 +43,7 @@ export const getUserCollections = createAsyncThunk("collections/userGet",
     }
 )
 
-export const getCollection = createAsyncThunk("collections/get",
+export const getCollection = createAsyncThunk("collections/getSingle",
     async ({ id }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchCollection(id)

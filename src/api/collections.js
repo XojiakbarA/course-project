@@ -1,5 +1,9 @@
 import {instance} from "./auth";
 
+export const fetchCollections = async (params) => {
+    return await instance.get("/api/collections", { params })
+}
+
 export const fetchCollection = async (id) => {
     return await instance.get(`/api/collections/${id}`)
 }

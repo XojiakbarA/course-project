@@ -1,5 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit"
-import {createItem, deleteItem, deleteItemImage, editItem, getCollectionItems} from "../asyncThunk/itemsAsyncThunk";
+import {
+    createItem,
+    deleteItem,
+    deleteItemImage,
+    editItem,
+    getCollectionItems,
+    getItems
+} from "../asyncThunk/itemsAsyncThunk";
 
 const initialState = {
     content: [],
@@ -23,6 +30,18 @@ export const itemsSlice = createSlice({
         }
     },
     extraReducers: {
+        [getItems.pending]: (state) => {
+            state.getLoading = true
+        },
+        [getItems.fulfilled]: (state, action) => {
+            state.getLoading = false
+            state.content = action.payload
+            state.error = null
+        },
+        [getItems.rejected]: (state, action) => {
+            state.getLoading = false
+            state.error = action.payload
+        },
         [getCollectionItems.pending]: (state) => {
             state.getLoading = true
         },
