@@ -132,3 +132,15 @@ export const itemValidationSchema = yup.object({
                 true
         ))
 })
+
+export const commentValidationSchema = yup.object({
+    userId: yup
+        .number('Select User')
+        .required('User is required'),
+    itemId: yup
+        .number('Select Item')
+        .required('Item is required'),
+    text: yup
+        .string('Enter Comment')
+        .required('Comment is required'),
+})

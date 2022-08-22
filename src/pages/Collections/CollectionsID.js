@@ -16,12 +16,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import CommentIcon from '@mui/icons-material/Comment';
 import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
 import CollectionSingleCard from "../../components/cards/CollectionSingleCard";
-import {
-    toggleCreateItem,
-    toggleDeleteCollection, toggleDeleteItem,
-    toggleEditCollection,
-    toggleEditItem
-} from "../../store/slices/dialogsSlice";
+import {toggleCreateItem, toggleDeleteItem, toggleEditItem} from "../../store/slices/dialogsSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
@@ -44,12 +39,6 @@ const CollectionsID = () => {
     const { single: collection, getSingleLoading } = useSelector(collectionsSelector)
     const { content: tags } = useSelector(tagsSelector)
 
-    const toggleEditCollectionDialog = () => {
-        dispatch(toggleEditCollection())
-    }
-    const toggleDeleteCollectionDialog = () => {
-        dispatch(toggleDeleteCollection())
-    }
     const toggleCreateItemDialog = () => {
         dispatch(toggleCreateItem())
     }
@@ -191,11 +180,7 @@ const CollectionsID = () => {
                         <CircularProgress/>
                     </Box>
                     :
-                    <CollectionSingleCard
-                        collection={collection}
-                        onEditClick={toggleEditCollectionDialog}
-                        onDeleteClick={toggleDeleteCollectionDialog}
-                    />
+                    <CollectionSingleCard collection={collection}/>
                 }
             </Grid>
             <Grid item xs={12}>

@@ -43,7 +43,7 @@ export const getUserCollections = createAsyncThunk("collections/userGet",
     }
 )
 
-export const getCollection = createAsyncThunk("collections/getSingle",
+export const getCollection = createAsyncThunk("collections/singleGet",
     async ({ id }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchCollection(id)

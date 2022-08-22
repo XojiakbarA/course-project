@@ -16,8 +16,19 @@ import EventIcon from "@mui/icons-material/Event";
 import CardImage from "../images/CardImage";
 import {useEffect, useRef, useState} from "react";
 import AvatarImage from "../images/AvatarImage";
+import {toggleDeleteCollection, toggleEditCollection} from "../../store/slices/dialogsSlice";
+import {useDispatch} from "react-redux";
 
-const CollectionSingleCard = ({ collection, onEditClick, onDeleteClick }) => {
+const CollectionSingleCard = ({ collection }) => {
+
+    const dispatch = useDispatch()
+
+    const toggleEditCollectionDialog = () => {
+        dispatch(toggleEditCollection())
+    }
+    const toggleDeleteCollectionDialog = () => {
+        dispatch(toggleDeleteCollection())
+    }
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -39,24 +50,22 @@ const CollectionSingleCard = ({ collection, onEditClick, onDeleteClick }) => {
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
                             <Tooltip title={"Edit"}>
-                                <IconButton onClick={onEditClick}>
+                                <IconButton onClick={toggleEditCollectionDialog}>
                                     <EditIcon/>
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title={"Delete"}>
-                                <IconButton onClick={onDeleteClick}>
+                                <IconButton onClick={toggleDeleteCollectionDialog}>
                                     <DeleteIcon/>
                                 </IconButton>
                             </Tooltip>
                         </Stack>
-                        <Stack spacing={2}>
-                            <Stack direction={"row"} justifyContent={"space-between"}>
-                                <Stack direction={"row"} spacing={1} alignItems={"end"}>
-                                    <Breadcrumbs>
-                                        <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>{ collection?.topic.name }</Typography>
-                                        <Typography variant={isDownSm ? "h5" : "h4"}>{ collection?.name }</Typography>
-                                    </Breadcrumbs>
-                                </Stack>
+                        <Stack spacing={1}>
+                            <Stack direction={"row"} spacing={1} alignItems={"end"}>
+                                <Breadcrumbs>
+                                    <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>{ collection?.topic.name }</Typography>
+                                    <Typography variant={isDownSm ? "h5" : "h4"}>{ collection?.name }</Typography>
+                                </Breadcrumbs>
                             </Stack>
                             <Stack
                                 direction={"row"}

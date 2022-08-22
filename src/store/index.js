@@ -7,6 +7,7 @@ import collectionsReducer from "./slices/collectionsSlice";
 import topicsReducer from "./slices/topicsSlice";
 import itemsReducer from "./slices/itemsSlice";
 import tagsReducer from "./slices/tagsSlice";
+import commentsReducer from "./slices/commentsSlice";
 
 export const store = configureStore({
     reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
         topics: topicsReducer,
         tags: tagsReducer,
         items: itemsReducer,
+        comments: commentsReducer
     }
 })

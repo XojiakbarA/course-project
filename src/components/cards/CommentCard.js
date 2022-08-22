@@ -1,8 +1,15 @@
-import {Avatar, Card, CardContent, CardHeader, Rating, Typography, useMediaQuery} from "@mui/material";
+import {Card, CardContent, CardHeader, Rating, Typography, useMediaQuery} from "@mui/material";
+import {useSelector} from "react-redux";
+import {authSelector} from "../../store/selectors";
+import AvatarImage from "../images/AvatarImage";
 
-const CommentCard = ({ right }) => {
+const CommentCard = ({ comment }) => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
+
+    const { user } = useSelector(authSelector)
+
+    const right = user?.id === comment?.user?.id
 
     return (
         <Card sx={{
@@ -11,14 +18,15 @@ const CommentCard = ({ right }) => {
             alignSelf: right ? "end" : "start"
         }}>
             <CardHeader
-                avatar={<Avatar/>}
-                title={"Xojiakbar"}
-                subheader={"08.08.2022 12:44"}
-                action={<Rating size={isDownSm ? "small" : "medium"} readOnly value={4}/>}
+                avatar={<AvatarImage publicId={comment?.user?.image?.value} size={35}/>}
+                title={ comment?.user?.firstName }
+                subheader={ new Date(comment?.createdAt).toLocaleString() }
+                action={<Rating size={"small"} readOnly value={comment?.rating}/>}
+                subheaderTypographyProps={{ variant: "caption" }}
             />
             <CardContent>
                 <Typography variant={"body2"}>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi atque autem cupiditate error in modi quam saepe. Consectetur consequuntur expedita in ipsam, natus nisi, optio pariatur ratione, sed similique totam.
+                    { comment?.text }
                 </Typography>
             </CardContent>
         </Card>

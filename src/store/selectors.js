@@ -9,3 +9,5 @@ export const topicsSelector = (state) => state.topics
 export const tagsSelector = (state) => state.tags
 
 export const itemsSelector = (state) => state.items
+
+export const commentsSelector = (state) => state.comments

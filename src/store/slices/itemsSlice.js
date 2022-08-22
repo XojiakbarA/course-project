@@ -4,7 +4,7 @@ import {
     deleteItem,
     deleteItemImage,
     editItem,
-    getCollectionItems,
+    getCollectionItems, getItem,
     getItems
 } from "../asyncThunk/itemsAsyncThunk";
 
@@ -12,6 +12,7 @@ const initialState = {
     content: [],
     single: null,
     getLoading: false,
+    getSingleLoading: false,
     createLoading: false,
     editLoading: false,
     deleteLoading: false,
@@ -52,6 +53,18 @@ export const itemsSlice = createSlice({
         },
         [getCollectionItems.rejected]: (state, action) => {
             state.getLoading = false
+            state.error = action.payload
+        },
+        [getItem.pending]: (state) => {
+            state.getSingleLoading = true
+        },
+        [getItem.fulfilled]: (state, action) => {
+            state.getSingleLoading = false
+            state.single = action.payload
+            state.error = null
+        },
+        [getItem.rejected]: (state, action) => {
+            state.getSingleLoading = false
             state.error = action.payload
         },
         [createItem.pending]: (state) => {
