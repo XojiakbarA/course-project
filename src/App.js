@@ -36,6 +36,7 @@ import {
 } from "./store/asyncThunk/collectionsAsyncThunk";
 import ItemForm from "./components/forms/ItemForm";
 import {createItem, deleteItem, deleteItemImage, editItem} from "./store/asyncThunk/itemsAsyncThunk";
+import TagsID from "./pages/TagsID";
 
 const App = () => {
 
@@ -126,6 +127,7 @@ const App = () => {
                     <Route path={"/collections/:id"} element={<CollectionsID/>}/>
                     <Route path={"/items/"} element={<Items/>}/>
                     <Route path={"/items/:id"} element={<ItemsID/>}/>
+                    <Route path={"/tags/:id"} element={<TagsID/>}/>
                     <Route path={"/admin"}>
                         <Route index element={<Dashboard/>}/>
                     </Route>

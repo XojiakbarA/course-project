@@ -20,7 +20,8 @@ export const getCollections = createAsyncThunk("collections/get",
         try {
             const res = await fetchCollections(params)
             if (res.status === 200) {
-                console.log(res)
+                const data = res.data.data
+                return { content: data.content, totalElements: data.totalElements, totalPages: data.totalPages }
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

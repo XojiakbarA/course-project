@@ -16,13 +16,15 @@ import {
     toggleDeleteItemImage,
     toggleEditItem
 } from "../slices/dialogsSlice";
+import {fetchTagItems} from "../../api/tags";
 
 export const getItems = createAsyncThunk("items/get",
     async ({ params }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchItems(params)
             if (res.status === 200) {
-                return res.data.data.content
+                const data = res.data.data
+                return { content: data.content, totalElements: data.totalElements, totalPages: data.totalPages }
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -37,6 +39,21 @@ export const getCollectionItems = createAsyncThunk("items/collectionGet",
             const res = await fetchCollectionItems(id)
             if (res.status === 200) {
                 return res.data.data
+            }
+        } catch ({ response }) {
+            dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
+            return rejectWithValue(response.data.message)
+        }
+    }
+)
+
+export const getTagItems = createAsyncThunk("items/tagGet",
+    async ({ id, params }, { dispatch, rejectWithValue }) => {
+        try {
+            const res = await fetchTagItems(id, params)
+            if (res.status === 200) {
+                const data = res.data.data
+                return { content: data.content, totalElements: data.totalElements, totalPages: data.totalPages }
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

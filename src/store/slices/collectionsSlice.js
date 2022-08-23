@@ -34,7 +34,9 @@ export const collectionsSlice = createSlice({
         },
         [getCollections.fulfilled]: (state, action) => {
             state.getLoading = false
-            state.content = action.payload
+            state.content = action.payload.content
+            state.totalElements = action.payload.totalElements
+            state.totalPages = action.payload.totalPages
             state.error = null
         },
         [getCollections.rejected]: (state, action) => {
