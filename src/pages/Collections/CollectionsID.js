@@ -1,9 +1,7 @@
 import {
-    Box,
     Chip,
-    CircularProgress,
     Grid,
-    IconButton,
+    IconButton, LinearProgress,
     Link,
     Paper,
     Stack,
@@ -30,6 +28,7 @@ import {setCollection} from "../../store/slices/collectionsSlice";
 import AvatarImage from "../../components/images/AvatarImage";
 import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
 import {setTags} from "../../store/slices/tagsSlice";
+import CollectionSingleSkeleton from "../../components/skeletons/CollectionSingleSkeleton";
 
 const CollectionsID = () => {
 
@@ -55,13 +54,15 @@ const CollectionsID = () => {
         dispatch(getCollection({ id }))
         dispatch(getCollectionItems({ id }))
         dispatch(getTags())
+    }, [dispatch, id])
+    useEffect(() => {
         return () => {
             dispatch(setCollection(null))
             dispatch(setItems([]))
             dispatch(setItem(null))
             dispatch(setTags([]))
         }
-    }, [dispatch, id])
+    }, [dispatch])
 
     const columns = useMemo(() => (
         [
@@ -176,23 +177,20 @@ const CollectionsID = () => {
                 {
                     getSingleLoading
                     ?
-                    <Box height={250}>
-                        <CircularProgress/>
-                    </Box>
+                    <CollectionSingleSkeleton/>
                     :
                     <CollectionSingleCard collection={collection}/>
                 }
             </Grid>
             <Grid item xs={12}>
-                <Paper>
+                <Paper sx={{ height: 550 }}>
                     <DataGrid
-                        autoHeight
                         disableColumnMenu
                         hideFooter
                         loading={getLoading}
                         columns={columns}
                         rows={items}
-                        components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
+                        components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel, LoadingOverlay: LinearProgress }}
                         componentsProps={{
                             toolbar: { onClick: toggleCreateItemDialog },
                             filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }

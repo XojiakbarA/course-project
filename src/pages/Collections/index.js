@@ -1,29 +1,38 @@
-import {CircularProgress, Grid, Pagination, useMediaQuery} from "@mui/material";
+import {Grid, useMediaQuery} from "@mui/material";
 import CategoryIcon from "@mui/icons-material/Category";
 import PageTitle from "../../components/commons/PageTitle";
 import CollectionListCard from "../../components/cards/CollectionListCard";
 import {useDispatch, useSelector} from "react-redux";
-import {useSearchParams} from "react-router-dom";
 import {collectionsSelector} from "../../store/selectors";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {getCollections} from "../../store/asyncThunk/collectionsAsyncThunk";
+import {setCollections} from "../../store/slices/collectionsSlice";
+import InfiniteScroll from "react-infinite-scroll-component";
+import CollectionListSkeleton from "../../components/skeletons/CollectionListSkeleton";
 
 const Collections = () => {
 
     const dispatch = useDispatch()
 
-    const [params, setParams] = useSearchParams()
+    const { content: collections, getLoading } = useSelector(collectionsSelector)
 
-    const { content: collections, getLoading, totalPages } = useSelector(collectionsSelector)
-
-    const page = Number(params.get("page")) || 1
+    const [page, setPage] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
+    const size = 12
+    const skeletonSize = Array.from({length: size}, (_, i) => i)
 
     useEffect(() => {
-        dispatch(getCollections({ params: { sortBy: "createdAt", sortType: "DESC", size: 12, page: page - 1 } }))
+        const params = { sortBy: "createdAt", sortType: "DESC", size, page }
+        dispatch(getCollections({ params, setHasMore }))
     }, [dispatch, page])
+    useEffect(() => {
+        return () => {
+            dispatch(setCollections([]))
+        }
+    }, [dispatch])
 
-    const handlePageChange = (e, page) => {
-        setParams({ page })
+    const handleNext = () => {
+        setPage(prev => prev + 1)
     }
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
@@ -39,32 +48,31 @@ const Collections = () => {
                 />
             </Grid>
             <Grid item xs={12}>
-                <Grid container spacing={2}>
-                    {
-                        getLoading
-                        ?
-                        <Grid item xs={12} sm={6} md={4} lg={3}>
-                            <CircularProgress/>
-                        </Grid>
-                        :
-                        collections.map(collection => (
-                            <Grid key={collection.id} item xs={12} sm={6} md={4} lg={3}>
-                                <CollectionListCard collection={collection}/>
-                            </Grid>
-                        ))
-                    }
-                </Grid>
-            </Grid>
-            <Grid item xs={12} display={"flex"} justifyContent={isDownSm ? "center" : "end"}>
-                {
-                    !getLoading && totalPages > 1 &&
-                    <Pagination
-                        color={"primary"}
-                        page={page}
-                        count={totalPages}
-                        onChange={handlePageChange}
-                    />
-                }
+                <InfiniteScroll
+                    style={{ overflow: "visible" }}
+                    dataLength={collections.length}
+                    next={handleNext}
+                    hasMore={hasMore}
+                >
+                    <Grid container spacing={2}>
+                        {
+                            collections.map(collection => (
+                                <Grid key={collection.id} item xs={12} sm={6} md={4} lg={3}>
+                                    <CollectionListCard collection={collection}/>
+                                </Grid>
+                            ))
+                        }
+                        {
+                            getLoading
+                            &&
+                            skeletonSize.map(skeleton => (
+                                <Grid key={skeleton} item xs={12} md={6} lg={3}>
+                                    <CollectionListSkeleton/>
+                                </Grid>
+                            ))
+                        }
+                    </Grid>
+                </InfiniteScroll>
             </Grid>
         </Grid>
     )

@@ -16,12 +16,12 @@ import {
 } from "../slices/dialogsSlice";
 
 export const getCollections = createAsyncThunk("collections/get",
-    async ({ params }, { dispatch, rejectWithValue }) => {
+    async ({ params, setHasMore }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchCollections(params)
             if (res.status === 200) {
-                const data = res.data.data
-                return { content: data.content, totalElements: data.totalElements, totalPages: data.totalPages }
+                if (setHasMore) setHasMore(!res.data.last)
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -31,10 +31,11 @@ export const getCollections = createAsyncThunk("collections/get",
 )
 
 export const getUserCollections = createAsyncThunk("collections/userGet",
-    async ({ id }, { dispatch, rejectWithValue }) => {
+    async ({ id, params, setHasMore }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await fetchUserCollections(id)
+            const res = await fetchUserCollections(id, params)
             if (res.status === 200) {
+                setHasMore(!res.data.last)
                 return res.data.data
             }
         } catch ({ response }) {

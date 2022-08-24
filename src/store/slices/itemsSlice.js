@@ -10,8 +10,6 @@ import {
 
 const initialState = {
     content: [],
-    totalElements: 0,
-    totalPages: 0,
     single: null,
     getLoading: false,
     getSingleLoading: false,
@@ -39,9 +37,7 @@ export const itemsSlice = createSlice({
         },
         [getItems.fulfilled]: (state, action) => {
             state.getLoading = false
-            state.content = action.payload.content
-            state.totalElements = action.payload.totalElements
-            state.totalPages = action.payload.totalPages
+            state.content.push(...action.payload)
             state.error = null
         },
         [getItems.rejected]: (state, action) => {
@@ -65,9 +61,7 @@ export const itemsSlice = createSlice({
         },
         [getTagItems.fulfilled]: (state, action) => {
             state.getLoading = false
-            state.content = action.payload.content
-            state.totalElements = action.payload.totalElements
-            state.totalPages = action.payload.totalPages
+            state.content.push(...action.payload)
             state.error = null
         },
         [getTagItems.rejected]: (state, action) => {

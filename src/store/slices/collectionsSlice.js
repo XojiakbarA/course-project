@@ -34,9 +34,7 @@ export const collectionsSlice = createSlice({
         },
         [getCollections.fulfilled]: (state, action) => {
             state.getLoading = false
-            state.content = action.payload.content
-            state.totalElements = action.payload.totalElements
-            state.totalPages = action.payload.totalPages
+            state.content.push(...action.payload)
             state.error = null
         },
         [getCollections.rejected]: (state, action) => {
@@ -48,7 +46,7 @@ export const collectionsSlice = createSlice({
         },
         [getUserCollections.fulfilled]: (state, action) => {
             state.getLoading = false
-            state.content = action.payload
+            state.content.push(...action.payload)
             state.error = null
         },
         [getUserCollections.rejected]: (state, action) => {
@@ -72,7 +70,8 @@ export const collectionsSlice = createSlice({
         },
         [createCollection.fulfilled]: (state, action) => {
             state.createLoading = false
-            state.content = state.content.concat(action.payload)
+            state.content.pop()
+            state.content.unshift(action.payload)
             state.error = null
         },
         [createCollection.rejected]: (state, action) => {

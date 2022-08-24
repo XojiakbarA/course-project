@@ -7,3 +7,7 @@ export const fetchTags = async () => {
 export const fetchTagItems = async (id, params) => {
     return await instance.get(`/api/tags/${id}/items`, { params })
 }
+
+export const fetchTag = async (id) => {
+    return await instance.get(`/api/tags/${id}`)
+}

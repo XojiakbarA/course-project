@@ -10,7 +10,7 @@ import {API_BASE_URL} from "./utils/constants";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <Provider store={store}>
             <StompSessionProvider
                 url={API_BASE_URL + '/ws/'}
@@ -23,5 +23,5 @@ root.render(
                 </CloudinaryContext>
             </StompSessionProvider>
         </Provider>
-    </React.StrictMode>
+    // </React.StrictMode>
 )

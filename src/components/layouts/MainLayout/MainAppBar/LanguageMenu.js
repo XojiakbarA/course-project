@@ -9,7 +9,7 @@ const LanguageMenu = ({ id, anchorEl, onClose }) => {
             anchorEl={anchorEl}
             keepMounted
             onClose={onClose}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
             <MenuItem onClick={onClose}>English</MenuItem>

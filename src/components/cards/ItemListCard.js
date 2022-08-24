@@ -18,28 +18,32 @@ import CardImage from "../images/CardImage";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {editItemLikes} from "../../store/asyncThunk/itemsAsyncThunk";
-import {authSelector} from "../../store/selectors";
+import {authSelector, itemsSelector} from "../../store/selectors";
 
-const ItemListCard = ({ item }) => {
+const ItemListCard = ({ item, sx }) => {
 
     const dispatch = useDispatch()
 
     const { user } = useSelector(authSelector)
 
+    const { likeLoading } = useSelector(itemsSelector)
+
     const ref = useRef(null)
 
     const [cardWidth, setCardWidth] = useState(null)
+    const [clickedId, setClickedId] = useState(null)
 
     useEffect(() => {
         setCardWidth(ref.current.offsetWidth)
     }, [])
 
-    const handleLikeClick = () => {
+    const handleLikeClick = (id) => {
+        setClickedId(id)
         dispatch(editItemLikes({ itemId: item?.id, userId: user?.id }))
     }
 
     return (
-        <Card sx={{ position: "relative", height: "100%" }} ref={ref}>
+        <Card ref={ref} sx={sx ?? { position: "relative", height: "100%" }}>
             <CardActionArea
                 component={Link}
                 to={`/items/${item?.id}`}
@@ -94,7 +98,10 @@ const ItemListCard = ({ item }) => {
                 justifyContent: "flex-end"
             }}>
                 <Tooltip title={"Like"}>
-                    <IconButton onClick={handleLikeClick}>
+                    <IconButton
+                        onClick={ e => handleLikeClick(item?.id) }
+                        disabled={likeLoading && clickedId === item?.id}
+                    >
                         { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
                     </IconButton>
                 </Tooltip>

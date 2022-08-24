@@ -1,98 +1,59 @@
 import {
-    Avatar,
-    Box,
-    Breadcrumbs,
-    Card,
+    Avatar, Box,
+    Breadcrumbs, Card,
     CardContent, Chip,
-    Divider, Grid,
-    IconButton, Rating,
+    Divider,
+    Grid,
+    IconButton,
+    Rating, Skeleton,
     Stack,
     Tooltip,
     Typography, useMediaQuery
 } from "@mui/material";
+import CardImage from "../images/CardImage";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import TagIcon from '@mui/icons-material/Tag';
+import CommentIcon from "@mui/icons-material/Comment";
 import EventIcon from "@mui/icons-material/Event";
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import CommentIcon from '@mui/icons-material/Comment';
-import CardImage from "../images/CardImage";
-import {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {toggleDeleteItem, toggleEditItem} from "../../store/slices/dialogsSlice";
-import {editItemLikes} from "../../store/asyncThunk/itemsAsyncThunk";
-import {authSelector, itemsSelector} from "../../store/selectors";
+import TagIcon from "@mui/icons-material/Tag";
 
-const ItemSingleCard = ({ item }) => {
-
-    const dispatch = useDispatch()
-
-    const toggleEditItemDialog = () => {
-        dispatch(toggleEditItem())
-    }
-    const toggleDeleteItemDialog = () => {
-        dispatch(toggleDeleteItem())
-    }
-
-    const { user } = useSelector(authSelector)
-
-    const { likeLoading } = useSelector(itemsSelector)
+const ItemSingleSkeleton = () => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
-
-    const ref = useRef(null)
-
-    const [cardWidth, setCardWidth] = useState(null)
-
-    useEffect(() => {
-        setCardWidth(ref.current.offsetWidth)
-    }, [])
-
-    const handleLikeClick = () => {
-        dispatch(editItemLikes({ itemId: item?.id, userId: user?.id }))
-    }
 
     return (
         <Card>
             <Grid container>
-                <Grid item xs={12} md={5} lg={4} ref={ref}>
-                    <CardImage publicId={item?.image?.value} width={cardWidth} height={250}/>
+                <Grid item xs={12} md={5} lg={4}>
+                    <Skeleton variant={"rectangular"} animation={"wave"} height={250}/>
                 </Grid>
                 <Grid item xs={12} md={7} lg={8}>
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
-                            <Rating readOnly value={item?.rating}/>
-                            <Tooltip title={"Like"}>
-                                <IconButton
-                                    onClick={handleLikeClick}
-                                    disabled={likeLoading}
-                                >
-                                    { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={"Edit"}>
-                                <IconButton onClick={toggleEditItemDialog}>
-                                    <EditIcon/>
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={"Delete"}>
-                                <IconButton onClick={toggleDeleteItemDialog}>
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </Tooltip>
+                            <Rating readOnly/>
+                            <IconButton disabled>
+                                <Skeleton variant={"circular"} width={24} height={24}/>
+                            </IconButton>
+                            <IconButton disabled>
+                                <Skeleton variant={"circular"} width={24} height={24}/>
+                            </IconButton>
+                            <IconButton disabled>
+                                <Skeleton variant={"circular"} width={24} height={24}/>
+                            </IconButton>
                         </Stack>
                         <Stack spacing={1}>
                             <Stack direction={"row"} spacing={1} alignItems={"end"}>
                                 <Breadcrumbs>
                                     <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>
-                                        { item?.collection?.topic?.name }
+                                        <Skeleton width={120}/>
                                     </Typography>
                                     <Typography variant={isDownSm ? "body1" : "h6"} color={"text.disabled"}>
-                                        { item?.collection?.name }
+                                        <Skeleton width={150}/>
                                     </Typography>
                                     <Typography variant={isDownSm ? "h5" : "h4"}>
-                                        { item?.name }
+                                        <Skeleton width={200}/>
                                     </Typography>
                                 </Breadcrumbs>
                             </Stack>
@@ -108,7 +69,7 @@ const ItemSingleCard = ({ item }) => {
                                     <Box>
                                         <Typography variant={"caption"} color={"primary"}>User</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
-                                            { item?.collection?.user?.firstName }
+                                            <Skeleton width={80}/>
                                         </Typography>
                                     </Box>
                                 </Stack>
@@ -116,18 +77,14 @@ const ItemSingleCard = ({ item }) => {
                                     <ThumbUpIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
                                         <Typography variant={"caption"} color={"primary"}>Likes</Typography>
-                                        <Typography variant={isDownSm ? "body2" : "body1"}>
-                                            { item?.likesCount }
-                                        </Typography>
+                                        <Typography variant={isDownSm ? "body2" : "body1"}>0</Typography>
                                     </Box>
                                 </Stack>
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <CommentIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
                                         <Typography variant={"caption"} color={"primary"}>Comments</Typography>
-                                        <Typography variant={isDownSm ? "body2" : "body1"}>
-                                            { item?.commentsCount }
-                                        </Typography>
+                                        <Typography variant={isDownSm ? "body2" : "body1"}>0</Typography>
                                     </Box>
                                 </Stack>
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
@@ -135,7 +92,7 @@ const ItemSingleCard = ({ item }) => {
                                     <Box>
                                         <Typography variant={"caption"} color={"primary"}>Created at</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
-                                            { new Date(item?.createdAt).toLocaleString() }
+                                            <Skeleton width={180}/>
                                         </Typography>
                                     </Box>
                                 </Stack>
@@ -146,8 +103,8 @@ const ItemSingleCard = ({ item }) => {
                                     <Typography variant={"caption"} color={"primary"}>Tags</Typography>
                                     <Stack direction={"row"} spacing={1}>
                                         {
-                                            item?.tags?.map(tag => (
-                                                <Chip key={tag.id} size={"small"} label={tag.name}/>
+                                            [1, 2, 3, 4, 5].map(tag => (
+                                                <Chip key={tag} label={<Skeleton width={40}/>} size={"small"} sx={{ mb: 1, mr: 1 }}/>
                                             ))
                                         }
                                     </Stack>
@@ -161,4 +118,4 @@ const ItemSingleCard = ({ item }) => {
     )
 }
 
-export default ItemSingleCard
+export default ItemSingleSkeleton

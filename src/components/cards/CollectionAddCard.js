@@ -4,7 +4,7 @@ import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 const CollectionAddCard = ({ onClick }) => {
 
     return (
-        <Card sx={{ height: "100%", minHeight: 300 }}>
+        <Card sx={{ height: "100%", minHeight: 347 }}>
             <CardActionArea
                 sx={{
                     height: "100%",

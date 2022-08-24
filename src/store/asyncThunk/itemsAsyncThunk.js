@@ -19,12 +19,12 @@ import {
 import {fetchTagItems} from "../../api/tags";
 
 export const getItems = createAsyncThunk("items/get",
-    async ({ params }, { dispatch, rejectWithValue }) => {
+    async ({ params, setHasMore }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchItems(params)
             if (res.status === 200) {
-                const data = res.data.data
-                return { content: data.content, totalElements: data.totalElements, totalPages: data.totalPages }
+                if (setHasMore) setHasMore(!res.data.last)
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -48,12 +48,12 @@ export const getCollectionItems = createAsyncThunk("items/collectionGet",
 )
 
 export const getTagItems = createAsyncThunk("items/tagGet",
-    async ({ id, params }, { dispatch, rejectWithValue }) => {
+    async ({ id, params, setHasMore }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchTagItems(id, params)
             if (res.status === 200) {
-                const data = res.data.data
-                return { content: data.content, totalElements: data.totalElements, totalPages: data.totalPages }
+                setHasMore(!res.data.last)
+                return res.data.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

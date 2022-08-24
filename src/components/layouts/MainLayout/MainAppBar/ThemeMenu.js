@@ -11,12 +11,11 @@ const ThemeMenu = ({ id, anchorEl, onClose, onChange, mode }) => {
             open={Boolean(anchorEl)}
             anchorEl={anchorEl}
             onClose={onClose}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-            }}
+            anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
+            transformOrigin={{ vertical: "center", horizontal: "right" }}
         >
             <ToggleButtonGroup
+                size={"small"}
                 value={mode}
                 exclusive
                 onChange={onChange}

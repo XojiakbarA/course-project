@@ -57,7 +57,6 @@ const LoginForm = () => {
             <LoadingButton
                 fullWidth
                 variant={"contained"}
-                size={isDownSm ? "small" : "medium"}
                 type={"submit"}
                 loading={authLoading}
             >

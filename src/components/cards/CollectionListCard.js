@@ -15,7 +15,7 @@ import {Link} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import CardImage from "../images/CardImage";
 
-const CollectionListCard = ({ onEditClick, onDeleteClick, collection }) => {
+const CollectionListCard = ({ onEditClick, onDeleteClick, collection, sx }) => {
 
     const ref = useRef(null)
 
@@ -26,11 +26,11 @@ const CollectionListCard = ({ onEditClick, onDeleteClick, collection }) => {
     }, [])
 
     return (
-        <Card sx={{ position: "relative"}} ref={ref}>
+        <Card ref={ref} sx={sx ?? { position: "relative", height: "100%" }}>
             <CardActionArea
                 component={Link}
                 to={`/collections/${collection?.id}`}
-                sx={{ pb: 5 }}
+                sx={{ pb: 5, height: "100%" }}
             >
                 <CardMedia component="div" height="194">
                 {
@@ -42,11 +42,9 @@ const CollectionListCard = ({ onEditClick, onDeleteClick, collection }) => {
                 }
                 </CardMedia>
                 <CardContent>
-                    <Stack direction={"row"} justifyContent={"space-between"} alignItems={"end"}>
-                        <Stack>
-                            <Typography variant={"h5"} color={"primary.main"}>{collection?.name}</Typography>
-                            <Typography gutterBottom color={"grey.400"}>{collection?.user?.firstName}</Typography>
-                        </Stack>
+                    <Typography variant={"h5"} color={"primary.dark"}>{collection?.name}</Typography>
+                    <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                        <Typography gutterBottom color={"grey.400"}>{collection?.user?.firstName}</Typography>
                         <Typography color={"secondary.dark"}>{ collection?.itemsCount } Items</Typography>
                     </Stack>
                     <Typography variant={"body2"} color={"text.disabled"}>{collection?.description}</Typography>

@@ -1,9 +1,10 @@
-import {CssBaseline, ThemeProvider} from "@mui/material";
+import {CssBaseline, Fab, ThemeProvider} from "@mui/material";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import EditIcon from "@mui/icons-material/Edit";
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {Route, Routes, useLocation, useNavigate} from "react-router";
 import MainLayout from "./components/layouts/MainLayout";
-import Profile from "./pages/Profile";
+import MyCollections from "./pages/MyCollections";
 import CollectionsID from "./pages/Collections/CollectionsID";
 import CommonDialog from "./components/dialogs/CommonDialog";
 import CollectionForm from "./components/forms/CollectionForm";
@@ -37,8 +38,10 @@ import {
 import ItemForm from "./components/forms/ItemForm";
 import {createItem, deleteItem, deleteItemImage, editItem} from "./store/asyncThunk/itemsAsyncThunk";
 import TagsID from "./pages/TagsID";
+import ScrollToTop from "./pages/ScrollToTop";
+import ScrollTop from "./components/commons/ScrollTop";
 
-const App = () => {
+const App = (props) => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -118,22 +121,29 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline/>
             <Routes>
-                <Route path={"/"} element={<MainLayout/>}>
-                    <Route index element={<Home/>}/>
-                    <Route element={<Protected/>}>
-                        <Route path={"/profile"} element={<Profile/>}/>
+                <Route element={<ScrollToTop/>}>
+                    <Route path={"/"} element={<MainLayout/>}>
+                        <Route index element={<Home/>}/>
+                        <Route element={<Protected/>}>
+                            <Route path={"/my-collections"} element={<MyCollections/>}/>
+                        </Route>
+                        <Route path={"/collections"} element={<Collections/>}/>
+                        <Route path={"/collections/:id"} element={<CollectionsID/>}/>
+                        <Route path={"/items/"} element={<Items/>}/>
+                        <Route path={"/items/:id"} element={<ItemsID/>}/>
+                        <Route path={"/tags/:id"} element={<TagsID/>}/>
+                        <Route path={"/admin"}>
+                            <Route index element={<Dashboard/>}/>
+                        </Route>
                     </Route>
-                    <Route path={"/collections"} element={<Collections/>}/>
-                    <Route path={"/collections/:id"} element={<CollectionsID/>}/>
-                    <Route path={"/items/"} element={<Items/>}/>
-                    <Route path={"/items/:id"} element={<ItemsID/>}/>
-                    <Route path={"/tags/:id"} element={<TagsID/>}/>
-                    <Route path={"/admin"}>
-                        <Route index element={<Dashboard/>}/>
-                    </Route>
+                    <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>
                 </Route>
-                <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>
             </Routes>
+            <ScrollTop {...props}>
+                <Fab size="small" aria-label="scroll back to top">
+                    <KeyboardArrowUpIcon/>
+                </Fab>
+            </ScrollTop>
             <CommonSnackbar/>
             <CommonDialog
                 title={"Create Collection"}

@@ -9,12 +9,14 @@ import CollectionListCard from "../components/cards/CollectionListCard";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {getItems} from "../store/asyncThunk/itemsAsyncThunk";
-import {itemsSelector, tagsSelector} from "../store/selectors";
+import {collectionsSelector, itemsSelector, tagsSelector} from "../store/selectors";
 import {getTags} from "../store/asyncThunk/tagsAsyncThunk";
 import {setItems} from "../store/slices/itemsSlice";
 import {setTags} from "../store/slices/tagsSlice";
-
-const collections = [1, 2, 3, 4, 5]
+import ItemListSkeleton from "../components/skeletons/ItemListSkeleton";
+import {getCollections} from "../store/asyncThunk/collectionsAsyncThunk";
+import {setCollections} from "../store/slices/collectionsSlice";
+import CollectionListSkeleton from "../components/skeletons/CollectionListSkeleton";
 
 const Home = () => {
 
@@ -22,13 +24,22 @@ const Home = () => {
 
     const { content: items, getLoading: itemsGetLoading } = useSelector(itemsSelector)
     const { content: tags, getLoading: tagsGetLoading } = useSelector(tagsSelector)
+    const { content: collections, getLoading: collectionsGetLoading } = useSelector(collectionsSelector)
+
+    const size = 5
+    const skeletonSize = Array.from({length: size}, (_, i) => i)
+    const sx = { display: "inline-block", mr: 2, width: 320, position: "relative", height: "100%" }
 
     useEffect(() => {
-        const itemsParams = { size: 5, sortBy: "createdAt", sortType: "DESC" }
-        dispatch(getItems({ params: itemsParams }))
+        const params = { size, sortBy: "createdAt", sortType: "DESC" }
+        dispatch(getItems({ params }))
+        dispatch(getCollections({ params }))
         dispatch(getTags())
+    }, [dispatch])
+    useEffect(() => {
         return () => {
             dispatch(setItems([]))
+            dispatch(setCollections([]))
             dispatch(setTags([]))
         }
     }, [dispatch])
@@ -49,21 +60,19 @@ const Home = () => {
                 </Stack>
             </Grid>
             <Grid item xs={12}>
-                <Grid container spacing={2}>
-                {
-                    itemsGetLoading
-                    ?
-                    <Grid item xs={12} sm={6} md={4} lg={3} height={402}>
-                        <CircularProgress/>
-                    </Grid>
-                    :
-                    items.map(item => (
-                        <Grid key={item.id} item xs={12} sm={6} md={4} lg={3}>
-                            <ItemListCard item={item}/>
-                        </Grid>
-                    ))
-                }
-                </Grid>
+                <Box whiteSpace={"nowrap"} overflow={"scroll"} pb={1}>
+                    {
+                        itemsGetLoading
+                        ?
+                        skeletonSize.map(skeleton => (
+                            <ItemListSkeleton key={skeleton} sx={sx}/>
+                        ))
+                        :
+                        items.map(item => (
+                            <ItemListCard key={item.id} item={item} sx={sx}/>
+                        ))
+                    }
+                </Box>
             </Grid>
             <Grid item xs={12}>
                 <Stack direction={"row"} justifyContent={"space-between"} alignItems={"end"}>
@@ -77,15 +86,19 @@ const Home = () => {
                 </Stack>
             </Grid>
             <Grid item xs={12}>
-                <Grid container spacing={2}>
+                <Box whiteSpace={"nowrap"} overflow={"scroll"} pb={1}>
                     {
-                        collections.map(collection => (
-                            <Grid key={collection} item xs={12} sm={6} md={4} lg={3}>
-                                <CollectionListCard key={collection}/>
-                            </Grid>
-                        ))
+                        itemsGetLoading
+                            ?
+                            skeletonSize.map(skeleton => (
+                                <CollectionListSkeleton key={skeleton} sx={sx}/>
+                            ))
+                            :
+                            collections.map(collection => (
+                                <CollectionListCard key={collection.id} collection={collection} sx={sx}/>
+                            ))
                     }
-                </Grid>
+                </Box>
             </Grid>
             <Grid item xs={12}>
                 <PageTitle

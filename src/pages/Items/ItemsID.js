@@ -12,6 +12,7 @@ import {setItem} from "../../store/slices/itemsSlice";
 import {commentsSelector, itemsSelector} from "../../store/selectors";
 import {getItemComments} from "../../store/asyncThunk/commentsAsyncThunk";
 import {setComments} from "../../store/slices/commentsSlice";
+import ItemSingleSkeleton from "../../components/skeletons/ItemSingleSkeleton";
 
 const ItemsID = () => {
 
@@ -26,11 +27,13 @@ const ItemsID = () => {
     useEffect(() => {
         dispatch(getItem({ id }))
         dispatch(getItemComments({ id }))
+    }, [dispatch, id])
+    useEffect(() => {
         return () => {
             dispatch(setItem(null))
             dispatch(setComments([]))
         }
-    }, [dispatch, id])
+    }, [dispatch])
 
     return (
         <Grid container spacing={2}>
@@ -38,9 +41,7 @@ const ItemsID = () => {
                 {
                     getSingleLoading
                     ?
-                    <Box height={250}>
-                        <CircularProgress/>
-                    </Box>
+                    <ItemSingleSkeleton/>
                     :
                     <ItemSingleCard item={item}/>
                 }
