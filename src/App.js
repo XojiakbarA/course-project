@@ -1,4 +1,4 @@
-import {CssBaseline, Fab, ThemeProvider} from "@mui/material";
+import {Button, CssBaseline, Fab, Stack, ThemeProvider, Typography} from "@mui/material";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import EditIcon from "@mui/icons-material/Edit";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -11,12 +11,18 @@ import CollectionForm from "./components/forms/CollectionForm";
 import ConfirmDialog from "./components/dialogs/ConfirmDialog";
 import {useTheme} from "./hooks/useTheme";
 import {useDispatch, useSelector} from "react-redux";
-import {collectionsSelector, dialogsSelector, itemsSelector} from "./store/selectors";
+import {collectionsSelector, dialogsSelector, itemsSelector, usersSelector} from "./store/selectors";
 import {
     toggleCreateCollection,
-    toggleCreateItem,
-    toggleDeleteCollection, toggleDeleteCollectionImage, toggleDeleteItem, toggleDeleteItemImage,
-    toggleEditCollection, toggleEditItem
+    toggleCreateItem, toggleCreateUser,
+    toggleDeleteCollection,
+    toggleDeleteCollectionImage,
+    toggleDeleteItem,
+    toggleDeleteItemImage,
+    toggleDeleteUserImage,
+    toggleEditCollection,
+    toggleEditItem,
+    toggleEditUser, toggleLoginUser
 } from "./store/slices/dialogsSlice";
 import ItemsID from "./pages/Items/ItemsID";
 import Home from "./pages/Home";
@@ -28,6 +34,7 @@ import Protected from "./pages/Protected";
 import {useEffect} from "react";
 import OAuth2RedirectHandler from "./oauth2/OAuth2RedirectHandler";
 import {getUser} from "./store/asyncThunk/authAsyncThunk";
+import {deleteUserImage, editUser} from "./store/asyncThunk/usersAsyncThunk";
 import {appendToFormData} from "./utils/helpers";
 import {
     createCollection,
@@ -40,6 +47,10 @@ import {createItem, deleteItem, deleteItemImage, editItem} from "./store/asyncTh
 import TagsID from "./pages/TagsID";
 import ScrollToTop from "./pages/ScrollToTop";
 import ScrollTop from "./components/commons/ScrollTop";
+import Users from "./pages/admin/Users";
+import UserForm from "./components/forms/UserForm";
+import RegisterForm from "./components/forms/RegisterForm";
+import LoginForm from "./components/forms/LoginForm";
 
 const App = (props) => {
 
@@ -48,9 +59,10 @@ const App = (props) => {
     const location = useLocation()
 
     const { theme } = useTheme()
-    const { collection: collectionDialog, item: itemDialog } = useSelector(dialogsSelector)
+    const { collection: collectionDialog, item: itemDialog, user: userDialog } = useSelector(dialogsSelector)
     const { single: collection, createLoading: collectionCreateLoading, editLoading: collectionEditLoading, deleteLoading: collectionDeleteLoading, deleteImageLoading: collectionDeleteImageLoading } = useSelector(collectionsSelector)
     const { single: item, createLoading: itemCreateLoading, editLoading: itemEditLoading, deleteLoading: itemDeleteLoading, deleteImageLoading: itemDeleteImageLoading } = useSelector(itemsSelector)
+    const { single: user, editLoading: userEditLoading, deleteImageLoading: userDeleteImageLoading } = useSelector(usersSelector)
 
     useEffect(() => {
         dispatch(getUser())
@@ -79,6 +91,15 @@ const App = (props) => {
     }
     const toggleDeleteItemImageDialog = () => {
         dispatch(toggleDeleteItemImage())
+    }
+    const toggleCreateUserDialog = () => {
+        dispatch(toggleCreateUser())
+    }
+    const toggleEditUserDialog = () => {
+        dispatch(toggleEditUser())
+    }
+    const toggleDeleteUserImageDialog = () => {
+        dispatch(toggleDeleteUserImage())
     }
     const handleCollectionCreateSubmit = (data) => {
         const formData = appendToFormData(data)
@@ -116,6 +137,20 @@ const App = (props) => {
     const handleItemDeleteImageClick = () => {
         dispatch(deleteItemImage({ id: item?.id }))
     }
+    const handleUserEditSubmit = (data) => {
+        const formData = appendToFormData(data)
+        dispatch(editUser({ id: user?.id, data: formData }))
+    }
+    const handleUserDeleteImageClick = () => {
+        dispatch(deleteUserImage({ id: user?.id }))
+    }
+    const toggleLoginUserDialog = () => {
+        dispatch(toggleLoginUser())
+    }
+    const toggleAuthDialog = () => {
+        dispatch(toggleLoginUser())
+        dispatch(toggleCreateUser())
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -134,6 +169,7 @@ const App = (props) => {
                         <Route path={"/tags/:id"} element={<TagsID/>}/>
                         <Route path={"/admin"}>
                             <Route index element={<Dashboard/>}/>
+                            <Route path={"/admin/users"} element={<Users/>}/>
                         </Route>
                     </Route>
                     <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>
@@ -229,6 +265,53 @@ const App = (props) => {
                 onClose={toggleDeleteItemImageDialog}
                 onConfirmClick={handleItemDeleteImageClick}
                 loading={itemDeleteImageLoading}
+                content={"Do you really want to delete the image?"}
+            />
+            <CommonDialog
+                title={"Login"}
+                maxWidth={"xs"}
+                open={userDialog.login}
+                onClose={toggleLoginUserDialog}
+            >
+                <Stack spacing={2}>
+                    <LoginForm/>
+                    <Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+                        <Typography>Don't have an account yet?</Typography>
+                        <Button onClick={toggleAuthDialog}>Register</Button>
+                    </Stack>
+                </Stack>
+            </CommonDialog>
+            <CommonDialog
+                title={"Create User"}
+                maxWidth={"xs"}
+                open={userDialog.create}
+                onClose={toggleCreateUserDialog}
+            >
+                <RegisterForm/>
+                <Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+                    <Typography>Already have an account?</Typography>
+                    <Button onClick={toggleAuthDialog}>Login</Button>
+                </Stack>
+            </CommonDialog>
+            <CommonDialog
+                title={"Edit User"}
+                maxWidth={"xs"}
+                open={userDialog.edit}
+                onClose={toggleEditUserDialog}
+            >
+                <UserForm
+                    buttonText={"Edit"}
+                    buttonIcon={<EditIcon/>}
+                    buttonLoading={userEditLoading}
+                    onSubmit={handleUserEditSubmit}
+                    user={user}
+                />
+            </CommonDialog>
+            <ConfirmDialog
+                open={userDialog.deleteImage}
+                onClose={toggleDeleteUserImageDialog}
+                onConfirmClick={handleUserDeleteImageClick}
+                loading={userDeleteImageLoading}
                 content={"Do you really want to delete the image?"}
             />
         </ThemeProvider>

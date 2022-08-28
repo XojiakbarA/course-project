@@ -34,9 +34,9 @@ export const getItems = createAsyncThunk("items/get",
 )
 
 export const getCollectionItems = createAsyncThunk("items/collectionGet",
-    async ({ id }, { dispatch, rejectWithValue }) => {
+    async ({ id, params }, { dispatch, rejectWithValue }) => {
         try {
-            const res = await fetchCollectionItems(id)
+            const res = await fetchCollectionItems(id, params)
             if (res.status === 200) {
                 return res.data.data
             }

@@ -5,7 +5,7 @@ import UploadMenu from '../menu/UploadMenu'
 import AvatarImage from "../images/AvatarImage";
 
 const AvatarUpload = ({
-    handlePrewiewDeleteClick, handleUploadChange, handleDeleteImage,
+    handlePreviewDeleteClick, handleUploadChange, handleDeleteImage,
     isLoading, name, src, preview, size, error, helperText, ...others
 }) => {
 
@@ -26,7 +26,7 @@ const AvatarUpload = ({
                 anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                 badgeContent={
                     preview &&
-                    <IconButton size='small' color='error' onClick={handlePrewiewDeleteClick}>
+                    <IconButton size='small' color='error' onClick={handlePreviewDeleteClick}>
                         <RemoveCircleIcon fontSize='small'/>
                     </IconButton>
                 }

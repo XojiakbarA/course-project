@@ -11,3 +11,7 @@ export const tagsSelector = (state) => state.tags
 export const itemsSelector = (state) => state.items
 
 export const commentsSelector = (state) => state.comments
+
+export const usersSelector = (state) => state.users
+
+export const rolesSelector = (state) => state.roles

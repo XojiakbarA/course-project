@@ -15,18 +15,15 @@ import LanguageMenu from "./LanguageMenu";
 import ThemeMenu from "./ThemeMenu";
 import {logout} from "../../../../store/slices/authSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {toggleAuth, toggleEditProfile} from "../../../../store/slices/dialogsSlice";
-import CommonDialog from "../../../dialogs/CommonDialog";
-import {authSelector, dialogsSelector} from "../../../../store/selectors";
-import UserEditForm from "../../../forms/UserEditForm";
-import UserImageEditForm from "../../../forms/UserImageEditForm";
+import {toggleAuth, toggleEditUser, toggleLoginUser} from "../../../../store/slices/dialogsSlice";
+import {authSelector} from "../../../../store/selectors";
 import {isAdmin} from "../../../../utils/helpers";
+import {setUser} from "../../../../store/slices/usersSlice";
 
 const UserMenu = ({ anchorEl, onClose }) => {
 
     const dispatch = useDispatch()
     const { user, isAuth } = useSelector(authSelector)
-    const { profile } = useSelector(dialogsSelector)
     const { mode, handleModeChange } = useTheme()
 
     const [anchorThemeEl, setAnchorThemeEl] = useState(null)
@@ -34,11 +31,12 @@ const UserMenu = ({ anchorEl, onClose }) => {
 
     const handleLoginClick = () => {
         onClose()
-        dispatch(toggleAuth())
+        dispatch(toggleLoginUser())
     }
     const handleEditClick = () => {
         onClose()
-        dispatch(toggleEditProfile())
+        dispatch(setUser(user))
+        dispatch(toggleEditUser())
     }
     const handleLogoutClick = () => {
         onClose()
@@ -129,15 +127,6 @@ const UserMenu = ({ anchorEl, onClose }) => {
             onChange={handleModeChange}
             mode={mode}
         />
-        <CommonDialog
-            title={"Edit Profile"}
-            maxWidth={"xs"}
-            open={profile.edit}
-            onClose={ e => dispatch(toggleEditProfile()) }
-        >
-            <UserImageEditForm/>
-            <UserEditForm/>
-        </CommonDialog>
         </>
     )
 }

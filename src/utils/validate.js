@@ -56,16 +56,21 @@ export const registerValidationSchema = yup.object({
         ))
 })
 
-export const editUserValidationSchema = yup.object({
+export const userValidationSchema = yup.object({
+    isNonLocked: yup
+        .boolean('Switch Unlocked')
+        .required('Unlocked is required'),
     firstName: yup
         .string('Enter Your First Name')
         .required('First Name is required'),
     lastName: yup
         .string('Enter Your Last Name')
         .required('Last Name is required'),
-})
-
-export const editImageValidationSchema = yup.object({
+    roleIds: yup
+        .array('Choose Roles')
+        .of(yup.number('ID must be a integer'))
+        .min(1, 'Choose Roles')
+        .required('Roles is Required'),
     image: yup
         .mixed()
         .test('fileSize', "File Size is too large", value => (

@@ -1,22 +1,15 @@
 import {createSlice} from "@reduxjs/toolkit"
 
 const initialState = {
-    auth: { isOpen: false, isLogin: true },
     collection: { create: false, edit: false, delete: false, deleteImage: false },
     item: { create: false, edit: false, delete: false, deleteImage: false },
-    profile: { edit: false }
+    user: { login: false, create: false, edit: false, delete: false, deleteImage: false },
 }
 
 export const dialogsSlice = createSlice({
     name: 'dialogs',
     initialState,
     reducers: {
-        toggleAuthForm: (state) => {
-            state.auth.isLogin = !state.auth.isLogin
-        },
-        toggleAuth: (state) => {
-            state.auth.isOpen = !state.auth.isOpen
-        },
         toggleCreateCollection: (state) => {
             state.collection.create = !state.collection.create
         },
@@ -41,16 +34,28 @@ export const dialogsSlice = createSlice({
         toggleDeleteItemImage: (state) => {
             state.item.deleteImage = !state.item.deleteImage
         },
-        toggleEditProfile: (state) => {
-            state.profile.edit = !state.profile.edit
-        }
+        toggleLoginUser: (state) => {
+            state.user.login = !state.user.login
+        },
+        toggleCreateUser: (state) => {
+            state.user.create = !state.user.create
+        },
+        toggleEditUser: (state) => {
+            state.user.edit = !state.user.edit
+        },
+        toggleDeleteUser: (state) => {
+            state.user.delete = !state.user.delete
+        },
+        toggleDeleteUserImage: (state) => {
+            state.user.deleteImage = !state.user.deleteImage
+        },
     }
 })
 
 export const {
-    toggleAuthForm, toggleAuth,
     toggleCreateCollection, toggleEditCollection, toggleDeleteCollection, toggleDeleteCollectionImage,
-    toggleCreateItem, toggleEditItem, toggleDeleteItem, toggleDeleteItemImage, toggleEditProfile
+    toggleCreateItem, toggleEditItem, toggleDeleteItem, toggleDeleteItemImage,
+    toggleLoginUser, toggleCreateUser, toggleEditUser, toggleDeleteUser, toggleDeleteUserImage
 } = dialogsSlice.actions
 
 export default dialogsSlice.reducer

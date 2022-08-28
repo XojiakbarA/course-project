@@ -7,7 +7,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import {Button} from "@mui/material";
 
-const MyGridToolbar = ({ onClick }) => {
+const MyGridToolbar = ({ onClick, buttonText }) => {
 
     return (
         <GridToolbarContainer>
@@ -20,7 +20,7 @@ const MyGridToolbar = ({ onClick }) => {
                 startIcon={<AddIcon/>}
                 onClick={onClick}
             >
-                Create Item
+                { buttonText }
             </Button>
         </GridToolbarContainer>
     )

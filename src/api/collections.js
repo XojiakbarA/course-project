@@ -24,6 +24,6 @@ export const destroyCollectionImage = async (id) => {
     return await instance.delete(`/api/collections/${id}/images`)
 }
 
-export const fetchCollectionItems = async (id) => {
-    return await instance.get(`/api/collections/${id}/items`)
+export const fetchCollectionItems = async (id, params) => {
+    return await instance.get(`/api/collections/${id}/items`, { params })
 }

@@ -1,14 +1,18 @@
-import {Stack, TextField, useMediaQuery} from "@mui/material";
+import {FormControlLabel, Stack, Switch, TextField, useMediaQuery} from "@mui/material";
 import PasswordInput from "../inputs/PasswordInput";
 import {LoadingButton} from "@mui/lab";
 import AvatarUpload from "../commons/AvatarUpload";
 import {useSinglePreview} from "../../hooks/useSinglePreview";
 import {useFormik} from "formik";
 import {registerValidationSchema} from "../../utils/validate";
-import {appendToFormData} from "../../utils/helpers";
+import {appendToFormData, isAdmin} from "../../utils/helpers";
 import {useDispatch, useSelector} from "react-redux";
-import {register} from "../../store/asyncThunk/authAsyncThunk";
-import {authSelector} from "../../store/selectors";
+import {authSelector, rolesSelector, usersSelector} from "../../store/selectors";
+import {toggleDeleteUserImage} from "../../store/slices/dialogsSlice";
+import {useEffect, useState} from "react";
+import AutocompleteInput from "../inputs/AutocompleteInput";
+import {getRoles} from "../../store/asyncThunk/rolesAsyncThunk";
+import {createUser} from "../../store/asyncThunk/usersAsyncThunk";
 
 const RegisterForm = () => {
 
@@ -16,39 +20,97 @@ const RegisterForm = () => {
 
     const dispatch = useDispatch()
 
-    const { authLoading } = useSelector(authSelector)
+    const { content: roles, getLoading } = useSelector(rolesSelector)
+    const { user: authUser } = useSelector(authSelector)
+    const { createLoading } = useSelector(usersSelector)
 
-    const { handleSubmit, setValues, setTouched, touched, errors, getFieldProps } = useFormik({
+    const [rolesValue, setRolesValue] = useState([])
+
+    const {
+        handleSubmit, handleBlur, setValues, setTouched,
+        touched, errors, getFieldProps, values
+    } = useFormik({
         initialValues: {
             firstName: "",
             lastName: "",
             email: "",
             password: "",
             confirmPassword: "",
+            isNonLocked: "",
+            roleIds: [],
             image: null
         },
         enableReinitialize: true,
         validationSchema: registerValidationSchema,
         onSubmit: (data) => {
             const formData = appendToFormData(data)
-            dispatch(register({ data: formData }))
+            dispatch(createUser({ data: formData }))
         }
     })
 
+    useEffect(() => {
+        dispatch(getRoles())
+    }, [dispatch])
+
     const { preview, handleUploadChange, handlePreviewDeleteClick } = useSinglePreview(setValues, setTouched)
+
+    const handleDeleteImageClick = () => {
+        dispatch(toggleDeleteUserImage())
+    }
+    const handleRolesChange = (e, value) => {
+        const roleIds = value.map(i => i.id)
+        setValues(prev => ({ ...prev, roleIds }))
+        setRolesValue(value)
+    }
+    const handleUnlockedChange = (e, isNonLocked) => {
+        setValues(prev => ({ ...prev, isNonLocked }))
+    }
 
     return (
         <form onSubmit={handleSubmit}>
         <Stack spacing={2} alignItems={"center"}>
             <AvatarUpload
-                handlePrewiewDeleteClick={handlePreviewDeleteClick}
                 handleUploadChange={handleUploadChange}
+                handleDeleteImage={handleDeleteImageClick}
+                handlePreviewDeleteClick={handlePreviewDeleteClick}
                 name='image'
+                size={isDownSm ? 100 : 120}
                 preview={preview}
-                size={isDownSm ? 60 : 70}
                 error={ Boolean(errors.image) }
                 helperText={ errors.image }
             />
+            {
+                isAdmin(authUser)
+                &&
+                <FormControlLabel
+                    control={<Switch checked={Boolean(values.isNonLocked)}/>}
+                    label="Unlocked"
+                    name={"isNonLocked"}
+                    onChange={handleUnlockedChange}
+                    onBlur={handleBlur}
+                />
+            }
+            {
+                isAdmin(authUser)
+                &&
+                <AutocompleteInput
+                    multiple
+                    fullWidth
+                    size={isDownSm ? "small" : "medium"}
+                    variant={"filled"}
+                    label={"Roles"}
+                    options={roles}
+                    value={rolesValue}
+                    loading={getLoading}
+                    disabled={getLoading}
+                    name="roleIds"
+                    onChange={handleRolesChange}
+                    onBlur={handleBlur}
+                    error={ touched.roleIds && Boolean(errors.roleIds) }
+                    helperText={ touched.roleIds && errors.roleIds }
+                    getOptionLabel={option => option.name}
+                />
+            }
             <TextField
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
@@ -97,7 +159,7 @@ const RegisterForm = () => {
                 variant={"contained"}
                 size={isDownSm ? "small" : "medium"}
                 type={"submit"}
-                loading={authLoading}
+                loading={createLoading}
             >
                 Register
             </LoadingButton>

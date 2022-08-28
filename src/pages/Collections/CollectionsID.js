@@ -18,7 +18,7 @@ import {toggleCreateItem, toggleDeleteItem, toggleEditItem} from "../../store/sl
 import {useDispatch, useSelector} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
-import {useCallback, useEffect, useMemo} from "react";
+import {useCallback, useEffect, useMemo, useRef} from "react";
 import {useParams} from "react-router";
 import {getCollectionItems} from "../../store/asyncThunk/itemsAsyncThunk";
 import {collectionsSelector, itemsSelector, tagsSelector} from "../../store/selectors";
@@ -192,7 +192,7 @@ const CollectionsID = () => {
                         rows={items}
                         components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel, LoadingOverlay: LinearProgress }}
                         componentsProps={{
-                            toolbar: { onClick: toggleCreateItemDialog },
+                            toolbar: { onClick: toggleCreateItemDialog, buttonText: "Create Item" },
                             filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
                         }}
                     />
