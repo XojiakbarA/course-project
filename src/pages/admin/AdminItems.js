@@ -1,52 +1,59 @@
-import {Grid, IconButton, Link, Paper, Stack, Tooltip, Typography, useMediaQuery} from "@mui/material";
-import CategoryIcon from '@mui/icons-material/Category';
+import {Chip, Grid, IconButton, Link, Paper, Stack, Tooltip, Typography, useMediaQuery} from "@mui/material";
 import PageTitle from "../../components/commons/PageTitle";
+import CategoryIcon from "@mui/icons-material/Category";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
+import {itemsSelector, tagsSelector} from "../../store/selectors";
+import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 import {useDispatch, useSelector} from "react-redux";
-import {collectionsSelector} from "../../store/selectors";
+import {toggleCreateItem, toggleDeleteItem, toggleEditItem} from "../../store/slices/dialogsSlice";
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {getCollections} from "../../store/asyncThunk/collectionsAsyncThunk";
-import {setCollection, setCollections, setFetchCollectionsType} from "../../store/slices/collectionsSlice";
-import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "../../store/slices/dialogsSlice";
+import {getItems} from "../../store/asyncThunk/itemsAsyncThunk";
+import {setFetchItemsType, setItem, setItems} from "../../store/slices/itemsSlice";
+import {FETCH_ITEMS} from "../../store/fetchTypes";
 import {Link as RouterLink} from "react-router-dom";
 import AvatarImage from "../../components/images/AvatarImage";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import CommentIcon from "@mui/icons-material/Comment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {FETCH_COLLECTIONS} from "../../store/fetchTypes";
-import CollectionDialogsWrapper from "../../components/dialogs/CollectionDialogsWrapper";
+import {setTags} from "../../store/slices/tagsSlice";
+import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
 
-const AdminCollections = () => {
+const AdminItems = () => {
 
     const dispatch = useDispatch()
 
-    const { content: collections, hasMore, getLoading } = useSelector(collectionsSelector)
+    const { content: items, hasMore, getLoading } = useSelector(itemsSelector)
+    const { content: tags } = useSelector(tagsSelector)
 
     const [page, setPage] = useState(0)
     const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
 
     useEffect(() => {
-        dispatch(getCollections({ params }))
+        dispatch(getTags())
+        dispatch(getItems({ params }))
     }, [dispatch, params])
     useEffect(() => {
         return () => {
-            dispatch(setCollections([]))
-            dispatch(setCollection(null))
+            dispatch(setTags([]))
+            dispatch(setItems([]))
+            dispatch(setItem([]))
         }
     }, [dispatch])
 
-    const toggleEditCollectionDialog = useCallback((collection) => {
-        dispatch(setCollection(collection))
-        dispatch(toggleEditCollection())
+    const toggleEditItemDialog = useCallback((item) => {
+        dispatch(setItem(item))
+        dispatch(toggleEditItem())
     }, [dispatch])
-    const toggleDeleteCollectionDialog = useCallback((collection) => {
-        dispatch(setFetchCollectionsType(FETCH_COLLECTIONS))
-        dispatch(setCollection(collection))
-        dispatch(toggleDeleteCollection())
+    const toggleDeleteItemDialog = useCallback((item) => {
+        dispatch(setFetchItemsType(FETCH_ITEMS))
+        dispatch(setItem(item))
+        dispatch(toggleDeleteItem())
     }, [dispatch])
-    const toggleCreateCollectionDialog = () => {
-        dispatch(toggleCreateCollection())
+    const toggleCreateItemDialog = () => {
+        dispatch(toggleCreateItem())
     }
     const handleNext = () => {
         setPage(prev => prev + 1)
@@ -79,35 +86,61 @@ const AdminCollections = () => {
                 field: 'name',
                 headerName: 'Name',
                 type: "string",
-                renderCell: ({ row }) => <Link component={RouterLink} to={`/collections/${row.id}`}>{row.name}</Link>
-            },
-            {
-                flex: 3,
-                minWidth: 200,
-                field: 'description',
-                headerName: 'Description',
-                type: "string",
+                renderCell: ({ row }) => <Link component={RouterLink} to={`/items/${row.id}`}>{row.name}</Link>
             },
             {
                 flex: 2,
                 minWidth: 150,
-                field: 'topic',
-                headerName: 'Topic Name',
+                field: 'collection',
+                headerName: 'Collection Name',
                 type: "string",
-                valueGetter: ({ value }) => value.name
+                renderCell: ({ value }) => <Link component={RouterLink} to={`/collections/${value.id}`}>{value.name}</Link>
             },
             {
                 flex: 2,
-                minWidth: 150,
-                field: 'user',
-                headerName: 'User',
-                type: "string",
+                minWidth: 250,
+                field: 'tags',
+                headerName: 'Tags',
+                type: "singleSelect",
+                sortable: false,
+                valueOptions: tags?.map(i => i.name),
                 renderCell: ({ value }) => (
-                    <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                        <AvatarImage size={30} publicId={value?.image?.value}/>
-                        <Typography variant={"body2"}>{value.firstName}</Typography>
+                    <Stack direction={"row"} spacing={1} overflow={"scroll"} py={2}>
+                        {
+                            value.map(tag => (
+                                <Chip size={"small"} key={tag.id} label={tag.name}/>
+                            ))
+                        }
                     </Stack>
                 )
+            },
+            {
+                flex: 1,
+                minWidth: 100,
+                field: 'likesCount',
+                headerName: "Likes",
+                type: "number",
+                renderHeader: () => (
+                    <Stack direction={"row"} spacing={1}>
+                        <ThumbUpIcon fontSize={"small"}/>
+                        <Typography variant={"body2"}>Likes</Typography>
+                    </Stack>
+                ),
+                renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
+            },
+            {
+                flex: 1,
+                minWidth: 100,
+                field: 'commentsCount',
+                headerName: "Comments",
+                type: "number",
+                renderHeader: () => (
+                    <Stack direction={"row"} spacing={1}>
+                        <CommentIcon fontSize={"small"}/>
+                        <Typography variant={"body2"}>Comments</Typography>
+                    </Stack>
+                ),
+                renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
             },
             {
                 flex: 1.5,
@@ -126,12 +159,12 @@ const AdminCollections = () => {
                 renderCell: ({ row }) => (
                     <Stack direction={"row"} spacing={1}>
                         <Tooltip title={"Edit"}>
-                            <IconButton onClick={ e => toggleEditCollectionDialog(row) }>
+                            <IconButton onClick={ e => toggleEditItemDialog(row) }>
                                 <EditIcon/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip title={"Delete"}>
-                            <IconButton onClick={ e => toggleDeleteCollectionDialog(row) }>
+                            <IconButton onClick={ e => toggleDeleteItemDialog(row) }>
                                 <DeleteIcon/>
                             </IconButton>
                         </Tooltip>
@@ -139,7 +172,7 @@ const AdminCollections = () => {
                 )
             }
         ]
-    ), [toggleEditCollectionDialog, toggleDeleteCollectionDialog])
+    ), [toggleEditItemDialog, toggleDeleteItemDialog, tags])
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -156,7 +189,7 @@ const AdminCollections = () => {
             <Grid item xs={12}>
                 <InfiniteScroll
                     style={{ overflow: "visible" }}
-                    dataLength={collections.length}
+                    dataLength={items.length}
                     next={handleNext}
                     hasMore={hasMore}
                 >
@@ -167,19 +200,19 @@ const AdminCollections = () => {
                             hideFooter
                             loading={getLoading}
                             columns={columns}
-                            rows={collections}
+                            rows={items}
                             components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
                             componentsProps={{
-                                toolbar: { onClick: toggleCreateCollectionDialog, buttonText: "Create Collection" },
+                                toolbar: { onClick: toggleCreateItemDialog, buttonText: "Create Item" },
                                 filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
                             }}
                         />
                     </Paper>
                 </InfiniteScroll>
             </Grid>
-            <CollectionDialogsWrapper params={params}/>
+            <ItemDialogsWrapper params={params}/>
         </Grid>
     )
 }
 
-export default AdminCollections
+export default AdminItems

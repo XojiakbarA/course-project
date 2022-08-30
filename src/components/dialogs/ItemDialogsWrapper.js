@@ -14,6 +14,7 @@ import {
 import {appendToFormData} from "../../utils/helpers";
 import {createItem, deleteItem, deleteItemImage, editItem} from "../../store/asyncThunk/itemsAsyncThunk";
 import {useLocation, useNavigate} from "react-router";
+import {setFetchItemsType} from "../../store/slices/itemsSlice";
 
 const ItemDialogsWrapper = ({ params }) => {
 
@@ -42,6 +43,7 @@ const ItemDialogsWrapper = ({ params }) => {
     }
 
     const toggleDeleteItemDialog = () => {
+        dispatch(setFetchItemsType(null))
         dispatch(toggleDeleteItem())
     }
     const handleItemDeleteClick = () => {

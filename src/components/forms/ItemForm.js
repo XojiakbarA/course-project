@@ -12,13 +12,18 @@ import {LoadingButton} from "@mui/lab";
 import {toggleDeleteItemImage} from "../../store/slices/dialogsSlice";
 import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
 import {setTags} from "../../store/slices/tagsSlice";
+import {getCollections} from "../../store/asyncThunk/collectionsAsyncThunk";
+import {setCollections} from "../../store/slices/collectionsSlice";
+import {useLocation} from "react-router";
 
 const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubmit, item }) => {
 
     const dispatch = useDispatch()
+    const location = useLocation()
+    const isAdminPage = location.pathname.startsWith("/admin")
 
-    const { single: collection } = useSelector(collectionsSelector)
-    const { content: tags, getLoading } = useSelector(tagsSelector)
+    const { content: collections, getLoading: collectionsGetLoading } = useSelector(collectionsSelector)
+    const { content: tags, getLoading: tagsGetLoading } = useSelector(tagsSelector)
     const { user } = useSelector(authSelector)
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
@@ -28,9 +33,11 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
     const ref = useRef(null)
 
     useEffect(() => {
+        dispatch(getCollections({}))
         dispatch(getTags())
         setGridWidth(ref.current.offsetWidth)
         return () => {
+            dispatch(setCollections([]))
             dispatch(setTags([]))
         }
     }, [dispatch])
@@ -80,9 +87,10 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
                             label={"Collection"}
-                            options={[item?.collection ?? collection]}
+                            options={collections}
                             value={collectionValue}
-                            disabled={!isAdmin(user)}
+                            loading={collectionsGetLoading}
+                            disabled={collectionsGetLoading || !isAdmin(user) || !isAdminPage}
                             name="collectionId"
                             onChange={handleCollectionChange}
                             onBlur={handleBlur}
@@ -97,8 +105,8 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
                             label={"Tags"}
                             options={tags}
                             value={tagsValue}
-                            loading={getLoading}
-                            disabled={getLoading}
+                            loading={tagsGetLoading}
+                            disabled={tagsGetLoading}
                             name="tagIds"
                             onChange={handleTagsChange}
                             onBlur={handleBlur}

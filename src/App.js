@@ -22,6 +22,7 @@ import ScrollTop from "./components/commons/ScrollTop";
 import Users from "./pages/admin/Users";
 import Topics from "./pages/admin/Topics";
 import UserDialogsWrapper from "./components/dialogs/UserDialogsWrapper";
+import AdminItems from "./pages/admin/AdminItems";
 
 const App = (props) => {
 
@@ -53,6 +54,7 @@ const App = (props) => {
                             <Route path={"/admin/users"} element={<Users/>}/>
                             <Route path={"/admin/topics"} element={<Topics/>}/>
                             <Route path={"/admin/collections"} element={<AdminCollections/>}/>
+                            <Route path={"/admin/items"} element={<AdminItems/>}/>
                         </Route>
                     </Route>
                     <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>

@@ -32,6 +32,7 @@ import CollectionSingleSkeleton from "../../components/skeletons/CollectionSingl
 import InfiniteScroll from "react-infinite-scroll-component";
 import {FETCH_COLLECTION_ITEMS} from "../../store/fetchTypes";
 import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
+import CollectionDialogsWrapper from "../../components/dialogs/CollectionDialogsWrapper";
 
 const CollectionsID = () => {
 
@@ -216,6 +217,7 @@ const CollectionsID = () => {
                     </Paper>
                 </InfiniteScroll>
             </Grid>
+            <CollectionDialogsWrapper/>
             <ItemDialogsWrapper params={params}/>
         </Grid>
     )
