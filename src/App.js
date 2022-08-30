@@ -11,17 +11,17 @@ import CollectionForm from "./components/forms/CollectionForm";
 import ConfirmDialog from "./components/dialogs/ConfirmDialog";
 import {useTheme} from "./hooks/useTheme";
 import {useDispatch, useSelector} from "react-redux";
-import {collectionsSelector, dialogsSelector, itemsSelector, usersSelector} from "./store/selectors";
+import {collectionsSelector, dialogsSelector, itemsSelector, topicsSelector, usersSelector} from "./store/selectors";
 import {
     toggleCreateCollection,
-    toggleCreateItem, toggleCreateUser,
+    toggleCreateItem, toggleCreateTopic, toggleCreateUser,
     toggleDeleteCollection,
     toggleDeleteCollectionImage,
     toggleDeleteItem,
-    toggleDeleteItemImage,
+    toggleDeleteItemImage, toggleDeleteTopic,
     toggleDeleteUserImage,
     toggleEditCollection,
-    toggleEditItem,
+    toggleEditItem, toggleEditTopic,
     toggleEditUser, toggleLoginUser
 } from "./store/slices/dialogsSlice";
 import ItemsID from "./pages/Items/ItemsID";
@@ -51,6 +51,9 @@ import Users from "./pages/admin/Users";
 import UserForm from "./components/forms/UserForm";
 import RegisterForm from "./components/forms/RegisterForm";
 import LoginForm from "./components/forms/LoginForm";
+import Topics from "./pages/admin/Topics";
+import TopicForm from "./components/forms/TopicForm";
+import {createTopic, editTopic} from "./store/asyncThunk/topicsAsyncThunk";
 
 const App = (props) => {
 
@@ -59,10 +62,11 @@ const App = (props) => {
     const location = useLocation()
 
     const { theme } = useTheme()
-    const { collection: collectionDialog, item: itemDialog, user: userDialog } = useSelector(dialogsSelector)
+    const { collection: collectionDialog, item: itemDialog, user: userDialog, topic: topicDialog } = useSelector(dialogsSelector)
     const { single: collection, createLoading: collectionCreateLoading, editLoading: collectionEditLoading, deleteLoading: collectionDeleteLoading, deleteImageLoading: collectionDeleteImageLoading } = useSelector(collectionsSelector)
     const { single: item, createLoading: itemCreateLoading, editLoading: itemEditLoading, deleteLoading: itemDeleteLoading, deleteImageLoading: itemDeleteImageLoading } = useSelector(itemsSelector)
     const { single: user, editLoading: userEditLoading, deleteImageLoading: userDeleteImageLoading } = useSelector(usersSelector)
+    const { single: topic, createLoading: topicCreateLoading, editLoading: topicEditLoading, deleteLoading: topicDeleteLoading } = useSelector(topicsSelector)
 
     useEffect(() => {
         dispatch(getUser())
@@ -152,6 +156,19 @@ const App = (props) => {
         dispatch(toggleCreateUser())
     }
 
+    const toggleCreateTopicDialog = () => {
+        dispatch(toggleCreateTopic())
+    }
+    const toggleEditTopicDialog = () => {
+        dispatch(toggleEditTopic())
+    }
+    const handleTopicCreateSubmit = (data) => {
+        dispatch(createTopic({ data }))
+    }
+    const handleTopicEditSubmit = (data) => {
+        dispatch(editTopic({ id: topic?.id, data }))
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
@@ -170,6 +187,7 @@ const App = (props) => {
                         <Route path={"/admin"}>
                             <Route index element={<Dashboard/>}/>
                             <Route path={"/admin/users"} element={<Users/>}/>
+                            <Route path={"/admin/topics"} element={<Topics/>}/>
                         </Route>
                     </Route>
                     <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>
@@ -314,6 +332,35 @@ const App = (props) => {
                 loading={userDeleteImageLoading}
                 content={"Do you really want to delete the image?"}
             />
+            <CommonDialog
+                title={"Create Topic"}
+                maxWidth={"xs"}
+                open={topicDialog.create}
+                onClose={toggleCreateTopicDialog}
+            >
+                <TopicForm
+                    buttonText={"Create"}
+                    buttonIcon={<AddToPhotosIcon/>}
+                    buttonLoading={topicCreateLoading}
+                    onCancelClick={toggleCreateTopicDialog}
+                    onSubmit={handleTopicCreateSubmit}
+                />
+            </CommonDialog>
+            <CommonDialog
+                title={"Edit Topic"}
+                maxWidth={"xs"}
+                open={topicDialog.edit}
+                onClose={toggleEditTopicDialog}
+            >
+                <TopicForm
+                    buttonText={"Edit"}
+                    buttonIcon={<EditIcon/>}
+                    buttonLoading={topicEditLoading}
+                    onCancelClick={toggleEditTopicDialog}
+                    onSubmit={handleTopicEditSubmit}
+                    topic={topic}
+                />
+            </CommonDialog>
         </ThemeProvider>
     )
 }

@@ -149,3 +149,9 @@ export const commentValidationSchema = yup.object({
         .string('Enter Comment')
         .required('Comment is required'),
 })
+
+export const topicValidationSchema = yup.object({
+    name: yup
+        .string('Enter Name')
+        .required('Name is required'),
+})

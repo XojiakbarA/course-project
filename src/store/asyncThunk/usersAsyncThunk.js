@@ -1,12 +1,7 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {destroyUser, destroyUserImage, fetchUsers, storeUser, updateUser} from "../../api/users";
 import {setSnackbar} from "../slices/snackbarSlice";
-import {
-    toggleCreateUser,
-    toggleDeleteUser,
-    toggleDeleteUserImage,
-    toggleEditUser
-} from "../slices/dialogsSlice";
+import {toggleCreateUser, toggleDeleteUser, toggleDeleteUserImage, toggleEditUser} from "../slices/dialogsSlice";
 import {logout, setAuthUser} from "../slices/authSlice";
 
 export const getUsers = createAsyncThunk("users/get",

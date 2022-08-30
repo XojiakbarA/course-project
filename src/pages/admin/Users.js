@@ -29,7 +29,7 @@ const Users = () => {
     const { content: users, single: user, deleteLoading, hasMore, getLoading } = useSelector(usersSelector)
 
     const [page, setPage] = useState(0)
-    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 10, page }), [page])
+    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
 
     useEffect(() => {
         dispatch(getUsers({ params }))
@@ -37,6 +37,7 @@ const Users = () => {
     useEffect(() => {
         return () => {
             dispatch(setUsers([]))
+            dispatch(setUser(null))
         }
     }, [dispatch])
 
