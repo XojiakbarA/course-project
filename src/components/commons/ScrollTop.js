@@ -1,6 +1,7 @@
-import {Box, Fade, useScrollTrigger} from "@mui/material";
+import {Box, Fab, Fade, useScrollTrigger} from "@mui/material";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-const ScrollTop = ({ children, window: window1 }) => {
+const ScrollTop = ({ window: window1 }) => {
 
     const trigger = useScrollTrigger({
         target: window1 ? window1() : undefined,
@@ -19,7 +20,7 @@ const ScrollTop = ({ children, window: window1 }) => {
                 role="presentation"
                 sx={{ position: 'fixed', bottom: 16, right: 16 }}
             >
-                {children}
+                <Fab size="small" aria-label="scroll back to top"><KeyboardArrowUpIcon/></Fab>
             </Box>
         </Fade>
     )

@@ -14,14 +14,14 @@ import {
     toggleDeleteCollectionImage,
     toggleEditCollection
 } from "../slices/dialogsSlice";
+import {FETCH_USER_COLLECTIONS} from "../fetchTypes";
 
 export const getCollections = createAsyncThunk("collections/get",
-    async ({ params, setHasMore }, { dispatch, rejectWithValue }) => {
+    async ({ params }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchCollections(params)
             if (res.status === 200) {
-                if (setHasMore) setHasMore(!res.data.last)
-                return res.data.data
+                return res.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -31,12 +31,11 @@ export const getCollections = createAsyncThunk("collections/get",
 )
 
 export const getUserCollections = createAsyncThunk("collections/userGet",
-    async ({ id, params, setHasMore }, { dispatch, rejectWithValue }) => {
+    async ({ id, params }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchUserCollections(id, params)
             if (res.status === 200) {
-                setHasMore(!res.data.last)
-                return res.data.data
+                return res.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -92,14 +91,33 @@ export const editCollection = createAsyncThunk("collections/edit",
 )
 
 export const deleteCollection = createAsyncThunk("collections/delete",
-    async ({ id, shouldCallNavigate, navigate }, { dispatch, rejectWithValue }) => {
+    async ({ id, fetchType, params, navigate }, { dispatch, rejectWithValue, getState }) => {
         try {
             const res = await destroyCollection(id)
             if (res.status === 200) {
                 dispatch(toggleDeleteCollection())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                shouldCallNavigate && navigate(-1)
-                return id
+                if (fetchType) {
+                    let page;
+                    switch (fetchType) {
+                        case (FETCH_USER_COLLECTIONS):
+                            const id = getState().auth.user.id
+                            page = await fetchUserCollections(id, params)
+                            break
+                        default:
+                            page = await fetchCollections(params)
+                            break
+                    }
+                    if (page.status === 200) {
+                        if (!page.data.last) {
+                            const lastCollection = page.data.data[page.data.data.length - 1]
+                            return { id, lastCollection }
+                        }
+                    }
+                } else {
+                    navigate && navigate(-1)
+                }
+                return { id }
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))

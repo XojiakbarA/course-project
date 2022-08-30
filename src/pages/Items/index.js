@@ -4,27 +4,27 @@ import PageTitle from "../../components/commons/PageTitle";
 import ItemListCard from "../../components/cards/ItemListCard";
 import {useDispatch, useSelector} from "react-redux";
 import {itemsSelector} from "../../store/selectors";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {getItems} from "../../store/asyncThunk/itemsAsyncThunk";
 import {setItems} from "../../store/slices/itemsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ItemListSkeleton from "../../components/skeletons/ItemListSkeleton";
+import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 
 const Items = () => {
 
     const dispatch = useDispatch()
 
-    const { content: items, getLoading } = useSelector(itemsSelector)
+    const { content: items, hasMore, getLoading } = useSelector(itemsSelector)
 
     const [page, setPage] = useState(0)
-    const [hasMore, setHasMore] = useState(true)
-    const size = 12
-    const skeletonSize = Array.from({length: size}, (_, i) => i)
+    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
+
+    const skeletonSize = Array.from({length: 12}, (_, i) => i)
 
     useEffect(() => {
-        const params = { sortBy: "createdAt", sortType: "DESC", size, page }
-        dispatch(getItems({ params, setHasMore }))
-    }, [dispatch, page])
+        dispatch(getItems({ params }))
+    }, [dispatch, params])
     useEffect(() => {
         return () => {
             dispatch(setItems([]))
@@ -74,6 +74,7 @@ const Items = () => {
                     </Grid>
                 </InfiniteScroll>
             </Grid>
+            <ItemDialogsWrapper params={params}/>
         </Grid>
     )
 }

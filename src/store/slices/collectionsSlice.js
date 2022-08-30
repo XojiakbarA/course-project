@@ -9,6 +9,8 @@ import {
 const initialState = {
     content: [],
     single: null,
+    hasMore: true,
+    fetchType: null,
     getLoading: false,
     getSingleLoading: false,
     createLoading: false,
@@ -26,6 +28,9 @@ export const collectionsSlice = createSlice({
         },
         setCollection: (state, action) => {
             state.single = action.payload
+        },
+        setFetchCollectionsType: (state, action) => {
+            state.fetchType = action.payload
         }
     },
     extraReducers: {
@@ -33,9 +38,9 @@ export const collectionsSlice = createSlice({
             state.getLoading = true
         },
         [getCollections.fulfilled]: (state, action) => {
+            state.hasMore = !action.payload.last
+            state.content.push(...action.payload.data)
             state.getLoading = false
-            state.content.push(...action.payload)
-            state.error = null
         },
         [getCollections.rejected]: (state, action) => {
             state.getLoading = false
@@ -45,9 +50,9 @@ export const collectionsSlice = createSlice({
             state.getLoading = true
         },
         [getUserCollections.fulfilled]: (state, action) => {
+            state.hasMore = !action.payload.last
+            state.content.push(...action.payload.data)
             state.getLoading = false
-            state.content.push(...action.payload)
-            state.error = null
         },
         [getUserCollections.rejected]: (state, action) => {
             state.getLoading = false
@@ -69,10 +74,11 @@ export const collectionsSlice = createSlice({
             state.createLoading = true
         },
         [createCollection.fulfilled]: (state, action) => {
-            state.createLoading = false
-            state.content.pop()
+            if (state.hasMore) {
+                state.content.pop()
+            }
             state.content.unshift(action.payload)
-            state.error = null
+            state.createLoading = false
         },
         [createCollection.rejected]: (state, action) => {
             state.createLoading = false
@@ -96,14 +102,16 @@ export const collectionsSlice = createSlice({
             state.deleteLoading = true
         },
         [deleteCollection.fulfilled]: (state, action) => {
-            state.deleteLoading = false
-            state.content = state.content.filter(i => i.id !== action.payload)
+            state.content = state.content.filter(i => i.id !== action.payload.id)
+            if (action.payload.lastCollection) {
+                state.content.push(action.payload.lastCollection)
+            }
             state.single = null
-            state.error = null
+            state.fetchType = null
+            state.deleteLoading = false
         },
         [deleteCollection.rejected]: (state, action) => {
             state.deleteLoading = false
-            state.error = action.payload
         },
         [deleteCollectionImage.pending]: (state) => {
             state.deleteImageLoading = true
@@ -123,6 +131,6 @@ export const collectionsSlice = createSlice({
     }
 })
 
-export const { setCollections, setCollection } = collectionsSlice.actions
+export const { setCollections, setCollection, setFetchCollectionsType } = collectionsSlice.actions
 
 export default collectionsSlice.reducer

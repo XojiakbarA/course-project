@@ -4,7 +4,7 @@ import TagIcon from '@mui/icons-material/Tag';
 import ItemListCard from "../components/cards/ItemListCard";
 import {useDispatch, useSelector} from "react-redux";
 import {itemsSelector, tagsSelector} from "../store/selectors";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {getTagItems} from "../store/asyncThunk/itemsAsyncThunk";
 import {useParams} from "react-router";
 import {getTag} from "../store/asyncThunk/tagsAsyncThunk";
@@ -13,34 +13,32 @@ import {setItems} from "../store/slices/itemsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ItemListSkeleton from "../components/skeletons/ItemListSkeleton";
 
-const TagsID = () => {
+const TagsID = ({ params, setParams }) => {
 
     const dispatch = useDispatch()
 
     const { id } = useParams()
 
-    const { single: tag, getSingleLoading } = useSelector(tagsSelector)
+    const { single: tag, hasMore, getSingleLoading } = useSelector(tagsSelector)
     const { content: items, getLoading } = useSelector(itemsSelector)
 
-    const [page, setPage] = useState(0)
-    const [hasMore, setHasMore] = useState(true)
-    const size = 12
-    const skeletonSize = Array.from({length: size}, (_, i) => i)
+    const skeletonSize = Array.from({length: 12}, (_, i) => i)
 
     useEffect(() => {
-        const params = { sortBy: "createdAt", sortType: "DESC", size, page }
         dispatch(getTag({ id }))
-        dispatch(getTagItems({ id, params, setHasMore }))
-    }, [dispatch, id, page])
+        dispatch(getTagItems({ id, params }))
+    }, [dispatch, id, params])
     useEffect(() => {
         return () => {
             dispatch(setTag(null))
             dispatch(setItems([]))
+            setParams(prev => ({ ...prev, page: 0 }))
+
         }
-    }, [dispatch])
+    }, [dispatch, setParams])
 
     const handleNext = () => {
-        setPage(prev => prev + 1)
+        setParams(prev => ({ ...prev, page: prev.page + 1 }))
     }
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))

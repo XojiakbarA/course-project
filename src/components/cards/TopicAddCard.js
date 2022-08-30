@@ -4,7 +4,7 @@ import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 const TopicAddCard = ({ onClick }) => {
 
     return (
-        <Card sx={{ height: "100%" }}>
+        <Card sx={{ height: "100%", minHeight: 148 }}>
             <CardActionArea
                 sx={{
                     height: "100%",

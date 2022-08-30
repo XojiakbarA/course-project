@@ -7,18 +7,25 @@ import AutocompleteInput from "../inputs/AutocompleteInput";
 import {useEffect, useState, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getTopics} from "../../store/asyncThunk/topicsAsyncThunk";
-import {authSelector, topicsSelector} from "../../store/selectors";
+import {authSelector, topicsSelector, usersSelector} from "../../store/selectors";
 import {isAdmin} from "../../utils/helpers";
 import {useCollectionFormik} from "../../hooks/useCollectionFormik";
 import {toggleDeleteCollectionImage} from "../../store/slices/dialogsSlice";
+import {setTopics} from "../../store/slices/topicsSlice";
+import {getUsers} from "../../store/asyncThunk/usersAsyncThunk";
+import {useLocation} from "react-router";
+import {setUsers} from "../../store/slices/usersSlice";
 
 const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSumbit, collection }) => {
 
     const dispatch = useDispatch()
+    const location = useLocation()
+    const isAdminPage = location.pathname.startsWith("/admin")
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
-    const { content: topics, getLoading } = useSelector(topicsSelector)
+    const { content: topics, getLoading: topicsGetLoading } = useSelector(topicsSelector)
+    const { content: users, getLoading: usersGetLoading } = useSelector(usersSelector)
     const { user } = useSelector(authSelector)
 
     const [gridWidth, setGridWidth] = useState(null)
@@ -27,7 +34,14 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, 
 
     useEffect(() => {
         setGridWidth(ref.current.offsetWidth)
-        dispatch(getTopics())
+        dispatch(getTopics({}))
+        dispatch(getUsers({}))
+    }, [dispatch])
+    useEffect(() => {
+        return () => {
+            dispatch(setTopics([]))
+            dispatch(setUsers([]))
+        }
     }, [dispatch])
 
     const {
@@ -75,10 +89,10 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, 
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
                             label={"User"}
-                            options={[user]}
+                            options={users}
                             value={userValue}
-                            loading={getLoading}
-                            disabled={getLoading || !isAdmin(user)}
+                            loading={usersGetLoading}
+                            disabled={usersGetLoading || !isAdmin(user) || !isAdminPage}
                             name="userId"
                             onChange={handleUserChange}
                             onBlur={handleBlur}
@@ -92,8 +106,8 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, 
                             label={"Topic"}
                             options={topics}
                             value={topicValue}
-                            loading={getLoading}
-                            disabled={getLoading}
+                            loading={topicsGetLoading}
+                            disabled={topicsGetLoading}
                             name="topicId"
                             onChange={handleTopicChange}
                             onBlur={handleBlur}

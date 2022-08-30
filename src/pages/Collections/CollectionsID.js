@@ -18,25 +18,45 @@ import {toggleCreateItem, toggleDeleteItem, toggleEditItem} from "../../store/sl
 import {useDispatch, useSelector} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
-import {useCallback, useEffect, useMemo, useRef} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useParams} from "react-router";
 import {getCollectionItems} from "../../store/asyncThunk/itemsAsyncThunk";
 import {collectionsSelector, itemsSelector, tagsSelector} from "../../store/selectors";
-import {setItem, setItems} from "../../store/slices/itemsSlice";
+import {setFetchItemsType, setItem, setItems} from "../../store/slices/itemsSlice";
 import {getCollection} from "../../store/asyncThunk/collectionsAsyncThunk";
 import {setCollection} from "../../store/slices/collectionsSlice";
 import AvatarImage from "../../components/images/AvatarImage";
 import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
 import {setTags} from "../../store/slices/tagsSlice";
 import CollectionSingleSkeleton from "../../components/skeletons/CollectionSingleSkeleton";
+import InfiniteScroll from "react-infinite-scroll-component";
+import {FETCH_COLLECTION_ITEMS} from "../../store/fetchTypes";
+import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 
 const CollectionsID = () => {
 
     const dispatch = useDispatch()
     const { id } = useParams()
-    const { content: items, getLoading } = useSelector(itemsSelector)
+    const { content: items, hasMore, getLoading } = useSelector(itemsSelector)
     const { single: collection, getSingleLoading } = useSelector(collectionsSelector)
     const { content: tags } = useSelector(tagsSelector)
+
+    const [page, setPage] = useState(0)
+    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
+
+    useEffect(() => {
+        dispatch(getCollection({ id }))
+        dispatch(getCollectionItems({ id, params }))
+        dispatch(getTags())
+    }, [dispatch, id, params])
+    useEffect(() => {
+        return () => {
+            dispatch(setCollection(null))
+            dispatch(setItems([]))
+            dispatch(setItem(null))
+            dispatch(setTags([]))
+        }
+    }, [dispatch])
 
     const toggleCreateItemDialog = () => {
         dispatch(toggleCreateItem())
@@ -46,23 +66,13 @@ const CollectionsID = () => {
         dispatch(toggleEditItem())
     }, [dispatch])
     const toggleDeleteItemDialog = useCallback((item) => {
+        dispatch(setFetchItemsType(FETCH_COLLECTION_ITEMS))
         dispatch(setItem(item))
         dispatch(toggleDeleteItem())
     }, [dispatch])
-
-    useEffect(() => {
-        dispatch(getCollection({ id }))
-        dispatch(getCollectionItems({ id }))
-        dispatch(getTags())
-    }, [dispatch, id])
-    useEffect(() => {
-        return () => {
-            dispatch(setCollection(null))
-            dispatch(setItems([]))
-            dispatch(setItem(null))
-            dispatch(setTags([]))
-        }
-    }, [dispatch])
+    const handleNext = () => {
+        setPage(prev => prev + 1)
+    }
 
     const columns = useMemo(() => (
         [
@@ -183,21 +193,30 @@ const CollectionsID = () => {
                 }
             </Grid>
             <Grid item xs={12}>
-                <Paper sx={{ height: 550 }}>
-                    <DataGrid
-                        disableColumnMenu
-                        hideFooter
-                        loading={getLoading}
-                        columns={columns}
-                        rows={items}
-                        components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel, LoadingOverlay: LinearProgress }}
-                        componentsProps={{
-                            toolbar: { onClick: toggleCreateItemDialog, buttonText: "Create Item" },
-                            filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
-                        }}
-                    />
-                </Paper>
+                <InfiniteScroll
+                    style={{ overflow: "visible" }}
+                    dataLength={items.length}
+                    next={handleNext}
+                    hasMore={hasMore}
+                >
+                    <Paper>
+                        <DataGrid
+                            autoHeight
+                            disableColumnMenu
+                            hideFooter
+                            loading={getLoading}
+                            columns={columns}
+                            rows={items}
+                            components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel, LoadingOverlay: LinearProgress }}
+                            componentsProps={{
+                                toolbar: { onClick: toggleCreateItemDialog, buttonText: "Create Item" },
+                                filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
+                            }}
+                        />
+                    </Paper>
+                </InfiniteScroll>
             </Grid>
+            <ItemDialogsWrapper params={params}/>
         </Grid>
     )
 }

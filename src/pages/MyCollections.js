@@ -4,26 +4,39 @@ import PageTitle from "../components/commons/PageTitle";
 import CollectionListCard from "../components/cards/CollectionListCard";
 import {toggleCreateCollection, toggleDeleteCollection, toggleEditCollection} from "../store/slices/dialogsSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {getUserCollections} from "../store/asyncThunk/collectionsAsyncThunk";
 import {authSelector, collectionsSelector} from "../store/selectors";
 import CollectionAddCard from "../components/cards/CollectionAddCard";
-import {setCollection, setCollections} from "../store/slices/collectionsSlice";
+import {setCollection, setCollections, setFetchCollectionsType} from "../store/slices/collectionsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CollectionListSkeleton from "../components/skeletons/CollectionListSkeleton";
+import {FETCH_USER_COLLECTIONS} from "../store/fetchTypes";
+import CollectionDialogsWrapper from "../components/dialogs/CollectionDialogsWrapper";
 
 const MyCollections = () => {
 
     const dispatch = useDispatch()
 
-    const [page, setPage] = useState(0)
-    const [hasMore, setHasMore] = useState(true)
-    const size = page === 0 ? 11 : 12
-    const skeletonSize = Array.from({length: size}, (_, i) => i)
+    const skeletonSize = Array.from({length: 12}, (_, i) => i)
 
-    const { content: collections, getLoading } = useSelector(collectionsSelector)
-
+    const { content: collections, hasMore, getLoading } = useSelector(collectionsSelector)
     const { user } = useSelector(authSelector)
+
+    const [page, setPage] = useState(0)
+    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
+
+    useEffect(() => {
+        if (user?.id) {
+            dispatch(getUserCollections({ id: user?.id, params }))
+        }
+    }, [dispatch, user?.id, params])
+    useEffect(() => {
+        return () => {
+            dispatch(setCollections([]))
+            dispatch(setCollection(null))
+        }
+    }, [dispatch])
 
     const toggleCreateCollectionDialog = () => {
         dispatch(toggleCreateCollection())
@@ -33,6 +46,7 @@ const MyCollections = () => {
         dispatch(toggleEditCollection())
     }
     const toggleDeleteCollectionDialog = (collection) => {
+        dispatch(setFetchCollectionsType(FETCH_USER_COLLECTIONS))
         dispatch(setCollection(collection))
         dispatch(toggleDeleteCollection())
     }
@@ -40,18 +54,6 @@ const MyCollections = () => {
         setPage(prev => prev + 1)
     }
 
-    useEffect(() => {
-        const params = { sortBy: "createdAt", sortType: "DESC", size, page }
-        if (user?.id) {
-            dispatch(getUserCollections({ id: user?.id, params, setHasMore }))
-        }
-    }, [dispatch, user?.id, page])
-    useEffect(() => {
-        return () => {
-            dispatch(setCollections([]))
-            dispatch(setCollection(null))
-        }
-    }, [dispatch])
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -99,6 +101,7 @@ const MyCollections = () => {
                     </Grid>
                 </InfiniteScroll>
             </Grid>
+            <CollectionDialogsWrapper params={params}/>
         </Grid>
     )
 }

@@ -42,7 +42,6 @@ export const editUser = createAsyncThunk("users/edit",
                 const authUser = getState().auth.user
                 if (authUser.id === id) {
                     if (!res.data.data.isNonLocked) {
-                        console.log(data.isNonLocked)
                         dispatch(logout())
                     } else {
                         dispatch(setAuthUser(res.data.data))

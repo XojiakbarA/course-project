@@ -1,29 +1,27 @@
-import {Grid} from "@mui/material";
+import {Grid, useMediaQuery} from "@mui/material";
+import TopicIcon from '@mui/icons-material/Topic';
 import {useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteTopic, getTopics} from "../../store/asyncThunk/topicsAsyncThunk";
-import {dialogsSelector, topicsSelector} from "../../store/selectors";
+import {getTopics} from "../../store/asyncThunk/topicsAsyncThunk";
+import {topicsSelector} from "../../store/selectors";
 import TopicCard from "../../components/cards/TopicCard";
 import TopicSkeleton from "../../components/skeletons/TopicSkeleton";
 import {setTopic, setTopics} from "../../store/slices/topicsSlice";
 import TopicAddCard from "../../components/cards/TopicAddCard";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {toggleCreateTopic, toggleDeleteTopic} from "../../store/slices/dialogsSlice";
-import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
+import {toggleCreateTopic} from "../../store/slices/dialogsSlice";
+import PageTitle from "../../components/commons/PageTitle";
+import TopicDialogsWrapper from "../../components/dialogs/TopicDialogsWrapper";
 
 const Topics = () => {
 
     const dispatch = useDispatch()
-    const { topic: topicDialog } = useSelector(dialogsSelector)
-    const { content: topics, single: topic, hasMore, getLoading, deleteLoading } = useSelector(topicsSelector)
-
-    console.log(deleteLoading)
+    const { content: topics, hasMore, getLoading } = useSelector(topicsSelector)
 
     const [page, setPage] = useState(0)
-    const size = 20
-    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size, page }), [size, page])
+    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
 
-    const skeletonSize = Array.from({length: size}, (_, i) => i)
+    const skeletonSize = Array.from({length: 12}, (_, i) => i)
 
     useEffect(() => {
         dispatch(getTopics({ params }))
@@ -35,21 +33,26 @@ const Topics = () => {
         }
     }, [dispatch])
 
-    const toggleDeleteTopicDialog = () => {
-        dispatch(toggleDeleteTopic())
-    }
+
     const toggleCreateTopicDialog = () => {
         dispatch(toggleCreateTopic())
-    }
-    const handleTopicDeleteClick = () => {
-        dispatch(deleteTopic({ id: topic?.id, params }))
     }
     const handleNext = () => {
         setPage(prev => prev + 1)
     }
 
+    const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
+
     return (
         <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <PageTitle
+                    text={"Topics"}
+                    variant={isDownSm ? "h5" : "h4"}
+                    color={"primary"}
+                    icon={<TopicIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
+                />
+            </Grid>
             <Grid item xs={12}>
                 <InfiniteScroll
                     style={{ overflow: "visible" }}
@@ -80,13 +83,7 @@ const Topics = () => {
                     </Grid>
                 </InfiniteScroll>
             </Grid>
-            <ConfirmDialog
-                open={topicDialog.delete}
-                onClose={toggleDeleteTopicDialog}
-                onConfirmClick={handleTopicDeleteClick}
-                loading={deleteLoading}
-                content={"Do you really want to delete the topic?"}
-            />
+            <TopicDialogsWrapper params={params}/>
         </Grid>
     )
 }

@@ -1,4 +1,4 @@
-import {Chip, Grid, IconButton, Paper, Stack, Tooltip, Typography} from "@mui/material";
+import {Chip, Grid, IconButton, Paper, Stack, Tooltip, Typography, useMediaQuery} from "@mui/material";
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -7,6 +7,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
 import SecurityIcon from '@mui/icons-material/Security';
 import PersonIcon from '@mui/icons-material/Person';
+import PeopleIcon from '@mui/icons-material/People';
 import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
 import AvatarImage from "../../components/images/AvatarImage";
 import {useDispatch, useSelector} from "react-redux";
@@ -19,6 +20,7 @@ import {setUser, setUsers} from "../../store/slices/usersSlice";
 import {toggleCreateUser, toggleDeleteUser, toggleEditUser} from "../../store/slices/dialogsSlice";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
 import InfiniteScroll from "react-infinite-scroll-component";
+import PageTitle from "../../components/commons/PageTitle";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 
 const Users = () => {
@@ -26,7 +28,8 @@ const Users = () => {
     const dispatch = useDispatch()
 
     const { user: userDialog } = useSelector(dialogsSelector)
-    const { content: users, single: user, deleteLoading, hasMore, getLoading } = useSelector(usersSelector)
+
+    const { content: users, single: user, hasMore, getLoading, deleteLoading } = useSelector(usersSelector)
 
     const [page, setPage] = useState(0)
     const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
@@ -44,7 +47,7 @@ const Users = () => {
     const toggleCreateUserDialog = () => {
         dispatch(toggleCreateUser())
     }
-    const openEditUserDialog = useCallback((user) => {
+    const toggleEditUserDialog = useCallback((user) => {
         dispatch(setUser(user))
         dispatch(toggleEditUser())
     }, [dispatch])
@@ -176,7 +179,7 @@ const Users = () => {
                 renderCell: ({ row }) => (
                     <Stack direction={"row"} spacing={1}>
                         <Tooltip title={"Edit"}>
-                            <IconButton onClick={ e => openEditUserDialog(row) }>
+                            <IconButton onClick={ e => toggleEditUserDialog(row) }>
                                 <EditIcon/>
                             </IconButton>
                         </Tooltip>
@@ -189,10 +192,20 @@ const Users = () => {
                 )
             }
         ]
-    ), [openEditUserDialog, openDeleteUserDialog])
+    ), [toggleEditUserDialog, openDeleteUserDialog])
+
+    const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     return (
         <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <PageTitle
+                    text={"Users"}
+                    variant={isDownSm ? "h5" : "h4"}
+                    color={"primary"}
+                    icon={<PeopleIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
+                />
+            </Grid>
             <Grid item xs={12}>
                 <InfiniteScroll
                     style={{ overflow: "visible" }}

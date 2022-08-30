@@ -37,17 +37,17 @@ export const usersSlice = createSlice({
             state.getLoading = false
         },
         [createUser.pending]: (state) => {
-            state.getLoading = true
+            state.createLoading = true
         },
         [createUser.fulfilled]: (state, action) => {
             if (state.hasMore) {
                 state.content.pop()
             }
             state.content.unshift(action.payload)
-            state.getLoading = false
+            state.createLoading = false
         },
         [createUser.rejected]: (state) => {
-            state.getLoading = false
+            state.createLoading = false
         },
         [editUser.pending]: (state) => {
             state.editLoading = true

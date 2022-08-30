@@ -17,14 +17,14 @@ import {
     toggleEditItem
 } from "../slices/dialogsSlice";
 import {fetchTagItems} from "../../api/tags";
+import {FETCH_COLLECTION_ITEMS, FETCH_TAG_ITEMS} from "../fetchTypes";
 
 export const getItems = createAsyncThunk("items/get",
-    async ({ params, setHasMore }, { dispatch, rejectWithValue }) => {
+    async ({ params }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchItems(params)
             if (res.status === 200) {
-                if (setHasMore) setHasMore(!res.data.last)
-                return res.data.data
+                return res.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -38,7 +38,7 @@ export const getCollectionItems = createAsyncThunk("items/collectionGet",
         try {
             const res = await fetchCollectionItems(id, params)
             if (res.status === 200) {
-                return res.data.data
+                return res.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -48,12 +48,11 @@ export const getCollectionItems = createAsyncThunk("items/collectionGet",
 )
 
 export const getTagItems = createAsyncThunk("items/tagGet",
-    async ({ id, params, setHasMore }, { dispatch, rejectWithValue }) => {
+    async ({ id, params }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchTagItems(id, params)
             if (res.status === 200) {
-                setHasMore(!res.data.last)
-                return res.data.data
+                return res.data
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
@@ -109,14 +108,37 @@ export const editItem = createAsyncThunk("items/edit",
 )
 
 export const deleteItem = createAsyncThunk("items/delete",
-    async ({ id, shouldCallNavigate, navigate }, { dispatch, rejectWithValue }) => {
+    async ({ id, fetchType, params, navigate }, { dispatch, rejectWithValue, getState }) => {
         try {
             const res = await destroyItem(id)
             if (res.status === 200) {
                 dispatch(toggleDeleteItem())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
-                shouldCallNavigate && navigate(-1)
-                return id
+                if (fetchType) {
+                    let page;
+                    switch (fetchType) {
+                        case (FETCH_COLLECTION_ITEMS):
+                            const collId = getState().collections.single.id
+                            page = await fetchCollectionItems(collId, params)
+                            break
+                        case (FETCH_TAG_ITEMS):
+                            const tagId = getState().tags.single.id
+                            page = await fetchTagItems(tagId, params)
+                            break
+                        default:
+                            page = await fetchItems(params)
+                            break
+                    }
+                    if (page.status === 200) {
+                        if (!page.data.last) {
+                            const lastItem = page.data.data[page.data.data.length - 1]
+                            return { id, lastItem }
+                        }
+                    }
+                } else {
+                    navigate && navigate(-1)
+                }
+                return { id }
             }
         } catch ({ response }) {
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
