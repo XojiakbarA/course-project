@@ -4,7 +4,8 @@ const initialState = {
     collection: { create: false, edit: false, delete: false, deleteImage: false },
     item: { create: false, edit: false, delete: false, deleteImage: false },
     user: { login: false, create: false, edit: false, delete: false, deleteImage: false },
-    topic: { create: false, edit: false, delete: false }
+    topic: { create: false, edit: false, delete: false },
+    tag: { create: false, edit: false, delete: false }
 }
 
 export const dialogsSlice = createSlice({
@@ -58,6 +59,15 @@ export const dialogsSlice = createSlice({
         },
         toggleDeleteTopic: (state) => {
             state.topic.delete = !state.topic.delete
+        },
+        toggleCreateTag: (state) => {
+            state.tag.create = !state.tag.create
+        },
+        toggleEditTag: (state) => {
+            state.tag.edit = !state.tag.edit
+        },
+        toggleDeleteTag: (state) => {
+            state.tag.delete = !state.tag.delete
         }
     }
 })
@@ -66,7 +76,8 @@ export const {
     toggleCreateCollection, toggleEditCollection, toggleDeleteCollection, toggleDeleteCollectionImage,
     toggleCreateItem, toggleEditItem, toggleDeleteItem, toggleDeleteItemImage,
     toggleLoginUser, toggleCreateUser, toggleEditUser, toggleDeleteUser, toggleDeleteUserImage,
-    toggleCreateTopic, toggleEditTopic, toggleDeleteTopic
+    toggleCreateTopic, toggleEditTopic, toggleDeleteTopic,
+    toggleCreateTag, toggleEditTag, toggleDeleteTag
 } = dialogsSlice.actions
 
 export default dialogsSlice.reducer

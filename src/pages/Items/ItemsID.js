@@ -1,4 +1,4 @@
-import {Box, CircularProgress, Grid, Stack, useMediaQuery} from "@mui/material";
+import {CircularProgress, Grid, Stack, useMediaQuery} from "@mui/material";
 import CommentIcon from '@mui/icons-material/Comment';
 import ItemSingleCard from "../../components/cards/ItemSingleCard";
 import PageTitle from "../../components/commons/PageTitle";

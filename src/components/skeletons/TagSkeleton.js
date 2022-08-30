@@ -1,7 +1,7 @@
 import {Card, CardContent, IconButton, Skeleton, Stack, Typography} from "@mui/material";
-import TopicIcon from '@mui/icons-material/Topic';
+import TagIcon from '@mui/icons-material/Tag';
 
-const TopicSkeleton = () => {
+const TagSkeleton = () => {
 
     return (
         <Card>
@@ -9,7 +9,7 @@ const TopicSkeleton = () => {
                 <Stack spacing={2}>
                     <Stack>
                         <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                            <TopicIcon/>
+                            <TagIcon/>
                             <Typography variant={"h6"}><Skeleton width={200}/></Typography>
                         </Stack>
                         <Stack direction={"row"} spacing={1} alignItems={"center"}>
@@ -31,4 +31,4 @@ const TopicSkeleton = () => {
     )
 }
 
-export default TopicSkeleton
+export default TagSkeleton

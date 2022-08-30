@@ -23,6 +23,7 @@ import Users from "./pages/admin/Users";
 import Topics from "./pages/admin/Topics";
 import UserDialogsWrapper from "./components/dialogs/UserDialogsWrapper";
 import AdminItems from "./pages/admin/AdminItems";
+import Tags from "./pages/admin/Tags";
 
 const App = (props) => {
 
@@ -55,6 +56,7 @@ const App = (props) => {
                             <Route path={"/admin/topics"} element={<Topics/>}/>
                             <Route path={"/admin/collections"} element={<AdminCollections/>}/>
                             <Route path={"/admin/items"} element={<AdminItems/>}/>
+                            <Route path={"/admin/tags"} element={<Tags/>}/>
                         </Route>
                     </Route>
                     <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>

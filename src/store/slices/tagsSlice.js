@@ -1,11 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit"
-import {getTag, getTags} from "../asyncThunk/tagsAsyncThunk";
+import {createTag, deleteTag, editTag, getTag, getTags} from "../asyncThunk/tagsAsyncThunk";
 
 const initialState = {
     content: [],
     single: null,
+    hasMore: true,
     getLoading: false,
     getSingleLoading: false,
+    createLoading: false,
+    editLoading: false,
+    deleteLoading: false,
 }
 
 export const tagsSlice = createSlice({
@@ -24,13 +28,12 @@ export const tagsSlice = createSlice({
             state.getLoading = true
         },
         [getTags.fulfilled]: (state, action) => {
+            state.hasMore = !action.payload.last
+            state.content.push(...action.payload.data)
             state.getLoading = false
-            state.content = action.payload
-            state.error = null
         },
         [getTags.rejected]: (state, action) => {
             state.getLoading = false
-            state.error = action.payload
         },
         [getTag.pending]: (state) => {
             state.getSingleLoading = true
@@ -38,11 +41,48 @@ export const tagsSlice = createSlice({
         [getTag.fulfilled]: (state, action) => {
             state.getSingleLoading = false
             state.single = action.payload
-            state.error = null
         },
         [getTag.rejected]: (state, action) => {
             state.getSingleLoading = false
-            state.error = action.payload
+        },
+        [createTag.pending]: (state) => {
+            state.createLoading = true
+        },
+        [createTag.fulfilled]: (state, action) => {
+            if (state.hasMore) {
+                state.content.pop()
+            }
+            state.content.unshift(action.payload)
+            state.createLoading = false
+        },
+        [createTag.rejected]: (state) => {
+            state.createLoading = false
+        },
+        [editTag.pending]: (state) => {
+            state.editLoading = true
+        },
+        [editTag.fulfilled]: (state, action) => {
+            const i = state.content.findIndex(i => i.id === action.payload.id)
+            state.content[i] = action.payload
+            state.single = action.payload
+            state.editLoading = false
+        },
+        [editTag.rejected]: (state, action) => {
+            state.editLoading = false
+        },
+        [deleteTag.pending]: (state) => {
+            state.deleteLoading = true
+        },
+        [deleteTag.fulfilled]: (state, action) => {
+            state.content = state.content.filter(i => i.id !== action.payload.id)
+            if (action.payload.lastTag) {
+                state.content.push(action.payload.lastTag)
+            }
+            state.single = null
+            state.deleteLoading = false
+        },
+        [deleteTag.rejected]: (state) => {
+            state.deleteLoading = false
         },
     }
 })
