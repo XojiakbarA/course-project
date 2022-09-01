@@ -10,8 +10,6 @@ import {authSelector, collectionsSelector, tagsSelector} from "../../store/selec
 import CancelIcon from "@mui/icons-material/Cancel";
 import {LoadingButton} from "@mui/lab";
 import {toggleDeleteItemImage} from "../../store/slices/dialogsSlice";
-import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
-import {setTags} from "../../store/slices/tagsSlice";
 import {getCollections} from "../../store/asyncThunk/collectionsAsyncThunk";
 import {setCollections} from "../../store/slices/collectionsSlice";
 import {useLocation} from "react-router";
@@ -34,11 +32,9 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
 
     useEffect(() => {
         dispatch(getCollections({}))
-        dispatch(getTags())
         setGridWidth(ref.current.offsetWidth)
         return () => {
             dispatch(setCollections([]))
-            dispatch(setTags([]))
         }
     }, [dispatch])
 

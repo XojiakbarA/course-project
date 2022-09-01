@@ -11,6 +11,7 @@ import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
 import TagDialogsWrapper from "../../components/dialogs/TagDialogsWrapper";
 import {setTag, setTags} from "../../store/slices/tagsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
+import {toggleCreateTag} from "../../store/slices/dialogsSlice";
 
 const Tags = () => {
 
@@ -31,7 +32,7 @@ const Tags = () => {
     }, [dispatch])
 
     const toggleCreateTagDialog = () => {
-
+        dispatch(toggleCreateTag())
     }
     const handleNext = () => {
         setPage(prev => prev + 1)

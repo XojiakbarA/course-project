@@ -9,7 +9,6 @@ import {getItems} from "../../store/asyncThunk/itemsAsyncThunk";
 import {setItems} from "../../store/slices/itemsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ItemListSkeleton from "../../components/skeletons/ItemListSkeleton";
-import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 
 const Items = () => {
 
@@ -74,7 +73,6 @@ const Items = () => {
                     </Grid>
                 </InfiniteScroll>
             </Grid>
-            <ItemDialogsWrapper params={params}/>
         </Grid>
     )
 }

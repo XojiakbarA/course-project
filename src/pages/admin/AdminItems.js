@@ -32,14 +32,14 @@ const AdminItems = () => {
     const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
 
     useEffect(() => {
-        dispatch(getTags())
+        dispatch(getTags({}))
         dispatch(getItems({ params }))
     }, [dispatch, params])
     useEffect(() => {
         return () => {
             dispatch(setTags([]))
             dispatch(setItems([]))
-            dispatch(setItem([]))
+            dispatch(setItem(null))
         }
     }, [dispatch])
 

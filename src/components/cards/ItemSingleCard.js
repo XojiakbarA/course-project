@@ -17,10 +17,11 @@ import EventIcon from "@mui/icons-material/Event";
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import CommentIcon from '@mui/icons-material/Comment';
+import AddCommentIcon from '@mui/icons-material/AddComment';
 import CardImage from "../images/CardImage";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {toggleDeleteItem, toggleEditItem} from "../../store/slices/dialogsSlice";
+import {toggleCreateComment, toggleDeleteItem, toggleEditItem} from "../../store/slices/dialogsSlice";
 import {editItemLikes} from "../../store/asyncThunk/itemsAsyncThunk";
 import {authSelector, itemsSelector} from "../../store/selectors";
 
@@ -28,6 +29,9 @@ const ItemSingleCard = ({ item }) => {
 
     const dispatch = useDispatch()
 
+    const toggleAddCommentDialog = () => {
+        dispatch(toggleCreateComment())
+    }
     const toggleEditItemDialog = () => {
         dispatch(toggleEditItem())
     }
@@ -62,13 +66,18 @@ const ItemSingleCard = ({ item }) => {
                 <Grid item xs={12} md={7} lg={8}>
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
-                            <Rating readOnly value={item?.rating}/>
+                            <Rating readOnly value={item?.rating ?? 0}/>
                             <Tooltip title={"Like"}>
                                 <IconButton
                                     onClick={handleLikeClick}
                                     disabled={likeLoading}
                                 >
                                     { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={"Add Comment"}>
+                                <IconButton onClick={toggleAddCommentDialog}>
+                                    <AddCommentIcon/>
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title={"Edit"}>

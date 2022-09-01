@@ -8,7 +8,7 @@ export const useCollectionFormik = (onSubmit, collection) => {
 
     const { user } = useSelector(authSelector)
 
-    const [userValue, setUserValue] = useState(user ?? null)
+    const [userValue, setUserValue] = useState(collection?.user ?? user ?? null)
     const [topicValue, setTopicValue] = useState(collection?.topic ?? null)
 
     const formik = useFormik({

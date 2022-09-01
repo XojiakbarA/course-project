@@ -1,55 +1,80 @@
-import {Button, FormControl, InputLabel, Rating, Stack, TextField, useMediaQuery} from "@mui/material";
-import SendIcon from '@mui/icons-material/Send';
-import {useFormik} from "formik";
-import {commentValidationSchema} from "../../utils/validate";
+import {FormControl, InputLabel, Rating, Stack, TextField, useMediaQuery} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {authSelector} from "../../store/selectors";
-import {useParams} from "react-router";
-import {useStompClient, useSubscription} from "react-stomp-hooks";
-import {setSnackbar} from "../../store/slices/snackbarSlice";
-import {addComment} from "../../store/slices/commentsSlice";
+import {authSelector, itemsSelector, usersSelector} from "../../store/selectors";
+import {useLocation} from "react-router";
+import {LoadingButton} from "@mui/lab";
+import {isAdmin} from "../../utils/helpers";
+import AutocompleteInput from "../inputs/AutocompleteInput";
+import {useEffect} from "react";
+import {getUsers} from "../../store/asyncThunk/usersAsyncThunk";
+import {setUsers} from "../../store/slices/usersSlice";
+import {getItems} from "../../store/asyncThunk/itemsAsyncThunk";
+import {setItems} from "../../store/slices/itemsSlice";
+import {useCommentFormik} from "../../hooks/useCommentFormik";
 
-const CommentForm = () => {
-
-    const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
+const CommentForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, comment }) => {
 
     const dispatch = useDispatch()
+    const location = useLocation()
+    const isAdminPage = location.pathname.startsWith("/admin")
 
     const { user } = useSelector(authSelector)
-    const { id } = useParams()
+    const { content: users, getLoading: usersGetLoading } = useSelector(usersSelector)
+    const { content: items, getLoading: itemsGetLoading } = useSelector(itemsSelector)
 
-    const client = useStompClient()
-
-    const handleCommentReceived = (payload) => {
-        const comment = JSON.parse(payload.body).data
-        dispatch(addComment(comment))
-    }
-    const handleErrorReceived = (payload) => {
-        const response = JSON.parse(payload.body)
-        dispatch(setSnackbar({ data: response.message, open: true, color: "error" }))
-    }
-
-    useSubscription("/comments", handleCommentReceived)
-    useSubscription("/comments/errors", handleErrorReceived)
-
-    const { handleSubmit, handleBlur, handleChange, getFieldProps, touched, errors, values } = useFormik({
-        initialValues: {
-            userId: user?.id ?? "",
-            itemId: id ?? "",
-            rating: 0,
-            text: ""
-        },
-        enableReinitialize: true,
-        validationSchema: commentValidationSchema,
-        onSubmit: (data, { resetForm }) => {
-            client.publish({ destination: "/app/comments/create", body: JSON.stringify(data) })
-            resetForm()
+    useEffect(() => {
+        dispatch(getUsers({}))
+        dispatch(getItems({}))
+    }, [dispatch])
+    useEffect(() => {
+        return () => {
+            dispatch(setUsers([]))
+            dispatch(setItems([]))
         }
-    })
+    }, [dispatch])
+
+    const {
+        handleSubmit, handleChange, handleBlur, handleUserChange, handleItemChange,
+        getFieldProps, userValue, itemValue, values, touched, errors
+    } = useCommentFormik(onSubmit, comment)
+
+    const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     return (
         <form onSubmit={handleSubmit}>
             <Stack spacing={2} alignItems={"end"}>
+                <AutocompleteInput
+                    fullWidth
+                    size={isDownSm ? "small" : "medium"}
+                    variant={"filled"}
+                    label={"User"}
+                    options={users}
+                    value={userValue}
+                    loading={usersGetLoading}
+                    disabled={usersGetLoading || !isAdmin(user) || !isAdminPage}
+                    name="userId"
+                    onChange={handleUserChange}
+                    onBlur={handleBlur}
+                    error={ touched.userId && Boolean(errors.userId) }
+                    helperText={ touched.userId && errors.userId }
+                    getOptionLabel={option => option.firstName}
+                />
+                <AutocompleteInput
+                    fullWidth
+                    size={isDownSm ? "small" : "medium"}
+                    variant={"filled"}
+                    label={"Item"}
+                    options={items}
+                    value={itemValue}
+                    loading={itemsGetLoading}
+                    disabled={itemsGetLoading || !isAdmin(user) || !isAdminPage}
+                    name="itemId"
+                    onChange={handleItemChange}
+                    onBlur={handleBlur}
+                    error={ touched.itemId && Boolean(errors.itemId) }
+                    helperText={ touched.itemId && errors.itemId }
+                    getOptionLabel={option => option.name}
+                />
                 <FormControl variant={"standard"}>
                     <InputLabel shrink htmlFor={"rating"}>Rating</InputLabel>
                     <Rating
@@ -70,14 +95,15 @@ const CommentForm = () => {
                     helperText={ touched.text && errors.text }
                     { ...getFieldProps("text") }
                 />
-                <Button
+                <LoadingButton
                     variant={"contained"}
                     size={isDownSm ? "small" : "medium"}
-                    startIcon={<SendIcon/>}
+                    startIcon={buttonIcon}
+                    loading={buttonLoading}
                     type={"submit"}
                 >
-                    Send
-                </Button>
+                    { buttonText }
+                </LoadingButton>
             </Stack>
         </form>
     )

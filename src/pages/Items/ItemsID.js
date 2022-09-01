@@ -9,10 +9,16 @@ import {useParams} from "react-router";
 import {useEffect} from "react";
 import {getItem} from "../../store/asyncThunk/itemsAsyncThunk";
 import {setItem} from "../../store/slices/itemsSlice";
-import {commentsSelector, itemsSelector} from "../../store/selectors";
+import {commentsSelector, dialogsSelector, itemsSelector} from "../../store/selectors";
 import {getItemComments} from "../../store/asyncThunk/commentsAsyncThunk";
-import {setComments} from "../../store/slices/commentsSlice";
+import {addComment, setComments} from "../../store/slices/commentsSlice";
 import ItemSingleSkeleton from "../../components/skeletons/ItemSingleSkeleton";
+import {useStompClient, useSubscription} from "react-stomp-hooks";
+import {setSnackbar} from "../../store/slices/snackbarSlice";
+import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
+import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
+import CommonDialog from "../../components/dialogs/CommonDialog";
+import {toggleCreateComment} from "../../store/slices/dialogsSlice";
 
 const ItemsID = () => {
 
@@ -21,6 +27,7 @@ const ItemsID = () => {
     const dispatch = useDispatch()
     const { id } = useParams()
 
+    const { comment: commentDialog } = useSelector(dialogsSelector)
     const { single: item, getSingleLoading } = useSelector(itemsSelector)
     const { content: comments, getLoading } = useSelector(commentsSelector)
 
@@ -34,6 +41,28 @@ const ItemsID = () => {
             dispatch(setComments([]))
         }
     }, [dispatch])
+
+    const client = useStompClient()
+
+    const handleCommentReceived = (payload) => {
+        const comment = JSON.parse(payload.body).data
+        dispatch(addComment(comment))
+    }
+    const handleErrorReceived = (payload) => {
+        const response = JSON.parse(payload.body)
+        dispatch(setSnackbar({ data: response.message, open: true, color: "error" }))
+    }
+
+    useSubscription("/comments", handleCommentReceived)
+    useSubscription("/comments/errors", handleErrorReceived)
+
+    const handleCreateCommentSubmit = (data) => {
+        client.publish({ destination: "/app/comments/create", body: JSON.stringify(data) })
+        dispatch(toggleCreateComment())
+    }
+    const toggleCreateCommentDialog = () => {
+        dispatch(toggleCreateComment())
+    }
 
     return (
         <Grid container spacing={2}>
@@ -73,9 +102,20 @@ const ItemsID = () => {
                     }
                 </Stack>
             </Grid>
-            <Grid item xs={12} md={5} lg={4}>
-                <CommentForm/>
-            </Grid>
+            <ItemDialogsWrapper/>
+            <CommonDialog
+                title={"Create Comment"}
+                maxWidth={"xs"}
+                open={commentDialog.create}
+                onClose={toggleCreateCommentDialog}
+            >
+                <CommentForm
+                    buttonText={"Create"}
+                    buttonIcon={<AddToPhotosIcon/>}
+                    onCancelClick={toggleCreateCommentDialog}
+                    onSubmit={handleCreateCommentSubmit}
+                />
+            </CommonDialog>
         </Grid>
     )
 }

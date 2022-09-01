@@ -48,7 +48,7 @@ const CollectionsID = () => {
     useEffect(() => {
         dispatch(getCollection({ id }))
         dispatch(getCollectionItems({ id, params }))
-        dispatch(getTags())
+        dispatch(getTags({}))
     }, [dispatch, id, params])
     useEffect(() => {
         return () => {

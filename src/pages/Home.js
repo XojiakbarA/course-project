@@ -34,7 +34,7 @@ const Home = () => {
         const params = { size, sortBy: "createdAt", sortType: "DESC" }
         dispatch(getItems({ params }))
         dispatch(getCollections({ params }))
-        dispatch(getTags())
+        dispatch(getTags({}))
     }, [dispatch])
     useEffect(() => {
         return () => {
@@ -88,15 +88,15 @@ const Home = () => {
             <Grid item xs={12}>
                 <Box whiteSpace={"nowrap"} overflow={"scroll"} pb={1}>
                     {
-                        itemsGetLoading
-                            ?
-                            skeletonSize.map(skeleton => (
-                                <CollectionListSkeleton key={skeleton} sx={sx}/>
-                            ))
-                            :
-                            collections.map(collection => (
-                                <CollectionListCard key={collection.id} collection={collection} sx={sx}/>
-                            ))
+                        collectionsGetLoading
+                        ?
+                        skeletonSize.map(skeleton => (
+                            <CollectionListSkeleton key={skeleton} sx={sx}/>
+                        ))
+                        :
+                        collections.map(collection => (
+                            <CollectionListCard key={collection.id} collection={collection} sx={sx}/>
+                        ))
                     }
                 </Box>
             </Grid>
