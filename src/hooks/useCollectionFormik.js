@@ -11,13 +11,21 @@ export const useCollectionFormik = (onSubmit, collection) => {
     const [userValue, setUserValue] = useState(collection?.user ?? user ?? null)
     const [topicValue, setTopicValue] = useState(collection?.topic ?? null)
 
+    const setCustomFields = (collection) => {
+        if (collection?.customFields?.length) {
+            return collection.customFields.map(field => ({ name: field.name, customFieldTypeId: field.type.id }))
+        }
+        return []
+    }
+
     const formik = useFormik({
         initialValues: {
             name: collection?.name ?? "",
             description: collection?.description ?? "",
             userId: user?.id ?? "",
             topicId: collection?.topic?.id ?? "",
-            image: null
+            image: null,
+            customFields: setCustomFields(collection)
         },
         enableReinitialize: true,
         validationSchema: collectionValidationSchema,
@@ -33,5 +41,5 @@ export const useCollectionFormik = (onSubmit, collection) => {
         formik.setValues(prev => ({ ...prev, userId: value?.id }))
     }
 
-    return { ...formik, userValue, topicValue, handleUserChange, handleTopicChange }
+    return { formik, userValue, topicValue, handleUserChange, handleTopicChange }
 }

@@ -74,7 +74,6 @@ const ItemDialogsWrapper = ({ params }) => {
                     buttonText={"Create"}
                     buttonIcon={<AddToPhotosIcon/>}
                     buttonLoading={createLoading}
-                    onCancelClick={toggleCreateItemDialog}
                     onSubmit={handleItemCreateSubmit}
                 />
             </CommonDialog>
@@ -88,7 +87,6 @@ const ItemDialogsWrapper = ({ params }) => {
                     buttonText={"Edit"}
                     buttonIcon={<EditIcon/>}
                     buttonLoading={editLoading}
-                    onCancelClick={toggleEditItemDialog}
                     onSubmit={handleItemEditSubmit}
                     item={item}
                 />

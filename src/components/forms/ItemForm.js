@@ -1,4 +1,4 @@
-import {Button, CardMedia, Grid, Stack, TextField, useMediaQuery} from "@mui/material";
+import {CardMedia, Grid, ListSubheader, Stack, TextField, useMediaQuery} from "@mui/material";
 import ImageUpload from "../commons/ImageUpload";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -7,14 +7,16 @@ import {useItemFormik} from "../../hooks/useItemFormik";
 import {isAdmin} from "../../utils/helpers";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import {authSelector, collectionsSelector, tagsSelector} from "../../store/selectors";
-import CancelIcon from "@mui/icons-material/Cancel";
 import {LoadingButton} from "@mui/lab";
 import {toggleDeleteItemImage} from "../../store/slices/dialogsSlice";
 import {getCollections} from "../../store/asyncThunk/collectionsAsyncThunk";
 import {setCollections} from "../../store/slices/collectionsSlice";
 import {useLocation} from "react-router";
+import ItemCustomFieldInput from "../inputs/ItemCustomFieldInput";
+import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
+import {setTags} from "../../store/slices/tagsSlice";
 
-const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubmit, item }) => {
+const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, item }) => {
 
     const dispatch = useDispatch()
     const location = useLocation()
@@ -32,15 +34,17 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
 
     useEffect(() => {
         dispatch(getCollections({}))
+        dispatch(getTags({}))
         setGridWidth(ref.current.offsetWidth)
         return () => {
             dispatch(setCollections([]))
+            dispatch(setTags([]))
         }
     }, [dispatch])
 
     const {
-        handleSubmit, getFieldProps, handleBlur, errors, touched,
-        setTouched, setValues, collectionValue, tagsValue, handleCollectionChange, handleTagsChange
+        handleSubmit, getFieldProps, handleBlur, errors, touched, values, setTouched, setValues, setFieldValue,
+        collectionValue, tagsValue, handleCollectionChange, handleTagsChange
     } = useItemFormik(onSubmit, item)
 
     const { preview, handleUploadChange, handlePreviewDeleteClick } = useSinglePreview(setValues, setTouched)
@@ -52,24 +56,22 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
     return (
         <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-                <Grid item xs={12} lg={6} >
-                    <CardMedia ref={ref}>
-                        <ImageUpload
-                            handlePrewiewDeleteClick={handlePreviewDeleteClick}
-                            handleUploadChange={handleUploadChange}
-                            handleDeleteImage={toggleDeleteItemImageDialog}
-                            name='image'
-                            preview={preview}
-                            src={item?.image?.value}
-                            width={gridWidth}
-                            height={200}
-                            error={ Boolean(errors.image) }
-                            helperText={ errors.image }
-                        />
-                    </CardMedia>
-                </Grid>
                 <Grid item xs={12} lg={6}>
                     <Stack spacing={2}>
+                        <CardMedia ref={ref}>
+                            <ImageUpload
+                                handlePrewiewDeleteClick={handlePreviewDeleteClick}
+                                handleUploadChange={handleUploadChange}
+                                handleDeleteImage={toggleDeleteItemImageDialog}
+                                name='image'
+                                preview={preview}
+                                src={item?.image?.value}
+                                width={gridWidth}
+                                height={200}
+                                error={ Boolean(errors.image) }
+                                helperText={ errors.image }
+                            />
+                        </CardMedia>
                         <TextField
                             fullWidth
                             size={isDownSm ? "small" : "medium"}
@@ -110,26 +112,30 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onCancelClick, onSubm
                             helperText={ touched.tagIds && errors.tagIds }
                             getOptionLabel={option => option.name}
                         />
-                        <Stack direction={"row"} spacing={2} justifyContent={"flex-end"}>
-                            <Button
-                                variant={"outlined"}
-                                size={isDownSm ? "small" : "medium"}
-                                startIcon={<CancelIcon/>}
-                                onClick={onCancelClick}
-                            >
-                                Cancel
-                            </Button>
-                            <LoadingButton
-                                variant={"contained"}
-                                size={isDownSm ? "small" : "medium"}
-                                startIcon={buttonIcon}
-                                type={"submit"}
-                                loading={buttonLoading}
-                            >
-                                { buttonText }
-                            </LoadingButton>
-                        </Stack>
                     </Stack>
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                    <ListSubheader sx={{ bgcolor: "transparent", position: "relative" }}>Custom Fields</ListSubheader>
+                    <ItemCustomFieldInput
+                        customValues={values.customValues}
+                        collectionValue={collectionValue}
+                        touched={touched}
+                        errors={errors}
+                        getFieldProps={getFieldProps}
+                        setFieldValue={setFieldValue}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <LoadingButton
+                        fullWidth
+                        variant={"contained"}
+                        size={isDownSm ? "small" : "medium"}
+                        startIcon={buttonIcon}
+                        type={"submit"}
+                        loading={buttonLoading}
+                    >
+                        { buttonText }
+                    </LoadingButton>
                 </Grid>
             </Grid>
         </form>

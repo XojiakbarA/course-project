@@ -1,6 +1,6 @@
 import {Chip, Grid, IconButton, Link, Paper, Stack, Tooltip, Typography, useMediaQuery} from "@mui/material";
 import PageTitle from "../../components/commons/PageTitle";
-import CategoryIcon from "@mui/icons-material/Category";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import InfiniteScroll from "react-infinite-scroll-component";
 import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
@@ -18,8 +18,6 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {setTags} from "../../store/slices/tagsSlice";
-import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
 
 const AdminItems = () => {
 
@@ -32,12 +30,10 @@ const AdminItems = () => {
     const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
 
     useEffect(() => {
-        dispatch(getTags({}))
         dispatch(getItems({ params }))
     }, [dispatch, params])
     useEffect(() => {
         return () => {
-            dispatch(setTags([]))
             dispatch(setItems([]))
             dispatch(setItem(null))
         }
@@ -180,10 +176,10 @@ const AdminItems = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Collections"}
+                    text={"Items"}
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
-                    icon={<CategoryIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
+                    icon={<AttachFileIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
                 />
             </Grid>
             <Grid item xs={12}>

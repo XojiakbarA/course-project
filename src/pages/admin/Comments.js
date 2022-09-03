@@ -1,6 +1,6 @@
 import {Grid, IconButton, Paper, Stack, Tooltip, Typography, useMediaQuery} from "@mui/material";
 import PageTitle from "../../components/commons/PageTitle";
-import CategoryIcon from "@mui/icons-material/Category";
+import CommentIcon from '@mui/icons-material/Comment';
 import InfiniteScroll from "react-infinite-scroll-component";
 import {DataGrid, GridFilterPanel} from "@mui/x-data-grid";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
@@ -119,10 +119,10 @@ const Comments = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Collections"}
+                    text={"Comments"}
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
-                    icon={<CategoryIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
+                    icon={<CommentIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
                 />
             </Grid>
             <Grid item xs={12}>

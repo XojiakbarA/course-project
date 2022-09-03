@@ -4,9 +4,12 @@ export const appendToFormData = (data) => {
         if (data[key] instanceof Date) {
             formData.append(key, data[key].toISOString())
         } else if (data[key] instanceof FileList) {
-            const fileList = data[key]
-            for (let file of fileList) {
+            for (let file of data[key]) {
                 formData.append(`${key}[]`, file)
+            }
+        } else if (Array.isArray(data[key])) {
+            for (let item of data[key]) {
+                formData.append(`${key}[]`, JSON.stringify(item))
             }
         } else if (data[key] != null) {
             formData.append(key, data[key])

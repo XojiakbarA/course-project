@@ -26,8 +26,6 @@ import {setFetchItemsType, setItem, setItems} from "../../store/slices/itemsSlic
 import {getCollection} from "../../store/asyncThunk/collectionsAsyncThunk";
 import {setCollection} from "../../store/slices/collectionsSlice";
 import AvatarImage from "../../components/images/AvatarImage";
-import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
-import {setTags} from "../../store/slices/tagsSlice";
 import CollectionSingleSkeleton from "../../components/skeletons/CollectionSingleSkeleton";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {FETCH_COLLECTION_ITEMS} from "../../store/fetchTypes";
@@ -48,14 +46,12 @@ const CollectionsID = () => {
     useEffect(() => {
         dispatch(getCollection({ id }))
         dispatch(getCollectionItems({ id, params }))
-        dispatch(getTags({}))
     }, [dispatch, id, params])
     useEffect(() => {
         return () => {
             dispatch(setCollection(null))
             dispatch(setItems([]))
             dispatch(setItem(null))
-            dispatch(setTags([]))
         }
     }, [dispatch])
 

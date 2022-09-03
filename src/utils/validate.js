@@ -109,7 +109,13 @@ export const collectionValidationSchema = yup.object({
                 ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].includes(value.type)
                 :
                 true
-        ))
+        )),
+    customFields: yup.array().of(
+        yup.object().shape({
+            name: yup.string('Enter Name'),
+            customFieldTypeId: yup.number('Select Type')
+        })
+    )
 })
 
 export const itemValidationSchema = yup.object({

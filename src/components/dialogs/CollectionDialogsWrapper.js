@@ -79,8 +79,7 @@ const CollectionDialogsWrapper = ({ params }) => {
                     buttonText={"Create"}
                     buttonIcon={<AddToPhotosIcon/>}
                     buttonLoading={createLoading}
-                    onCancelClick={toggleCreateCollectionDialog}
-                    onSumbit={handleCollectionCreateSubmit}
+                    onSubmit={handleCollectionCreateSubmit}
                 />
             </CommonDialog>
             <CommonDialog
@@ -93,8 +92,7 @@ const CollectionDialogsWrapper = ({ params }) => {
                     buttonText={"Edit"}
                     buttonIcon={<EditIcon/>}
                     buttonLoading={editLoading}
-                    onCancelClick={toggleEditCollectionDialog}
-                    onSumbit={handleCollectionEditSubmit}
+                    onSubmit={handleCollectionEditSubmit}
                     collection={collection}
                 />
             </CommonDialog>

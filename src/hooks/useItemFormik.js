@@ -11,12 +11,26 @@ export const useItemFormik = (onSubmit, item) => {
     const [collectionValue, setCollectionValue] = useState(item?.collection ?? collection)
     const [tagsValue, setTagsValue] = useState(item?.tags ?? [])
 
+    const setCustomValues = () => {
+        if (item?.customValues?.length) {
+            return item.customValues.map(customValue => ({
+                customFieldId: customValue.customField.id,
+                value: customValue.value
+            }))
+        }
+        if (collection?.customFields) {
+            return collection.customFields.map(field => ({ customFieldId: field.id, value: "" }))
+        }
+        return []
+    }
+
     const formik = useFormik({
         initialValues: {
             name: item?.name ?? "",
             collectionId: item?.collection?.id ?? collection?.id ?? "",
             tagIds: item?.tags?.map(i => i.id) ?? [],
-            image: null
+            image: null,
+            customValues: setCustomValues()
         },
         enableReinitialize: true,
         validationSchema: itemValidationSchema,
@@ -25,6 +39,11 @@ export const useItemFormik = (onSubmit, item) => {
 
     const handleCollectionChange = (e, value) => {
         formik.setValues(prev => ({ ...prev, collectionId: value?.id }))
+        let values = []
+        if (value) {
+            values = value.customFields.map(field => ({ customFieldId: field.id, value: "" }))
+        }
+        formik.setFieldValue("customValues", values)
         setCollectionValue(value)
     }
     const handleTagsChange = (e, value) => {

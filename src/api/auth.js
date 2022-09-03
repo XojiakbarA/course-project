@@ -15,3 +15,5 @@ instance.interceptors.request.use(async req => {
 export const authGetUser = async () => await instance.get("/auth/me")
 
 export const authLogin = async (data) => await instance.post("/auth/login", data)
+
+export const fetchCustomFieldTypes = async () => await instance.get("/api/custom-field-types")
