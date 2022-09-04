@@ -6,15 +6,10 @@ import {
     Grid,
     IconButton,
     Rating, Skeleton,
-    Stack,
-    Tooltip,
+    Stack, SvgIcon,
     Typography, useMediaQuery
 } from "@mui/material";
-import CardImage from "../images/CardImage";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CommentIcon from "@mui/icons-material/Comment";
 import EventIcon from "@mui/icons-material/Event";
 import TagIcon from "@mui/icons-material/Tag";
@@ -32,16 +27,8 @@ const ItemSingleSkeleton = () => {
                 <Grid item xs={12} md={7} lg={8}>
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
+                            <IconButton disabled><SvgIcon/></IconButton>
                             <Rating readOnly/>
-                            <IconButton disabled>
-                                <Skeleton variant={"circular"} width={24} height={24}/>
-                            </IconButton>
-                            <IconButton disabled>
-                                <Skeleton variant={"circular"} width={24} height={24}/>
-                            </IconButton>
-                            <IconButton disabled>
-                                <Skeleton variant={"circular"} width={24} height={24}/>
-                            </IconButton>
                         </Stack>
                         <Stack spacing={1}>
                             <Stack direction={"row"} spacing={1} alignItems={"end"}>

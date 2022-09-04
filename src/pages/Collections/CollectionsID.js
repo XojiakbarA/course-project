@@ -19,9 +19,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {Link as RouterLink} from "react-router-dom";
 import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {getCollectionItems} from "../../store/asyncThunk/itemsAsyncThunk";
-import {collectionsSelector, itemsSelector, tagsSelector} from "../../store/selectors";
+import {authSelector, collectionsSelector, itemsSelector, tagsSelector} from "../../store/selectors";
 import {setFetchItemsType, setItem, setItems} from "../../store/slices/itemsSlice";
 import {getCollection} from "../../store/asyncThunk/collectionsAsyncThunk";
 import {setCollection} from "../../store/slices/collectionsSlice";
@@ -31,22 +31,27 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import {FETCH_COLLECTION_ITEMS} from "../../store/fetchTypes";
 import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 import CollectionDialogsWrapper from "../../components/dialogs/CollectionDialogsWrapper";
+import {isAdmin} from "../../utils/helpers";
 
 const CollectionsID = () => {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { id } = useParams()
     const { content: items, hasMore, getLoading } = useSelector(itemsSelector)
     const { single: collection, getSingleLoading } = useSelector(collectionsSelector)
     const { content: tags } = useSelector(tagsSelector)
+    const { user } = useSelector(authSelector)
+
+    const isOwnCollection = user?.id === collection?.user?.id
 
     const [page, setPage] = useState(0)
     const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
 
     useEffect(() => {
-        dispatch(getCollection({ id }))
+        dispatch(getCollection({ id, navigate }))
         dispatch(getCollectionItems({ id, params }))
-    }, [dispatch, id, params])
+    }, [dispatch, navigate, id, params])
     useEffect(() => {
         return () => {
             dispatch(setCollection(null))
@@ -206,7 +211,7 @@ const CollectionsID = () => {
                             rows={items}
                             components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel, LoadingOverlay: LinearProgress }}
                             componentsProps={{
-                                toolbar: { onClick: toggleCreateItemDialog, buttonText: "Create Item" },
+                                toolbar: { onClick: toggleCreateItemDialog, buttonText: "Create Item", isOwnCollection },
                                 filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
                             }}
                         />

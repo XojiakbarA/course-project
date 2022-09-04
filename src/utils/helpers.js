@@ -19,5 +19,5 @@ export const appendToFormData = (data) => {
 }
 
 export const isAdmin = (user) => {
-    return user?.roles?.find(r => r.name === "ADMIN")
+    return !!user?.roles?.find(r => r.name === "ADMIN")
 }

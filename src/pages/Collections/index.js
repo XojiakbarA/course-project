@@ -9,7 +9,6 @@ import {getCollections} from "../../store/asyncThunk/collectionsAsyncThunk";
 import {setCollections} from "../../store/slices/collectionsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CollectionListSkeleton from "../../components/skeletons/CollectionListSkeleton";
-import CollectionDialogsWrapper from "../../components/dialogs/CollectionDialogsWrapper";
 
 const Collections = () => {
 
@@ -74,7 +73,6 @@ const Collections = () => {
                     </Grid>
                 </InfiniteScroll>
             </Grid>
-            <CollectionDialogsWrapper params={params}/>
         </Grid>
     )
 }

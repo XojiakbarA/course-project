@@ -6,7 +6,7 @@ import {
     CardContent, Chip,
     Divider, Grid,
     IconButton, Rating,
-    Stack,
+    Stack, SvgIcon,
     Tooltip,
     Typography, useMediaQuery
 } from "@mui/material";
@@ -24,6 +24,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {toggleCreateComment, toggleDeleteItem, toggleEditItem} from "../../store/slices/dialogsSlice";
 import {editItemLikes} from "../../store/asyncThunk/itemsAsyncThunk";
 import {authSelector, itemsSelector} from "../../store/selectors";
+import {isAdmin} from "../../utils/helpers";
 
 const ItemSingleCard = ({ item }) => {
 
@@ -39,9 +40,11 @@ const ItemSingleCard = ({ item }) => {
         dispatch(toggleDeleteItem())
     }
 
-    const { user } = useSelector(authSelector)
+    const { user, getLoading } = useSelector(authSelector)
 
     const { likeLoading } = useSelector(itemsSelector)
+
+    const isOwnItem = user?.id === item?.collection?.user?.id
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -66,30 +69,47 @@ const ItemSingleCard = ({ item }) => {
                 <Grid item xs={12} md={7} lg={8}>
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
+                            {
+                                isOwnItem || isAdmin(user)
+                                ?
+                                <>
+                                    <Tooltip title={"Edit"}>
+                                        <IconButton onClick={toggleEditItemDialog} disabled={getLoading}>
+                                            <EditIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title={"Delete"}>
+                                        <IconButton onClick={toggleDeleteItemDialog} disabled={getLoading}>
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </>
+                                :
+                                <IconButton disabled><SvgIcon/></IconButton>
+                            }
+                            {
+                                user
+                                &&
+                                <>
+                                <Tooltip title={"Like"}>
+                                    <IconButton
+                                        onClick={handleLikeClick}
+                                        disabled={likeLoading || getLoading}
+                                    >
+                                        { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={"Add Comment"}>
+                                    <IconButton
+                                        onClick={toggleAddCommentDialog}
+                                        disabled={getLoading}
+                                    >
+                                        <AddCommentIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                                </>
+                            }
                             <Rating readOnly value={item?.rating ?? 0}/>
-                            <Tooltip title={"Like"}>
-                                <IconButton
-                                    onClick={handleLikeClick}
-                                    disabled={likeLoading}
-                                >
-                                    { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={"Add Comment"}>
-                                <IconButton onClick={toggleAddCommentDialog}>
-                                    <AddCommentIcon/>
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={"Edit"}>
-                                <IconButton onClick={toggleEditItemDialog}>
-                                    <EditIcon/>
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={"Delete"}>
-                                <IconButton onClick={toggleDeleteItemDialog}>
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </Tooltip>
                         </Stack>
                         <Stack spacing={1}>
                             <Stack direction={"row"} spacing={1} alignItems={"end"}>

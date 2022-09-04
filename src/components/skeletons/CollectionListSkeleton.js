@@ -7,8 +7,11 @@ import {
     Stack,
     Typography
 } from "@mui/material";
+import {useLocation} from "react-router";
 
 const CollectionListSkeleton = ({ sx }) => {
+
+    const location = useLocation()
 
     return (
         <Card sx={sx ?? { position: "relative", height: "100%" }}>
@@ -24,12 +27,18 @@ const CollectionListSkeleton = ({ sx }) => {
             </CardContent>
             </CardActionArea>
             <CardActions sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", display: "flex", justifyContent: "flex-end"}}>
-                <IconButton disabled>
-                    <Skeleton variant={"circular"} width={24} height={24}/>
-                </IconButton>
-                <IconButton disabled>
-                    <Skeleton variant={"circular"} width={24} height={24}/>
-                </IconButton>
+                {
+                    location.pathname === "/my-collections"
+                    &&
+                    <>
+                    <IconButton disabled>
+                        <Skeleton variant={"circular"} width={24} height={24}/>
+                    </IconButton>
+                    <IconButton disabled>
+                        <Skeleton variant={"circular"} width={24} height={24}/>
+                    </IconButton>
+                    </>
+                }
             </CardActions>
         </Card>
     )

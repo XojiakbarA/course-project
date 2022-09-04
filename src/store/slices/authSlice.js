@@ -1,10 +1,11 @@
 import {createSlice} from "@reduxjs/toolkit"
 import {getUser, login} from "../asyncThunk/authAsyncThunk";
-import {isExpired} from "react-jwt";
+import {decodeToken, isExpired} from "react-jwt";
 
 const initialState = {
     user: null,
     isAuth: !isExpired(localStorage.getItem("token")),
+    isAdmin: !!decodeToken(localStorage.getItem("token"))?.roles?.find(r => r.authority === "ADMIN"),
     error: null,
     authLoading: false,
     getLoading: false,
@@ -19,13 +20,16 @@ export const authSlice = createSlice({
             localStorage.removeItem("token")
             state.user = null
             state.isAuth = false
+            state.isAdmin = false
         },
         oAuth2Login: (state, action) => {
             localStorage.setItem("token", action.payload.token)
             state.isAuth = true
+            state.isAdmin = !!decodeToken(action.payload.token)?.roles?.find(r => r.authority === "ADMIN")
         },
         setAuthUser: (state, action) => {
             state.user = action.payload
+            state.isAdmin = !!action.payload?.roles?.find(r => r.name === "ADMIN")
         }
     },
     extraReducers: {
@@ -34,13 +38,15 @@ export const authSlice = createSlice({
         },
         [getUser.fulfilled]: (state, action) => {
             state.getLoading = false
+            state.isAuth = true
+            state.isAdmin = !!action.payload?.roles?.find(r => r.name === "ADMIN")
             state.user = action.payload
-            state.error = null
         },
-        [getUser.rejected]: (state, action) => {
+        [getUser.rejected]: (state) => {
             state.getLoading = false
             state.isAuth = false
-            state.error = action.payload
+            state.isAdmin = false
+            localStorage.removeItem("token")
         },
         [login.pending]: (state) => {
             state.authLoading = true
@@ -49,12 +55,14 @@ export const authSlice = createSlice({
             state.authLoading = false
             localStorage.setItem("token", action.payload.token)
             state.isAuth = true
+            state.isAdmin = !!action.payload?.user?.roles?.find(r => r.name === "ADMIN")
             state.user = action.payload.user
-            state.error = null
         },
-        [login.rejected]: (state, action) => {
+        [login.rejected]: (state) => {
             state.authLoading = false
-            state.error = action.payload
+            state.isAuth = false
+            state.isAdmin = false
+            localStorage.removeItem("token")
         },
     }
 })

@@ -25,6 +25,8 @@ import UserDialogsWrapper from "./components/dialogs/UserDialogsWrapper";
 import AdminItems from "./pages/admin/AdminItems";
 import Tags from "./pages/admin/Tags";
 import Comments from "./pages/admin/Comments";
+import NotFound from "./pages/404";
+import AdminProtected from "./pages/admin/AdminProtected";
 
 const App = (props) => {
 
@@ -43,15 +45,15 @@ const App = (props) => {
                 <Route element={<ScrollToTop/>}>
                     <Route path={"/"} element={<MainLayout/>}>
                         <Route index element={<Home/>}/>
-                        <Route element={<Protected/>}>
-                            <Route path={"/my-collections"} element={<MyCollections/>}/>
-                        </Route>
                         <Route path={"/collections"} element={<Collections/>}/>
                         <Route path={"/collections/:id"} element={<CollectionsID/>}/>
                         <Route path={"/items/"} element={<Items/>}/>
                         <Route path={"/items/:id"} element={<ItemsID/>}/>
                         <Route path={"/tags/:id"} element={<TagsID/>}/>
-                        <Route path={"/admin"}>
+                        <Route element={<Protected/>}>
+                            <Route path={"/my-collections"} element={<MyCollections/>}/>
+                        </Route>
+                        <Route path={"/admin"} element={<AdminProtected/>}>
                             <Route index element={<Dashboard/>}/>
                             <Route path={"/admin/users"} element={<Users/>}/>
                             <Route path={"/admin/topics"} element={<Topics/>}/>
@@ -61,6 +63,7 @@ const App = (props) => {
                             <Route path={"/admin/comments"} element={<Comments/>}/>
                         </Route>
                     </Route>
+                    <Route path={"/*"} element={<NotFound/>}/>
                     <Route path={"/oauth2/redirect"} element={<OAuth2RedirectHandler/>}/>
                 </Route>
             </Routes>

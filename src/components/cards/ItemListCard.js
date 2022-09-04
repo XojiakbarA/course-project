@@ -97,14 +97,18 @@ const ItemListCard = ({ item, sx }) => {
                 display: "flex",
                 justifyContent: "flex-end"
             }}>
-                <Tooltip title={"Like"}>
-                    <IconButton
-                        onClick={ e => handleLikeClick(item?.id) }
-                        disabled={likeLoading && clickedId === item?.id}
-                    >
-                        { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
-                    </IconButton>
-                </Tooltip>
+                {
+                    user
+                    &&
+                    <Tooltip title={"Like"}>
+                        <IconButton
+                            onClick={ e => handleLikeClick(item?.id) }
+                            disabled={likeLoading && clickedId === item?.id}
+                        >
+                            { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
+                        </IconButton>
+                    </Tooltip>
+                }
             </CardActions>
         </Card>
     )

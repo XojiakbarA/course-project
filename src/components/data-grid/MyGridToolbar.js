@@ -6,8 +6,13 @@ import {
 } from "@mui/x-data-grid"
 import AddIcon from '@mui/icons-material/Add';
 import {Button} from "@mui/material";
+import {isAdmin} from "../../utils/helpers";
+import {useSelector} from "react-redux";
+import {authSelector} from "../../store/selectors";
 
-const MyGridToolbar = ({ onClick, buttonText }) => {
+const MyGridToolbar = ({ onClick, buttonText, isOwnCollection }) => {
+
+    const { user } = useSelector(authSelector)
 
     return (
         <GridToolbarContainer>
@@ -15,13 +20,19 @@ const MyGridToolbar = ({ onClick, buttonText }) => {
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
             <GridToolbarExport />
-            <Button
-                size={"small"}
-                startIcon={<AddIcon/>}
-                onClick={onClick}
-            >
-                { buttonText }
-            </Button>
+            {
+                isOwnCollection || isAdmin(user)
+                ?
+                <Button
+                    size={"small"}
+                    startIcon={<AddIcon/>}
+                    onClick={onClick}
+                >
+                    { buttonText }
+                </Button>
+                :
+                null
+            }
         </GridToolbarContainer>
     )
 }

@@ -4,41 +4,43 @@ import TagIcon from '@mui/icons-material/Tag';
 import ItemListCard from "../components/cards/ItemListCard";
 import {useDispatch, useSelector} from "react-redux";
 import {itemsSelector, tagsSelector} from "../store/selectors";
-import {useEffect} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {getTagItems} from "../store/asyncThunk/itemsAsyncThunk";
-import {useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {getTag} from "../store/asyncThunk/tagsAsyncThunk";
 import {setTag} from "../store/slices/tagsSlice";
 import {setItems} from "../store/slices/itemsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ItemListSkeleton from "../components/skeletons/ItemListSkeleton";
 
-const TagsID = ({ params, setParams }) => {
+const TagsID = () => {
 
     const dispatch = useDispatch()
-
+    const navigate = useNavigate()
     const { id } = useParams()
 
     const { single: tag, hasMore, getSingleLoading } = useSelector(tagsSelector)
     const { content: items, getLoading } = useSelector(itemsSelector)
 
+    const [page, setPage] = useState(0)
+    const params = useMemo(() => ({ sortBy: "createdAt", sortType: "DESC", size: 30, page }), [page])
+
     const skeletonSize = Array.from({length: 12}, (_, i) => i)
 
     useEffect(() => {
-        dispatch(getTag({ id }))
+        dispatch(getTag({ id, navigate }))
         dispatch(getTagItems({ id, params }))
     }, [dispatch, id, params])
     useEffect(() => {
         return () => {
             dispatch(setTag(null))
             dispatch(setItems([]))
-            setParams(prev => ({ ...prev, page: 0 }))
 
         }
-    }, [dispatch, setParams])
+    }, [dispatch])
 
     const handleNext = () => {
-        setParams(prev => ({ ...prev, page: prev.page + 1 }))
+        setPage(prev => prev + 1)
     }
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))

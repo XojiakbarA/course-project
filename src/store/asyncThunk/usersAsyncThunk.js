@@ -41,7 +41,7 @@ export const editUser = createAsyncThunk("users/edit",
             if (res.status === 200) {
                 const authUser = getState().auth.user
                 if (authUser.id === id) {
-                    if (!res.data.data.isNonLocked) {
+                    if (!res.data.data.isNonLocked || !res.data.data.roles.find(r => r.name === "ADMIN")) {
                         dispatch(logout())
                     } else {
                         dispatch(setAuthUser(res.data.data))
@@ -59,10 +59,14 @@ export const editUser = createAsyncThunk("users/edit",
 )
 
 export const deleteUser = createAsyncThunk("users/delete",
-    async ({ id, params }, { dispatch, rejectWithValue }) => {
+    async ({ id, params }, { dispatch, rejectWithValue, getState }) => {
         try {
             const res = await destroyUser(id)
             if (res.status === 200) {
+                const authUser = getState().auth.user
+                if (authUser.id === id) {
+                    dispatch(logout())
+                }
                 dispatch(toggleDeleteUser())
                 dispatch(setSnackbar({ data: res.data.message, open: true, color: "success" }))
                 const page = await fetchUsers(params)

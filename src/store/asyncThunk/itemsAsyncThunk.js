@@ -62,13 +62,14 @@ export const getTagItems = createAsyncThunk("items/tagGet",
 )
 
 export const getItem = createAsyncThunk("items/singleGet",
-    async ({ id }, { dispatch, rejectWithValue }) => {
+    async ({ id, navigate }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchItem(id)
             if (res.status === 200) {
                 return res.data.data
             }
         } catch ({ response }) {
+            if (response.status === 404) navigate("/")
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
             return rejectWithValue(response.data.message)
         }

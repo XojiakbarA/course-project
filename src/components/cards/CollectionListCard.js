@@ -14,8 +14,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {Link} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import CardImage from "../images/CardImage";
+import {useLocation} from "react-router";
 
 const CollectionListCard = ({ onEditClick, onDeleteClick, collection, sx }) => {
+
+    const location = useLocation()
 
     const ref = useRef(null)
 
@@ -51,16 +54,22 @@ const CollectionListCard = ({ onEditClick, onDeleteClick, collection, sx }) => {
                 </CardContent>
             </CardActionArea>
             <CardActions sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", display: "flex", justifyContent: "flex-end"}}>
-                <Tooltip title={"Edit"}>
-                    <IconButton onClick={ e => onEditClick(collection) }>
-                        <EditIcon/>
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title={"Delete"}>
-                    <IconButton onClick={ e => onDeleteClick(collection) }>
-                        <DeleteIcon/>
-                    </IconButton>
-                </Tooltip>
+                {
+                    location.pathname === "/my-collections"
+                    &&
+                    <>
+                    <Tooltip title={"Edit"}>
+                        <IconButton onClick={ e => onEditClick(collection) }>
+                            <EditIcon/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={"Delete"}>
+                        <IconButton onClick={ e => onDeleteClick(collection) }>
+                            <DeleteIcon/>
+                        </IconButton>
+                    </Tooltip>
+                    </>
+                }
             </CardActions>
         </Card>
     )

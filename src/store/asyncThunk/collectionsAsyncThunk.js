@@ -45,13 +45,14 @@ export const getUserCollections = createAsyncThunk("collections/userGet",
 )
 
 export const getCollection = createAsyncThunk("collections/singleGet",
-    async ({ id }, { dispatch, rejectWithValue }) => {
+    async ({ id, navigate }, { dispatch, rejectWithValue }) => {
         try {
             const res = await fetchCollection(id)
             if (res.status === 200) {
                 return res.data.data
             }
         } catch ({ response }) {
+            if (response.status === 404) navigate("/")
             dispatch(setSnackbar({ data: response.data.message, open: true, color: "error" }))
             return rejectWithValue(response.data.message)
         }

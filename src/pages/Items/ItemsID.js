@@ -5,7 +5,7 @@ import PageTitle from "../../components/commons/PageTitle";
 import CommentCard from "../../components/cards/CommentCard";
 import CommentForm from "../../components/forms/CommentForm";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {useEffect} from "react";
 import {getItem} from "../../store/asyncThunk/itemsAsyncThunk";
 import {setItem} from "../../store/slices/itemsSlice";
@@ -25,6 +25,7 @@ const ItemsID = () => {
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { id } = useParams()
 
     const { comment: commentDialog } = useSelector(dialogsSelector)
@@ -32,9 +33,9 @@ const ItemsID = () => {
     const { content: comments, getLoading } = useSelector(commentsSelector)
 
     useEffect(() => {
-        dispatch(getItem({ id }))
+        dispatch(getItem({ id, navigate }))
         dispatch(getItemComments({ id }))
-    }, [dispatch, id])
+    }, [dispatch, navigate, id])
     useEffect(() => {
         return () => {
             dispatch(setItem(null))

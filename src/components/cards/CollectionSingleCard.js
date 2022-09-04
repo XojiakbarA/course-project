@@ -4,7 +4,7 @@ import {
     CardContent,
     Divider, Grid,
     IconButton,
-    Stack,
+    Stack, SvgIcon,
     Tooltip,
     Typography,
     useMediaQuery
@@ -17,9 +17,13 @@ import CardImage from "../images/CardImage";
 import {useEffect, useRef, useState} from "react";
 import AvatarImage from "../images/AvatarImage";
 import {toggleDeleteCollection, toggleEditCollection} from "../../store/slices/dialogsSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {authSelector} from "../../store/selectors";
+import {isAdmin} from "../../utils/helpers";
 
 const CollectionSingleCard = ({ collection }) => {
+
+    const { user, getLoading } = useSelector(authSelector)
 
     const dispatch = useDispatch()
 
@@ -29,6 +33,8 @@ const CollectionSingleCard = ({ collection }) => {
     const toggleDeleteCollectionDialog = () => {
         dispatch(toggleDeleteCollection())
     }
+
+    const isOwnCollection = user?.id === collection?.user?.id
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -49,16 +55,25 @@ const CollectionSingleCard = ({ collection }) => {
                 <Grid item xs={12} md={7} lg={8}>
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
-                            <Tooltip title={"Edit"}>
-                                <IconButton onClick={toggleEditCollectionDialog}>
-                                    <EditIcon/>
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={"Delete"}>
-                                <IconButton onClick={toggleDeleteCollectionDialog}>
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </Tooltip>
+                            {
+                                isOwnCollection || isAdmin(user)
+                                ?
+                                <>
+                                <Tooltip title={"Edit"}>
+                                    <IconButton onClick={toggleEditCollectionDialog} disabled={getLoading}>
+                                        <EditIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={"Delete"}>
+                                    <IconButton onClick={toggleDeleteCollectionDialog} disabled={getLoading}>
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                                </>
+                                :
+                                <IconButton disabled><SvgIcon/></IconButton>
+                            }
+
                         </Stack>
                         <Stack spacing={1}>
                             <Stack direction={"row"} spacing={1} alignItems={"end"}>

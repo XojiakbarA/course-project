@@ -4,7 +4,6 @@ import {
     CardActions,
     CardContent,
     Chip,
-    IconButton,
     Rating,
     Skeleton,
     Stack,
@@ -50,11 +49,7 @@ const ItemListSkeleton = ({ sx }) => {
                 </Stack>
             </CardContent>
             </CardActionArea>
-            <CardActions sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", display: "flex", justifyContent: "flex-end"}}>
-                <IconButton disabled>
-                    <Skeleton variant={"circular"} width={24} height={24}/>
-                </IconButton>
-            </CardActions>
+            <CardActions sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", display: "flex", justifyContent: "flex-end"}}/>
         </Card>
     )
 }

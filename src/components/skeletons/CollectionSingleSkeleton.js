@@ -6,7 +6,7 @@ import {
     Divider,
     Grid,
     IconButton, Skeleton,
-    Stack,
+    Stack, SvgIcon,
     Typography, useMediaQuery
 } from "@mui/material";
 import AvatarImage from "../images/AvatarImage";
@@ -26,12 +26,7 @@ const CollectionSingleSkeleton = () => {
                 <Grid item xs={12} md={7} lg={8}>
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
-                            <IconButton disabled>
-                                <Skeleton variant={"circular"} width={24} height={24}/>
-                            </IconButton>
-                            <IconButton disabled>
-                                <Skeleton variant={"circular"} width={24} height={24}/>
-                            </IconButton>
+                            <IconButton disabled><SvgIcon/></IconButton>
                         </Stack>
                         <Stack spacing={1}>
                             <Stack direction={"row"} spacing={1} alignItems={"end"}>
