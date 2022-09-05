@@ -7,11 +7,12 @@ import {commentsSelector, dialogsSelector} from "../../store/selectors";
 import {toggleCreateComment, toggleDeleteComment, toggleEditComment} from "../../store/slices/dialogsSlice";
 import {createComment, deleteComment, editComment} from "../../store/asyncThunk/commentsAsyncThunk";
 import CommentForm from "../forms/CommentForm";
+import {useTranslation} from "react-i18next";
 
 const CommentDialogsWrapper = ({ params }) => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { comment: commentDialog } = useSelector(dialogsSelector)
 
     const { single: comment, createLoading, editLoading, deleteLoading } = useSelector(commentsSelector)
@@ -40,13 +41,13 @@ const CommentDialogsWrapper = ({ params }) => {
     return (
         <>
             <CommonDialog
-                title={"Create Comment"}
+                title={ t("createComment") }
                 maxWidth={"xs"}
                 open={commentDialog.create}
                 onClose={toggleCreateCommentDialog}
             >
                 <CommentForm
-                    buttonText={"Create"}
+                    buttonText={ t("create") }
                     buttonIcon={<AddToPhotosIcon/>}
                     buttonLoading={createLoading}
                     onCancelClick={toggleCreateCommentDialog}
@@ -54,13 +55,13 @@ const CommentDialogsWrapper = ({ params }) => {
                 />
             </CommonDialog>
             <CommonDialog
-                title={"Edit Comment"}
+                title={ t("editComment") }
                 maxWidth={"xs"}
                 open={commentDialog.edit}
                 onClose={toggleEditCommentDialog}
             >
                 <CommentForm
-                    buttonText={"Edit"}
+                    buttonText={ t("edit") }
                     buttonIcon={<EditIcon/>}
                     buttonLoading={editLoading}
                     onCancelClick={toggleEditCommentDialog}
@@ -73,7 +74,7 @@ const CommentDialogsWrapper = ({ params }) => {
                 onClose={toggleDeleteCommentDialog}
                 onConfirmClick={handleCommentDeleteClick}
                 loading={deleteLoading}
-                content={"Do you really want to delete the comment?"}
+                content={ t("deleteConfirmComment") }
             />
         </>
     )

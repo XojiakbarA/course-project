@@ -7,11 +7,12 @@ import {useDispatch, useSelector} from "react-redux";
 import {dialogsSelector, topicsSelector} from "../../store/selectors";
 import {toggleCreateTopic, toggleDeleteTopic, toggleEditTopic} from "../../store/slices/dialogsSlice";
 import {createTopic, deleteTopic, editTopic} from "../../store/asyncThunk/topicsAsyncThunk";
+import {useTranslation} from "react-i18next";
 
 const TopicDialogsWrapper = ({ params }) => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { topic: topicDialog } = useSelector(dialogsSelector)
 
     const { single: topic, createLoading, editLoading, deleteLoading } = useSelector(topicsSelector)
@@ -40,13 +41,13 @@ const TopicDialogsWrapper = ({ params }) => {
     return (
         <>
             <CommonDialog
-                title={"Create Topic"}
+                title={ t("createTopic") }
                 maxWidth={"xs"}
                 open={topicDialog.create}
                 onClose={toggleCreateTopicDialog}
             >
                 <TopicForm
-                    buttonText={"Create"}
+                    buttonText={ t("create") }
                     buttonIcon={<AddToPhotosIcon/>}
                     buttonLoading={createLoading}
                     onCancelClick={toggleCreateTopicDialog}
@@ -54,13 +55,13 @@ const TopicDialogsWrapper = ({ params }) => {
                 />
             </CommonDialog>
             <CommonDialog
-                title={"Edit Topic"}
+                title={ t("editTopic") }
                 maxWidth={"xs"}
                 open={topicDialog.edit}
                 onClose={toggleEditTopicDialog}
             >
                 <TopicForm
-                    buttonText={"Edit"}
+                    buttonText={ t("edit") }
                     buttonIcon={<EditIcon/>}
                     buttonLoading={editLoading}
                     onCancelClick={toggleEditTopicDialog}
@@ -73,7 +74,7 @@ const TopicDialogsWrapper = ({ params }) => {
                 onClose={toggleDeleteTopicDialog}
                 onConfirmClick={handleTopicDeleteClick}
                 loading={deleteLoading}
-                content={"Do you really want to delete the topic?"}
+                content={ t("deleteConfirmTopic") }
             />
         </>
     )

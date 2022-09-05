@@ -5,10 +5,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {useDispatch} from "react-redux";
 import {toggleDeleteTag, toggleEditTag} from "../../store/slices/dialogsSlice";
 import {setTag} from "../../store/slices/tagsSlice";
+import {useTranslation} from "react-i18next";
 
 const TagCard = ({ tag }) => {
 
     const dispatch = useDispatch()
+    const { t } = useTranslation()
 
     const toggleTagEditDialog = () => {
         dispatch(setTag(tag))
@@ -29,7 +31,7 @@ const TagCard = ({ tag }) => {
                             <Typography variant={"h6"}>{ tag?.name }</Typography>
                         </Stack>
                         <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                            <Typography variant={"body2"}>Created At:</Typography>
+                            <Typography variant={"body2"}>{ t("createdAt") }:</Typography>
                             <Typography variant={"body2"}>{ new Date(tag?.createdAt).toLocaleString() }</Typography>
                         </Stack>
                     </Stack>

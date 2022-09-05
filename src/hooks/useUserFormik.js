@@ -1,17 +1,21 @@
 import {useFormik} from "formik";
 import {useState} from "react";
 import {userValidationSchema} from "../utils/validate";
+import {useSelector} from "react-redux";
+import {authSelector} from "../store/selectors";
 
 export const useUserFormik = (onSubmit, user) => {
+
+    const { isAdmin } = useSelector(authSelector)
 
     const [rolesValue, setRolesValue] = useState(user?.roles ?? [])
 
     const formik = useFormik({
         initialValues: {
-            isNonLocked: user?.isNonLocked ?? true,
+            isNonLocked: isAdmin ? user?.isNonLocked : null,
             firstName: user?.firstName ?? "",
             lastName: user?.lastName ?? "",
-            roleIds: user?.roles?.map(r => r.id) ?? [],
+            roleIds: isAdmin ? user?.roles?.map(r => r.id) : null,
             image: null
         },
         enableReinitialize: true,

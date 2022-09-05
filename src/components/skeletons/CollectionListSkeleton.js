@@ -8,10 +8,12 @@ import {
     Typography
 } from "@mui/material";
 import {useLocation} from "react-router";
+import {useTranslation} from "react-i18next";
 
 const CollectionListSkeleton = ({ sx }) => {
 
     const location = useLocation()
+    const { t } = useTranslation()
 
     return (
         <Card sx={sx ?? { position: "relative", height: "100%" }}>
@@ -21,7 +23,7 @@ const CollectionListSkeleton = ({ sx }) => {
                 <Typography variant={"h5"}><Skeleton width={200}/></Typography>
                 <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
                     <Typography gutterBottom><Skeleton width={120}/></Typography>
-                    <Typography color={"secondary.dark"}>0 Items</Typography>
+                    <Typography color={"secondary.dark"}>0 { t("items") }</Typography>
                 </Stack>
                 <Typography variant={"body2"}><Skeleton variant={"text"}/></Typography>
             </CardContent>

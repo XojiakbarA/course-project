@@ -31,7 +31,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import {FETCH_COLLECTION_ITEMS} from "../../store/fetchTypes";
 import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 import CollectionDialogsWrapper from "../../components/dialogs/CollectionDialogsWrapper";
-import {isAdmin} from "../../utils/helpers";
 
 const CollectionsID = () => {
 

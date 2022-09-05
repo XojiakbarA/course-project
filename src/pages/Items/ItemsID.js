@@ -19,6 +19,7 @@ import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import CommonDialog from "../../components/dialogs/CommonDialog";
 import {toggleCreateComment} from "../../store/slices/dialogsSlice";
+import {useTranslation} from "react-i18next";
 
 const ItemsID = () => {
 
@@ -27,6 +28,7 @@ const ItemsID = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { id } = useParams()
+    const { t } = useTranslation()
 
     const { comment: commentDialog } = useSelector(dialogsSelector)
     const { single: item, getSingleLoading } = useSelector(itemsSelector)
@@ -78,7 +80,7 @@ const ItemsID = () => {
             </Grid>
             <Grid item xs={12} md={7} lg={8} display={"flex"} justifyContent={"center"}>
                 <PageTitle
-                    text={"Comments"}
+                    text={ t("comments") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<CommentIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}

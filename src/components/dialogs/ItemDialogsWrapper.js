@@ -15,12 +15,14 @@ import {appendToFormData} from "../../utils/helpers";
 import {createItem, deleteItem, deleteItemImage, editItem} from "../../store/asyncThunk/itemsAsyncThunk";
 import {useLocation, useNavigate} from "react-router";
 import {setFetchItemsType} from "../../store/slices/itemsSlice";
+import {useTranslation} from "react-i18next";
 
 const ItemDialogsWrapper = ({ params }) => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
+    const { t } = useTranslation()
 
     const { item: itemDialog } = useSelector(dialogsSelector)
 
@@ -65,26 +67,26 @@ const ItemDialogsWrapper = ({ params }) => {
     return (
         <>
             <CommonDialog
-                title={"Create Item"}
+                title={ t("createItem") }
                 maxWidth={"md"}
                 open={itemDialog.create}
                 onClose={toggleCreateItemDialog}
             >
                 <ItemForm
-                    buttonText={"Create"}
+                    buttonText={ t("create") }
                     buttonIcon={<AddToPhotosIcon/>}
                     buttonLoading={createLoading}
                     onSubmit={handleItemCreateSubmit}
                 />
             </CommonDialog>
             <CommonDialog
-                title={"Edit Item"}
+                title={ t("editItem") }
                 maxWidth={"md"}
                 open={itemDialog.edit}
                 onClose={toggleEditItemDialog}
             >
                 <ItemForm
-                    buttonText={"Edit"}
+                    buttonText={ t("edit") }
                     buttonIcon={<EditIcon/>}
                     buttonLoading={editLoading}
                     onSubmit={handleItemEditSubmit}
@@ -96,14 +98,14 @@ const ItemDialogsWrapper = ({ params }) => {
                 onClose={toggleDeleteItemDialog}
                 onConfirmClick={handleItemDeleteClick}
                 loading={deleteLoading}
-                content={"Do you really want to delete the item?"}
+                content={ t("deleteConfirmItem") }
             />
             <ConfirmDialog
                 open={itemDialog.deleteImage}
                 onClose={toggleDeleteItemImageDialog}
                 onConfirmClick={handleItemDeleteImageClick}
                 loading={deleteImageLoading}
-                content={"Do you really want to delete the image?"}
+                content={ t("deleteConfirmImage") }
             />
         </>
     )

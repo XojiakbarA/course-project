@@ -13,11 +13,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import CollectionListSkeleton from "../components/skeletons/CollectionListSkeleton";
 import {FETCH_USER_COLLECTIONS} from "../store/fetchTypes";
 import CollectionDialogsWrapper from "../components/dialogs/CollectionDialogsWrapper";
+import {useTranslation} from "react-i18next";
 
 const MyCollections = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const skeletonSize = Array.from({length: 12}, (_, i) => i)
 
     const { content: collections, hasMore, getLoading } = useSelector(collectionsSelector)
@@ -61,7 +62,7 @@ const MyCollections = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"My Collections"}
+                    text={ t("myCollections") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<CategoryIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}

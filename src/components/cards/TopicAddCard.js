@@ -1,7 +1,10 @@
 import {Card, CardActionArea, Stack, Typography} from "@mui/material";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
+import {useTranslation} from "react-i18next";
 
 const TopicAddCard = ({ onClick }) => {
+
+    const { t } = useTranslation()
 
     return (
         <Card sx={{ height: "100%", minHeight: 148 }}>
@@ -16,7 +19,7 @@ const TopicAddCard = ({ onClick }) => {
             >
                 <Stack spacing={3} alignItems={"center"}>
                     <AddToPhotosIcon sx={{ transform: "scale(2)" }} color={"primary"}/>
-                    <Typography variant={"body2"} color={"primary"}>Create Topic</Typography>
+                    <Typography variant={"body2"} color={"primary"}>{ t("createTopic") }</Typography>
                 </Stack>
             </CardActionArea>
         </Card>

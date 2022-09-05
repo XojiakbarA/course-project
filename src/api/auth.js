@@ -8,7 +8,9 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(async req => {
     const token = localStorage.getItem("token")
-    if (token) req.headers.Authorization = "Bearer " + token
+    const lang = localStorage.getItem("i18nextLng")
+    if (token) req.headers["Authorization"] = "Bearer " + token
+    if (lang) req.headers["Accept-Language"] = lang
     return req
 })
 

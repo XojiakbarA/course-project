@@ -17,10 +17,12 @@ import ItemListSkeleton from "../components/skeletons/ItemListSkeleton";
 import {getCollections} from "../store/asyncThunk/collectionsAsyncThunk";
 import {setCollections} from "../store/slices/collectionsSlice";
 import CollectionListSkeleton from "../components/skeletons/CollectionListSkeleton";
+import {useTranslation} from "react-i18next";
 
 const Home = () => {
 
     const dispatch = useDispatch()
+    const { t } = useTranslation()
 
     const { content: items, getLoading: itemsGetLoading } = useSelector(itemsSelector)
     const { content: tags, getLoading: tagsGetLoading } = useSelector(tagsSelector)
@@ -51,12 +53,12 @@ const Home = () => {
             <Grid item xs={12}>
                 <Stack direction={"row"} justifyContent={"space-between"} alignItems={"end"}>
                     <PageTitle
-                        text={"Last Items"}
+                        text={t("lastItems")}
                         variant={isDownSm ? "h5" : "h4"}
                         color={"primary"}
                         icon={<AttachFileIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
                     />
-                    <Link component={RouterLink} to={"/items"}>View All</Link>
+                    <Link component={RouterLink} to={"/items"}>{ t("viewAll") }</Link>
                 </Stack>
             </Grid>
             <Grid item xs={12}>
@@ -77,12 +79,12 @@ const Home = () => {
             <Grid item xs={12}>
                 <Stack direction={"row"} justifyContent={"space-between"} alignItems={"end"}>
                     <PageTitle
-                        text={"The Biggest Collections"}
+                        text={t("theBiggestCollections")}
                         variant={isDownSm ? "h5" : "h4"}
                         color={"primary"}
                         icon={<CategoryIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
                     />
-                    <Link component={RouterLink} to={"/collections"}>View All</Link>
+                    <Link component={RouterLink} to={"/collections"}>{ t("viewAll") }</Link>
                 </Stack>
             </Grid>
             <Grid item xs={12}>
@@ -102,7 +104,7 @@ const Home = () => {
             </Grid>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Tags"}
+                    text={t("tags")}
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<TagIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}

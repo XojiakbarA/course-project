@@ -2,11 +2,14 @@ import {IconButton, Stack, TextField, useMediaQuery} from "@mui/material";
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import {useState} from "react";
 import AutocompleteInput from "./AutocompleteInput";
+import {useTranslation} from "react-i18next";
 
 const CollectionCustomFieldInput = ({
     index, loading, customFieldTypes, touched, errors, typeInitValue,
     getFieldProps, handleBlur, setFieldValue, onRemoveClick
 }) => {
+
+    const { t } = useTranslation()
 
     const [customFieldTypeValue, setCustomFieldTypeValue] = useState(typeInitValue ?? null)
 
@@ -23,7 +26,7 @@ const CollectionCustomFieldInput = ({
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
                 variant={"filled"}
-                label={"Name"}
+                label={ t("name") }
                 error={ touched?.customFields?.length && touched.customFields[index]?.name && errors?.customFields?.length &&  Boolean(errors.customFields[index]?.name) }
                 helperText={ touched?.customFields?.length && touched.customFields[index]?.name && errors?.customFields?.length &&  errors.customFields[index]?.name }
                 { ...getFieldProps(`customFields[${index}].name`) }
@@ -32,7 +35,7 @@ const CollectionCustomFieldInput = ({
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
                 variant={"filled"}
-                label={"Type"}
+                label={ t("type") }
                 options={customFieldTypes}
                 value={customFieldTypeValue}
                 loading={loading}

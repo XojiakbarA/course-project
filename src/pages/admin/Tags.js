@@ -12,10 +12,12 @@ import TagDialogsWrapper from "../../components/dialogs/TagDialogsWrapper";
 import {setTag, setTags} from "../../store/slices/tagsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {toggleCreateTag} from "../../store/slices/dialogsSlice";
+import {useTranslation} from "react-i18next";
 
 const Tags = () => {
 
     const dispatch = useDispatch()
+    const { t } = useTranslation()
     const { content: tags, hasMore, getLoading } = useSelector(tagsSelector)
 
     const [page, setPage] = useState(0)
@@ -44,7 +46,7 @@ const Tags = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Tags"}
+                    text={ t("tags") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<TagIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}

@@ -19,11 +19,12 @@ import AvatarImage from "../images/AvatarImage";
 import {toggleDeleteCollection, toggleEditCollection} from "../../store/slices/dialogsSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {authSelector} from "../../store/selectors";
-import {isAdmin} from "../../utils/helpers";
+import {useTranslation} from "react-i18next";
 
 const CollectionSingleCard = ({ collection }) => {
 
-    const { user, getLoading } = useSelector(authSelector)
+    const { t } = useTranslation()
+    const { user, isAdmin, getLoading } = useSelector(authSelector)
 
     const dispatch = useDispatch()
 
@@ -56,15 +57,15 @@ const CollectionSingleCard = ({ collection }) => {
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
                             {
-                                isOwnCollection || isAdmin(user)
+                                isOwnCollection || isAdmin
                                 ?
                                 <>
-                                <Tooltip title={"Edit"}>
+                                <Tooltip title={ t("edit") }>
                                     <IconButton onClick={toggleEditCollectionDialog} disabled={getLoading}>
                                         <EditIcon/>
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={"Delete"}>
+                                <Tooltip title={ t("delete") }>
                                     <IconButton onClick={toggleDeleteCollectionDialog} disabled={getLoading}>
                                         <DeleteIcon/>
                                     </IconButton>
@@ -92,7 +93,7 @@ const CollectionSingleCard = ({ collection }) => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <AvatarImage publicId={ collection?.user?.image?.value } size={isDownSm ? 30 : 40}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>User</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("user") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             { collection?.user.firstName }
                                         </Typography>
@@ -101,7 +102,7 @@ const CollectionSingleCard = ({ collection }) => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <AttachFileIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Items</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("items") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             { collection?.itemsCount }
                                         </Typography>
@@ -110,7 +111,7 @@ const CollectionSingleCard = ({ collection }) => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <EventIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Created at</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("createdAt") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"} whiteSpace={"nowrap"}>
                                             { new Date(collection?.createdAt).toLocaleString() }
                                         </Typography>

@@ -2,8 +2,11 @@ import {Stack, TextField, useMediaQuery} from "@mui/material";
 import {useFormik} from "formik";
 import {topicValidationSchema} from "../../utils/validate";
 import {LoadingButton} from "@mui/lab";
+import {useTranslation} from "react-i18next";
 
 const TopicForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, topic }) => {
+
+    const { t } = useTranslation()
 
     const { handleSubmit, getFieldProps, touched, errors } = useFormik({
         initialValues: {
@@ -23,7 +26,7 @@ const TopicForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, topic }) =
                     fullWidth
                     size={isDownSm ? "small" : "medium"}
                     variant={"filled"}
-                    label={"Name"}
+                    label={ t("name") }
                     error={ touched.name && Boolean(errors.name) }
                     helperText={ touched.name && errors.name }
                     { ...getFieldProps("name") }

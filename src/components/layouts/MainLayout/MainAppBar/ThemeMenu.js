@@ -3,7 +3,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import BrightnessAutoIcon from "@mui/icons-material/BrightnessAuto";
 
-const ThemeMenu = ({ id, anchorEl, onClose, onChange, mode }) => {
+const ThemeMenu = ({ id, anchorEl, onClose, onChange, value }) => {
 
     return (
         <Popover
@@ -16,7 +16,7 @@ const ThemeMenu = ({ id, anchorEl, onClose, onChange, mode }) => {
         >
             <ToggleButtonGroup
                 size={"small"}
-                value={mode}
+                value={value}
                 exclusive
                 onChange={onChange}
                 aria-label="change mode"

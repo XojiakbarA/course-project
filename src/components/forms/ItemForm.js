@@ -4,7 +4,6 @@ import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useSinglePreview} from "../../hooks/useSinglePreview";
 import {useItemFormik} from "../../hooks/useItemFormik";
-import {isAdmin} from "../../utils/helpers";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import {authSelector, collectionsSelector, tagsSelector} from "../../store/selectors";
 import {LoadingButton} from "@mui/lab";
@@ -15,16 +14,18 @@ import {useLocation} from "react-router";
 import ItemCustomFieldInput from "../inputs/ItemCustomFieldInput";
 import {getTags} from "../../store/asyncThunk/tagsAsyncThunk";
 import {setTags} from "../../store/slices/tagsSlice";
+import {useTranslation} from "react-i18next";
 
 const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, item }) => {
 
     const dispatch = useDispatch()
     const location = useLocation()
+    const { t } = useTranslation()
     const isAdminPage = location.pathname.startsWith("/admin")
 
     const { content: collections, getLoading: collectionsGetLoading } = useSelector(collectionsSelector)
     const { content: tags, getLoading: tagsGetLoading } = useSelector(tagsSelector)
-    const { user } = useSelector(authSelector)
+    const { isAdmin } = useSelector(authSelector)
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -76,7 +77,7 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, item }) => 
                             fullWidth
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"Name"}
+                            label={ t("name") }
                             error={ touched.name && Boolean(errors.name) }
                             helperText={ touched.name && errors.name }
                             { ...getFieldProps("name") }
@@ -84,11 +85,11 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, item }) => 
                         <AutocompleteInput
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"Collection"}
+                            label={ t("collection") }
                             options={collections}
                             value={collectionValue}
                             loading={collectionsGetLoading}
-                            disabled={collectionsGetLoading || !isAdmin(user) || !isAdminPage}
+                            disabled={collectionsGetLoading || !isAdmin || !isAdminPage}
                             name="collectionId"
                             onChange={handleCollectionChange}
                             onBlur={handleBlur}
@@ -100,7 +101,7 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, item }) => 
                             multiple
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"Tags"}
+                            label={ t("tags") }
                             options={tags}
                             value={tagsValue}
                             loading={tagsGetLoading}
@@ -115,7 +116,7 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, item }) => 
                     </Stack>
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                    <ListSubheader sx={{ bgcolor: "transparent", position: "relative" }}>Custom Fields</ListSubheader>
+                    <ListSubheader sx={{ bgcolor: "transparent", position: "relative" }}>{ t("customFields") }</ListSubheader>
                     <ItemCustomFieldInput
                         customValues={values.customValues}
                         collectionValue={collectionValue}
@@ -132,7 +133,7 @@ const ItemForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, item }) => 
                         size={isDownSm ? "small" : "medium"}
                         startIcon={buttonIcon}
                         type={"submit"}
-                        loading={buttonLoading}
+                        loading={buttonLoading || collectionsGetLoading || tagsGetLoading}
                     >
                         { buttonText }
                     </LoadingButton>

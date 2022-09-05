@@ -1,15 +1,16 @@
 import {CircularProgress, IconButton, Tooltip} from "@mui/material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AvatarImage from "../../../images/AvatarImage";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {authSelector} from "../../../../store/selectors";
-import {toggleAuth} from "../../../../store/slices/dialogsSlice";
 import {useState} from "react";
 import UserMenu from "./UserMenu";
+import {useTranslation} from "react-i18next";
 
 const AuthButton = () => {
 
-    const dispatch = useDispatch()
+    const { t } = useTranslation()
+
     const { getLoading, user, isAuth } = useSelector(authSelector)
 
     const [anchorEl, setAnchorEl] = useState(null)
@@ -23,7 +24,7 @@ const AuthButton = () => {
 
     return (
         <>
-        <Tooltip title={isAuth ? "Menu" : "Login"}>
+        <Tooltip title={isAuth ? t("menu") : t("login")}>
             <IconButton color={"inherit"} onClick={handleAuthClick}>
                 {
                     getLoading

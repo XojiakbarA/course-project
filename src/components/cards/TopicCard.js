@@ -5,10 +5,12 @@ import TopicIcon from '@mui/icons-material/Topic';
 import {useDispatch} from "react-redux";
 import {toggleDeleteTopic, toggleEditTopic} from "../../store/slices/dialogsSlice";
 import {setTopic} from "../../store/slices/topicsSlice";
+import {useTranslation} from "react-i18next";
 
 const TopicCard = ({ topic }) => {
 
     const dispatch = useDispatch()
+    const { t } = useTranslation()
 
     const toggleTopicEditDialog = () => {
         dispatch(setTopic(topic))
@@ -29,7 +31,7 @@ const TopicCard = ({ topic }) => {
                             <Typography variant={"h6"}>{ topic?.name }</Typography>
                         </Stack>
                         <Stack direction={"row"} spacing={1} alignItems={"center"}>
-                            <Typography variant={"body2"}>Created At:</Typography>
+                            <Typography variant={"body2"}>{ t("createdAt") }:</Typography>
                             <Typography variant={"body2"}>{ new Date(topic?.createdAt).toLocaleString() }</Typography>
                         </Stack>
                     </Stack>

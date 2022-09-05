@@ -11,12 +11,14 @@ import {Link} from "react-router-dom";
 import SearchInput from "../../../inputs/SearchInput";
 import {useLocation} from "react-router";
 import AuthButton from "./AuthButton";
+import {useTranslation} from "react-i18next";
+import "../../../../utils/i18next";
 
 const MyAppBar = ({ onMenuClick }) => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
-
     const location = useLocation()
+    const { t } = useTranslation()
 
     return (
             <AppBar position="fixed">
@@ -37,7 +39,7 @@ const MyAppBar = ({ onMenuClick }) => {
                         to={"/"}
                         sx={{ mr: 1 }}
                     >
-                        { isDownSm ? "CP" : "CourseProject" }
+                        { isDownSm ? t("courseProject.short") : t("courseProject.long") }
                     </Button>
                     {
                         !location.pathname.startsWith("/admin") &&

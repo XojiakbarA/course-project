@@ -16,11 +16,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {FETCH_COLLECTIONS} from "../../store/fetchTypes";
 import CollectionDialogsWrapper from "../../components/dialogs/CollectionDialogsWrapper";
+import {useTranslation} from "react-i18next";
 
 const AdminCollections = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { content: collections, hasMore, getLoading } = useSelector(collectionsSelector)
 
     const [page, setPage] = useState(0)
@@ -67,7 +68,7 @@ const AdminCollections = () => {
                 flex: 1,
                 minWidth: 80,
                 field: 'image',
-                headerName: 'Image',
+                headerName: t('image'),
                 type: "string",
                 filterable: false,
                 sortable: false,
@@ -77,7 +78,7 @@ const AdminCollections = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'name',
-                headerName: 'Name',
+                headerName: t('name'),
                 type: "string",
                 renderCell: ({ row }) => <Link component={RouterLink} to={`/collections/${row.id}`}>{row.name}</Link>
             },
@@ -85,14 +86,14 @@ const AdminCollections = () => {
                 flex: 3,
                 minWidth: 200,
                 field: 'description',
-                headerName: 'Description',
+                headerName: t('description'),
                 type: "string",
             },
             {
                 flex: 2,
                 minWidth: 150,
                 field: 'topic',
-                headerName: 'Topic Name',
+                headerName: t('topicName'),
                 type: "string",
                 valueGetter: ({ value }) => value.name
             },
@@ -100,7 +101,7 @@ const AdminCollections = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'user',
-                headerName: 'User',
+                headerName: t('user'),
                 type: "string",
                 renderCell: ({ value }) => (
                     <Stack direction={"row"} spacing={1} alignItems={"center"}>
@@ -113,24 +114,24 @@ const AdminCollections = () => {
                 flex: 1.5,
                 minWidth: 150,
                 field: 'createdAt',
-                headerName: 'Created At',
+                headerName: t('createdAt'),
                 type: "dateTime",
                 renderCell: ({ value }) => value ? new Date(value).toLocaleString() : null
             },
             {
                 width: 120,
                 field: "actions",
-                headerName: 'Actions',
+                headerName: t('actions'),
                 filterable: false,
                 sortable: false,
                 renderCell: ({ row }) => (
                     <Stack direction={"row"} spacing={1}>
-                        <Tooltip title={"Edit"}>
+                        <Tooltip title={ t("edit") }>
                             <IconButton onClick={ e => toggleEditCollectionDialog(row) }>
                                 <EditIcon/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title={"Delete"}>
+                        <Tooltip title={ t("delete") }>
                             <IconButton onClick={ e => toggleDeleteCollectionDialog(row) }>
                                 <DeleteIcon/>
                             </IconButton>
@@ -139,7 +140,7 @@ const AdminCollections = () => {
                 )
             }
         ]
-    ), [toggleEditCollectionDialog, toggleDeleteCollectionDialog])
+    ), [toggleEditCollectionDialog, toggleDeleteCollectionDialog, t])
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -147,7 +148,7 @@ const AdminCollections = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Collections"}
+                    text={ t("collections") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<CategoryIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
@@ -170,7 +171,7 @@ const AdminCollections = () => {
                             rows={collections}
                             components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
                             componentsProps={{
-                                toolbar: { onClick: toggleCreateCollectionDialog, buttonText: "Create Collection" },
+                                toolbar: { onClick: toggleCreateCollectionDialog, buttonText: t("createCollection") },
                                 filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
                             }}
                         />
