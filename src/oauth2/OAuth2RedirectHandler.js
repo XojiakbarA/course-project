@@ -14,16 +14,18 @@ const OAuth2RedirectHandler = () => {
     const token = params.get("token")
     const error = params.get("error")
 
+    const message = params.get("message")
+
     useEffect(() => {
         if (token) {
             dispatch(oAuth2Login({ token }))
-            dispatch(setSnackbar({ data: "You are logged in!", open: true, color: "success" }))
+            dispatch(setSnackbar({ data: message, open: true, color: "success" }))
         }
         if (error) {
             dispatch(setSnackbar({ data: error, open: true, color: "error" }))
         }
         navigate("/")
-    }, [token, error, navigate, dispatch])
+    }, [token, error, message, navigate, dispatch])
 }
 
 export default OAuth2RedirectHandler

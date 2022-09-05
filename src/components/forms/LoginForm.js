@@ -13,11 +13,12 @@ import {loginValidationSchema} from "../../utils/validate";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../store/asyncThunk/authAsyncThunk";
 import {authSelector} from "../../store/selectors";
+import {useTranslation} from "react-i18next";
 
 const LoginForm = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { authLoading } = useSelector(authSelector)
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
@@ -49,7 +50,7 @@ const LoginForm = () => {
             <PasswordInput
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
-                label={"Password"}
+                label={ t("password") }
                 error={ touched.password && Boolean(errors.password) }
                 helperText={ touched.password && errors.password }
                 { ...getFieldProps('password') }
@@ -60,9 +61,9 @@ const LoginForm = () => {
                 type={"submit"}
                 loading={authLoading}
             >
-                Login
+                { t("login") }
             </LoadingButton>
-            <Divider><Chip label={"OR LOGIN WITH"} size={"small"}/></Divider>
+            <Divider><Chip label={ t("orLoginWith") } size={"small"}/></Divider>
             <SocialLoginButtons disabled={authLoading}/>
         </Stack>
         </form>

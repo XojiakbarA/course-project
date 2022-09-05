@@ -15,16 +15,17 @@ import LanguageMenu from "./LanguageMenu";
 import ThemeMenu from "./ThemeMenu";
 import {logout} from "../../../../store/slices/authSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {toggleAuth, toggleEditUser, toggleLoginUser} from "../../../../store/slices/dialogsSlice";
+import {toggleEditUser, toggleLoginUser} from "../../../../store/slices/dialogsSlice";
 import {authSelector} from "../../../../store/selectors";
-import {isAdmin} from "../../../../utils/helpers";
 import {setUser} from "../../../../store/slices/usersSlice";
+import {useTranslation} from "react-i18next";
 
 const UserMenu = ({ anchorEl, onClose }) => {
 
     const dispatch = useDispatch()
-    const { user, isAuth } = useSelector(authSelector)
+    const { isAdmin, isAuth, user } = useSelector(authSelector)
     const { mode, handleModeChange } = useTheme()
+    const { i18n, t } = useTranslation()
 
     const [anchorThemeEl, setAnchorThemeEl] = useState(null)
     const [anchorLanguageEl, setAnchorLanguageEl] = useState(null)
@@ -41,6 +42,9 @@ const UserMenu = ({ anchorEl, onClose }) => {
     const handleLogoutClick = () => {
         onClose()
         dispatch(logout())
+    }
+    const handleLangChange = (e) => {
+        i18n.changeLanguage(e.target.value)
     }
 
     return (
@@ -61,11 +65,11 @@ const UserMenu = ({ anchorEl, onClose }) => {
                     onClick={handleLoginClick}
                 >
                     <ListItemIcon><LoginIcon/></ListItemIcon>
-                    <ListItemText>Login</ListItemText>
+                    <ListItemText>{ t("login") }</ListItemText>
                 </MenuItem>
             }
             {
-                isAdmin(user)
+                isAdmin
                 &&
                 <MenuItem
                     component={Link}
@@ -73,7 +77,7 @@ const UserMenu = ({ anchorEl, onClose }) => {
                     onClick={onClose}
                 >
                     <ListItemIcon><AdminPanelSettingsIcon/></ListItemIcon>
-                    <ListItemText>Admin Panel</ListItemText>
+                    <ListItemText>{ t("adminPanel") }</ListItemText>
                 </MenuItem>
             }
             {
@@ -81,7 +85,7 @@ const UserMenu = ({ anchorEl, onClose }) => {
                 &&
                 <MenuItem onClick={handleEditClick}>
                     <ListItemIcon><ManageAccountsIcon/></ListItemIcon>
-                    <ListItemText>Edit Profile</ListItemText>
+                    <ListItemText>{ t("editProfile") }</ListItemText>
                 </MenuItem>
             }
             {
@@ -93,7 +97,7 @@ const UserMenu = ({ anchorEl, onClose }) => {
                     onClick={onClose}
                 >
                     <ListItemIcon><CategoryIcon/></ListItemIcon>
-                    <ListItemText>My Collections</ListItemText>
+                    <ListItemText>{ t("myCollections") }</ListItemText>
                 </MenuItem>
             }
             {
@@ -101,31 +105,33 @@ const UserMenu = ({ anchorEl, onClose }) => {
                 &&
                 <MenuItem onClick={handleLogoutClick}>
                     <ListItemIcon><LogoutIcon/></ListItemIcon>
-                    <ListItemText>Log Out</ListItemText>
+                    <ListItemText>{ t("logOut") }</ListItemText>
                 </MenuItem>
             }
             <MenuItem onClick={e => setAnchorThemeEl(e.currentTarget)}>
                 <ListItemIcon>
                     { mode === 'light' ? <LightModeIcon/> : mode === 'dark' ? <DarkModeIcon/> : <BrightnessAutoIcon/> }
                 </ListItemIcon>
-                <ListItemText>Theme</ListItemText>
+                <ListItemText>{ t("theme") }</ListItemText>
             </MenuItem>
             <MenuItem onClick={e => setAnchorLanguageEl(e.currentTarget)}>
                 <ListItemIcon><LanguageIcon/></ListItemIcon>
-                <ListItemText>Language</ListItemText>
+                <ListItemText>{ t("language") } ({i18n.language.toUpperCase()})</ListItemText>
             </MenuItem>
         </Menu>
         <LanguageMenu
             id={"lang-menu"}
             anchorEl={anchorLanguageEl}
             onClose={ e => setAnchorLanguageEl(null) }
+            onChange={handleLangChange}
+            value={i18n.language}
         />
         <ThemeMenu
             id={"theme-menu"}
             anchorEl={anchorThemeEl}
             onClose={ e => setAnchorThemeEl(null) }
             onChange={handleModeChange}
-            mode={mode}
+            value={mode}
         />
         </>
     )

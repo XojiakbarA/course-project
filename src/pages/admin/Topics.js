@@ -12,10 +12,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import {toggleCreateTopic} from "../../store/slices/dialogsSlice";
 import PageTitle from "../../components/commons/PageTitle";
 import TopicDialogsWrapper from "../../components/dialogs/TopicDialogsWrapper";
+import {useTranslation} from "react-i18next";
 
 const Topics = () => {
 
     const dispatch = useDispatch()
+    const { t } = useTranslation()
     const { content: topics, hasMore, getLoading } = useSelector(topicsSelector)
 
     const [page, setPage] = useState(0)
@@ -47,7 +49,7 @@ const Topics = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Topics"}
+                    text={ t("topics") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<TopicIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}

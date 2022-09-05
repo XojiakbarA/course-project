@@ -9,11 +9,12 @@ import {getItems} from "../../store/asyncThunk/itemsAsyncThunk";
 import {setItems} from "../../store/slices/itemsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ItemListSkeleton from "../../components/skeletons/ItemListSkeleton";
+import {useTranslation} from "react-i18next";
 
 const Items = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { content: items, hasMore, getLoading } = useSelector(itemsSelector)
 
     const [page, setPage] = useState(0)
@@ -40,7 +41,7 @@ const Items = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"All Items"}
+                    text={ t("allItems") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<AttachFileIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}

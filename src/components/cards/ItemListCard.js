@@ -19,13 +19,13 @@ import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {editItemLikes} from "../../store/asyncThunk/itemsAsyncThunk";
 import {authSelector, itemsSelector} from "../../store/selectors";
+import {useTranslation} from "react-i18next";
 
 const ItemListCard = ({ item, sx }) => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { user } = useSelector(authSelector)
-
     const { likeLoading } = useSelector(itemsSelector)
 
     const ref = useRef(null)
@@ -100,7 +100,7 @@ const ItemListCard = ({ item, sx }) => {
                 {
                     user
                     &&
-                    <Tooltip title={"Like"}>
+                    <Tooltip title={ t("like") }>
                         <IconButton
                             onClick={ e => handleLikeClick(item?.id) }
                             disabled={likeLoading && clickedId === item?.id}

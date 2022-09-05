@@ -22,11 +22,12 @@ import MyGridToolbar from "../../components/data-grid/MyGridToolbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import PageTitle from "../../components/commons/PageTitle";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
+import {useTranslation} from "react-i18next";
 
 const Users = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { user: userDialog } = useSelector(dialogsSelector)
 
     const { content: users, single: user, hasMore, getLoading, deleteLoading } = useSelector(usersSelector)
@@ -80,7 +81,7 @@ const Users = () => {
                 flex: 1,
                 minWidth: 80,
                 field: 'image',
-                headerName: 'Image',
+                headerName: t('image'),
                 type: "string",
                 filterable: false,
                 sortable: false,
@@ -90,14 +91,14 @@ const Users = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'firstName',
-                headerName: 'First Name',
+                headerName: t('firstName'),
                 type: "string"
             },
             {
                 flex: 2,
                 minWidth: 150,
                 field: 'lastName',
-                headerName: 'Last Name',
+                headerName: t('lastName'),
                 type: "string"
             },
             {
@@ -111,7 +112,7 @@ const Users = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'provider',
-                headerName: 'Provider',
+                headerName: t('provider'),
                 type: "boolean",
                 renderCell: ({ value }) => (
                     <Stack direction={"row"} spacing={1} alignItems={"center"}>
@@ -129,7 +130,7 @@ const Users = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'isNonLocked',
-                headerName: 'Status',
+                headerName: t('status'),
                 type: "boolean",
                 renderCell: ({ value }) => (
                     <Stack direction={"row"} spacing={1} alignItems={"center"}>
@@ -143,7 +144,7 @@ const Users = () => {
                 flex: 2.5,
                 minWidth: 150,
                 field: 'roles',
-                headerName: 'Roles',
+                headerName: t('roles'),
                 type: "string",
                 renderCell: ({ value }) => (
                     <Stack direction={"row"} spacing={1} alignItems={"center"}>
@@ -166,24 +167,24 @@ const Users = () => {
                 flex: 1.5,
                 minWidth: 150,
                 field: 'createdAt',
-                headerName: 'Registered At',
+                headerName: t('registeredAt'),
                 type: "dateTime",
                 renderCell: ({ value }) => value ? new Date(value).toLocaleString() : null
             },
             {
                 width: 120,
                 field: "actions",
-                headerName: 'Actions',
+                headerName: t('actions'),
                 filterable: false,
                 sortable: false,
                 renderCell: ({ row }) => (
                     <Stack direction={"row"} spacing={1}>
-                        <Tooltip title={"Edit"}>
+                        <Tooltip title={ t("edit") }>
                             <IconButton onClick={ e => toggleEditUserDialog(row) }>
                                 <EditIcon/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title={"Delete"}>
+                        <Tooltip title={ t("delete") }>
                             <IconButton onClick={ e => openDeleteUserDialog(row) }>
                                 <DeleteIcon/>
                             </IconButton>
@@ -192,7 +193,7 @@ const Users = () => {
                 )
             }
         ]
-    ), [toggleEditUserDialog, openDeleteUserDialog])
+    ), [toggleEditUserDialog, openDeleteUserDialog, t])
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -200,7 +201,7 @@ const Users = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Users"}
+                    text={ t("users") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<PeopleIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
@@ -223,7 +224,7 @@ const Users = () => {
                         rows={users}
                         components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
                         componentsProps={{
-                            toolbar: { onClick: toggleCreateUserDialog, buttonText: "Create User" },
+                            toolbar: { onClick: toggleCreateUserDialog, buttonText: t("createUser") },
                             filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
                         }}
                     />
@@ -235,7 +236,7 @@ const Users = () => {
                 onClose={closeDeleteUserDialog}
                 onConfirmClick={handleUserDeleteClick}
                 loading={deleteLoading}
-                content={"Do you really want to delete the user?"}
+                content={ t("deleteConfirmUser") }
             />
         </Grid>
     )

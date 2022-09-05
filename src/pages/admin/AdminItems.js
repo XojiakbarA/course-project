@@ -18,11 +18,12 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {useTranslation} from "react-i18next";
 
 const AdminItems = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { content: items, hasMore, getLoading } = useSelector(itemsSelector)
     const { content: tags } = useSelector(tagsSelector)
 
@@ -70,7 +71,7 @@ const AdminItems = () => {
                 flex: 1,
                 minWidth: 80,
                 field: 'image',
-                headerName: 'Image',
+                headerName: t('image'),
                 type: "string",
                 filterable: false,
                 sortable: false,
@@ -80,7 +81,7 @@ const AdminItems = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'name',
-                headerName: 'Name',
+                headerName: t('name'),
                 type: "string",
                 renderCell: ({ row }) => <Link component={RouterLink} to={`/items/${row.id}`}>{row.name}</Link>
             },
@@ -88,7 +89,7 @@ const AdminItems = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'collection',
-                headerName: 'Collection Name',
+                headerName: t('collectionName'),
                 type: "string",
                 renderCell: ({ value }) => <Link component={RouterLink} to={`/collections/${value.id}`}>{value.name}</Link>
             },
@@ -96,7 +97,7 @@ const AdminItems = () => {
                 flex: 2,
                 minWidth: 250,
                 field: 'tags',
-                headerName: 'Tags',
+                headerName: t('tags'),
                 type: "singleSelect",
                 sortable: false,
                 valueOptions: tags?.map(i => i.name),
@@ -114,12 +115,12 @@ const AdminItems = () => {
                 flex: 1,
                 minWidth: 100,
                 field: 'likesCount',
-                headerName: "Likes",
+                headerName: t("likes"),
                 type: "number",
                 renderHeader: () => (
                     <Stack direction={"row"} spacing={1}>
                         <ThumbUpIcon fontSize={"small"}/>
-                        <Typography variant={"body2"}>Likes</Typography>
+                        <Typography variant={"body2"}>{ t("likes") }</Typography>
                     </Stack>
                 ),
                 renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
@@ -128,12 +129,12 @@ const AdminItems = () => {
                 flex: 1,
                 minWidth: 100,
                 field: 'commentsCount',
-                headerName: "Comments",
+                headerName: t("comments"),
                 type: "number",
                 renderHeader: () => (
                     <Stack direction={"row"} spacing={1}>
                         <CommentIcon fontSize={"small"}/>
-                        <Typography variant={"body2"}>Comments</Typography>
+                        <Typography variant={"body2"}>{ t("comments") }</Typography>
                     </Stack>
                 ),
                 renderCell: ({ value }) => <Chip size={"small"} label={value} variant={"outlined"}/>
@@ -142,24 +143,24 @@ const AdminItems = () => {
                 flex: 1.5,
                 minWidth: 150,
                 field: 'createdAt',
-                headerName: 'Created At',
+                headerName: t('createdAt'),
                 type: "dateTime",
                 renderCell: ({ value }) => value ? new Date(value).toLocaleString() : null
             },
             {
                 width: 120,
                 field: "actions",
-                headerName: 'Actions',
+                headerName: t('actions'),
                 filterable: false,
                 sortable: false,
                 renderCell: ({ row }) => (
                     <Stack direction={"row"} spacing={1}>
-                        <Tooltip title={"Edit"}>
+                        <Tooltip title={ t("edit") }>
                             <IconButton onClick={ e => toggleEditItemDialog(row) }>
                                 <EditIcon/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title={"Delete"}>
+                        <Tooltip title={ t("delete") }>
                             <IconButton onClick={ e => toggleDeleteItemDialog(row) }>
                                 <DeleteIcon/>
                             </IconButton>
@@ -168,7 +169,7 @@ const AdminItems = () => {
                 )
             }
         ]
-    ), [toggleEditItemDialog, toggleDeleteItemDialog, tags])
+    ), [toggleEditItemDialog, toggleDeleteItemDialog, tags, t])
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -176,7 +177,7 @@ const AdminItems = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Items"}
+                    text={ t("items") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<AttachFileIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
@@ -199,7 +200,7 @@ const AdminItems = () => {
                             rows={items}
                             components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
                             componentsProps={{
-                                toolbar: { onClick: toggleCreateItemDialog, buttonText: "Create Item" },
+                                toolbar: { onClick: toggleCreateItemDialog, buttonText: t("createItem") },
                                 filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
                             }}
                         />

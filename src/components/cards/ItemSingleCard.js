@@ -24,11 +24,12 @@ import {useDispatch, useSelector} from "react-redux";
 import {toggleCreateComment, toggleDeleteItem, toggleEditItem} from "../../store/slices/dialogsSlice";
 import {editItemLikes} from "../../store/asyncThunk/itemsAsyncThunk";
 import {authSelector, itemsSelector} from "../../store/selectors";
-import {isAdmin} from "../../utils/helpers";
+import {useTranslation} from "react-i18next";
 
 const ItemSingleCard = ({ item }) => {
 
     const dispatch = useDispatch()
+    const { t } = useTranslation()
 
     const toggleAddCommentDialog = () => {
         dispatch(toggleCreateComment())
@@ -40,7 +41,7 @@ const ItemSingleCard = ({ item }) => {
         dispatch(toggleDeleteItem())
     }
 
-    const { user, getLoading } = useSelector(authSelector)
+    const { user, isAdmin, getLoading } = useSelector(authSelector)
 
     const { likeLoading } = useSelector(itemsSelector)
 
@@ -70,15 +71,15 @@ const ItemSingleCard = ({ item }) => {
                     <CardContent>
                         <Stack direction={"row"} spacing={1} justifyContent={"end"} alignItems={"center"}>
                             {
-                                isOwnItem || isAdmin(user)
+                                isOwnItem || isAdmin
                                 ?
                                 <>
-                                    <Tooltip title={"Edit"}>
+                                    <Tooltip title={ t("edit") }>
                                         <IconButton onClick={toggleEditItemDialog} disabled={getLoading}>
                                             <EditIcon/>
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title={"Delete"}>
+                                    <Tooltip title={ t("delete") }>
                                         <IconButton onClick={toggleDeleteItemDialog} disabled={getLoading}>
                                             <DeleteIcon/>
                                         </IconButton>
@@ -91,7 +92,7 @@ const ItemSingleCard = ({ item }) => {
                                 user
                                 &&
                                 <>
-                                <Tooltip title={"Like"}>
+                                <Tooltip title={ t("like") }>
                                     <IconButton
                                         onClick={handleLikeClick}
                                         disabled={likeLoading || getLoading}
@@ -99,7 +100,7 @@ const ItemSingleCard = ({ item }) => {
                                         { item?.liked ? <ThumbUpIcon/> : <ThumbUpOffAltIcon/> }
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={"Add Comment"}>
+                                <Tooltip title={ t("createComment") }>
                                     <IconButton
                                         onClick={toggleAddCommentDialog}
                                         disabled={getLoading}
@@ -135,7 +136,7 @@ const ItemSingleCard = ({ item }) => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <Avatar sx={{ width: isDownSm ? 30 : 40, height: isDownSm ? 30 : 40 }}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>User</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("user") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             { item?.collection?.user?.firstName }
                                         </Typography>
@@ -144,7 +145,7 @@ const ItemSingleCard = ({ item }) => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <ThumbUpIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Likes</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("likes") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             { item?.likesCount }
                                         </Typography>
@@ -153,7 +154,7 @@ const ItemSingleCard = ({ item }) => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <CommentIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Comments</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("comments") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             { item?.commentsCount }
                                         </Typography>
@@ -162,7 +163,7 @@ const ItemSingleCard = ({ item }) => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <EventIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Created at</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("createdAt") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             { new Date(item?.createdAt).toLocaleString() }
                                         </Typography>
@@ -172,7 +173,7 @@ const ItemSingleCard = ({ item }) => {
                             <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                 <TagIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                 <Box>
-                                    <Typography variant={"caption"} color={"primary"}>Tags</Typography>
+                                    <Typography variant={"caption"} color={"primary"}>{ t("tags") }</Typography>
                                     <Stack direction={"row"} spacing={1}>
                                         {
                                             item?.tags?.map(tag => (

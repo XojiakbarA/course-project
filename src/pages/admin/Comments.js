@@ -14,11 +14,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {getComments} from "../../store/asyncThunk/commentsAsyncThunk";
 import {setComment, setComments} from "../../store/slices/commentsSlice";
 import CommentDialogsWrapper from "../../components/dialogs/CommentDialogsWrapper";
+import {useTranslation} from "react-i18next";
 
 const Comments = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { content: comments, hasMore, getLoading } = useSelector(commentsSelector)
 
     const [page, setPage] = useState(0)
@@ -63,7 +64,7 @@ const Comments = () => {
                 flex: 3,
                 minWidth: 200,
                 field: 'text',
-                headerName: 'Text',
+                headerName: t('text'),
                 type: "string",
                 filterable: false,
                 sortable: false
@@ -72,7 +73,7 @@ const Comments = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'user',
-                headerName: 'User Name',
+                headerName: t('userName'),
                 type: "string",
                 renderCell: ({ value }) => (
                     <Stack direction={"row"} spacing={1} alignItems={"center"}>
@@ -85,24 +86,24 @@ const Comments = () => {
                 flex: 1.5,
                 minWidth: 150,
                 field: 'createdAt',
-                headerName: 'Created At',
+                headerName: t('createdAt'),
                 type: "dateTime",
                 renderCell: ({ value }) => value ? new Date(value).toLocaleString() : null
             },
             {
                 width: 120,
                 field: "actions",
-                headerName: 'Actions',
+                headerName: t('actions'),
                 filterable: false,
                 sortable: false,
                 renderCell: ({ row }) => (
                     <Stack direction={"row"} spacing={1}>
-                        <Tooltip title={"Edit"}>
+                        <Tooltip title={ t("edit") }>
                             <IconButton onClick={ e => toggleEditCommentDialog(row) }>
                                 <EditIcon/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title={"Delete"}>
+                        <Tooltip title={ t("delete") }>
                             <IconButton onClick={ e => toggleDeleteCommentDialog(row) }>
                                 <DeleteIcon/>
                             </IconButton>
@@ -119,7 +120,7 @@ const Comments = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"Comments"}
+                    text={ t("comments") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<CommentIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}
@@ -142,7 +143,7 @@ const Comments = () => {
                             rows={comments}
                             components={{ Toolbar: MyGridToolbar, FilterPanel: GridFilterPanel }}
                             componentsProps={{
-                                toolbar: { onClick: toggleCreateCommentDialog, buttonText: "Create Comment" },
+                                toolbar: { onClick: toggleCreateCommentDialog, buttonText: t("createComment") },
                                 filterPanel: { filterFormProps: { operatorInputProps: { sx: { display: 'none' }} } }
                             }}
                         />

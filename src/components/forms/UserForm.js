@@ -8,15 +8,15 @@ import {getRoles} from "../../store/asyncThunk/rolesAsyncThunk";
 import {LoadingButton} from "@mui/lab";
 import AvatarUpload from "../commons/AvatarUpload";
 import {useSinglePreview} from "../../hooks/useSinglePreview";
-import {isAdmin} from "../../utils/helpers";
 import {toggleDeleteUserImage} from "../../store/slices/dialogsSlice";
+import {useTranslation} from "react-i18next";
 
 const UserForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, user }) => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { content: roles, getLoading } = useSelector(rolesSelector)
-    const { user: authUser } = useSelector(authSelector)
+    const { isAdmin } = useSelector(authSelector)
 
     useEffect(() => {
         dispatch(getRoles())
@@ -32,6 +32,8 @@ const UserForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, user }) => 
     const handleDeleteImageClick = () => {
         dispatch(toggleDeleteUserImage())
     }
+
+    console.log(values)
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -51,10 +53,10 @@ const UserForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, user }) => 
                     helperText={ errors.image }
                 />
                 {
-                    isAdmin(authUser)
+                    isAdmin
                     &&
                     <FormControlLabel
-                        control={<Switch checked={values.isNonLocked}/>}
+                        control={<Switch checked={Boolean(values.isNonLocked)}/>}
                         label="Unlocked"
                         name={"isNonLocked"}
                         onChange={handleUnlockedChange}
@@ -62,14 +64,14 @@ const UserForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, user }) => 
                     />
                 }
                 {
-                    isAdmin(authUser)
+                    isAdmin
                     &&
                     <AutocompleteInput
                         multiple
                         fullWidth
                         size={isDownSm ? "small" : "medium"}
                         variant={"filled"}
-                        label={"Roles"}
+                        label={ t("roles") }
                         options={roles}
                         value={rolesValue}
                         loading={getLoading}
@@ -86,7 +88,7 @@ const UserForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, user }) => 
                     fullWidth
                     size={isDownSm ? "small" : "medium"}
                     variant={"filled"}
-                    label={"First Name"}
+                    label={ t("firstName") }
                     error={ touched.firstName && Boolean(errors.firstName) }
                     helperText={ touched.firstName && errors.firstName }
                     { ...getFieldProps('firstName') }
@@ -95,7 +97,7 @@ const UserForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, user }) => 
                     fullWidth
                     size={isDownSm ? "small" : "medium"}
                     variant={"filled"}
-                    label={"Last Name"}
+                    label={ t("lastName") }
                     error={ touched.lastName && Boolean(errors.lastName) }
                     helperText={ touched.lastName && errors.lastName }
                     { ...getFieldProps('lastName') }
@@ -106,7 +108,7 @@ const UserForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, user }) => 
                     size={isDownSm ? "small" : "medium"}
                     startIcon={buttonIcon}
                     type={"submit"}
-                    loading={buttonLoading}
+                    loading={buttonLoading || getLoading}
                 >
                     { buttonText }
                 </LoadingButton>

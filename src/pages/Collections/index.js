@@ -9,11 +9,12 @@ import {getCollections} from "../../store/asyncThunk/collectionsAsyncThunk";
 import {setCollections} from "../../store/slices/collectionsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CollectionListSkeleton from "../../components/skeletons/CollectionListSkeleton";
+import {useTranslation} from "react-i18next";
 
 const Collections = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { content: collections, hasMore, getLoading } = useSelector(collectionsSelector)
 
     const [page, setPage] = useState(0)
@@ -40,7 +41,7 @@ const Collections = () => {
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <PageTitle
-                    text={"All Collections"}
+                    text={ t("allCollections") }
                     variant={isDownSm ? "h5" : "h4"}
                     color={"primary"}
                     icon={<CategoryIcon sx={{ transform: isDownSm ? "scale(1.2)" : "scale(1.5)" }} color={"primary"}/>}

@@ -15,11 +15,12 @@ import {Link} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import CardImage from "../images/CardImage";
 import {useLocation} from "react-router";
+import {useTranslation} from "react-i18next";
 
 const CollectionListCard = ({ onEditClick, onDeleteClick, collection, sx }) => {
 
     const location = useLocation()
-
+    const { t } = useTranslation()
     const ref = useRef(null)
 
     const [cardWidth, setCardWidth] = useState(null)
@@ -48,7 +49,7 @@ const CollectionListCard = ({ onEditClick, onDeleteClick, collection, sx }) => {
                     <Typography variant={"h5"} color={"primary.dark"}>{collection?.name}</Typography>
                     <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
                         <Typography gutterBottom color={"grey.400"}>{collection?.user?.firstName}</Typography>
-                        <Typography color={"secondary.dark"}>{ collection?.itemsCount } Items</Typography>
+                        <Typography color={"secondary.dark"}>{ collection?.itemsCount } { t("items") }</Typography>
                     </Stack>
                     <Typography variant={"body2"} color={"text.disabled"}>{collection?.description}</Typography>
                 </CardContent>
@@ -58,12 +59,12 @@ const CollectionListCard = ({ onEditClick, onDeleteClick, collection, sx }) => {
                     location.pathname === "/my-collections"
                     &&
                     <>
-                    <Tooltip title={"Edit"}>
+                    <Tooltip title={ t("edit") }>
                         <IconButton onClick={ e => onEditClick(collection) }>
                             <EditIcon/>
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title={"Delete"}>
+                    <Tooltip title={ t("delete") }>
                         <IconButton onClick={ e => onDeleteClick(collection) }>
                             <DeleteIcon/>
                         </IconButton>

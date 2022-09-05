@@ -13,8 +13,11 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import EventIcon from "@mui/icons-material/Event";
 import TagIcon from "@mui/icons-material/Tag";
+import {useTranslation} from "react-i18next";
 
 const ItemSingleSkeleton = () => {
+
+    const { t } = useTranslation()
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -54,7 +57,7 @@ const ItemSingleSkeleton = () => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <Avatar sx={{ width: isDownSm ? 30 : 40, height: isDownSm ? 30 : 40 }}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>User</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("user") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             <Skeleton width={80}/>
                                         </Typography>
@@ -63,21 +66,21 @@ const ItemSingleSkeleton = () => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <ThumbUpIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Likes</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("likes") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>0</Typography>
                                     </Box>
                                 </Stack>
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <CommentIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Comments</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("comments") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>0</Typography>
                                     </Box>
                                 </Stack>
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <EventIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Created at</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("createdAt") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             <Skeleton width={180}/>
                                         </Typography>
@@ -87,7 +90,7 @@ const ItemSingleSkeleton = () => {
                             <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                 <TagIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                 <Box>
-                                    <Typography variant={"caption"} color={"primary"}>Tags</Typography>
+                                    <Typography variant={"caption"} color={"primary"}>{ t("tags") }</Typography>
                                     <Stack direction={"row"} spacing={1}>
                                         {
                                             [1, 2, 3, 4, 5].map(tag => (

@@ -12,8 +12,11 @@ import {
 import AvatarImage from "../images/AvatarImage";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import EventIcon from "@mui/icons-material/Event";
+import {useTranslation} from "react-i18next";
 
 const CollectionSingleSkeleton = () => {
+
+    const { t } = useTranslation()
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
@@ -49,7 +52,7 @@ const CollectionSingleSkeleton = () => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <AvatarImage size={isDownSm ? 30 : 40}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>User</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("user") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>
                                             <Skeleton width={80}/>
                                         </Typography>
@@ -58,14 +61,14 @@ const CollectionSingleSkeleton = () => {
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <AttachFileIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Items</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("items") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"}>0</Typography>
                                     </Box>
                                 </Stack>
                                 <Stack spacing={2} direction={"row"} alignItems={"center"}>
                                     <EventIcon sx={{ transform: !isDownSm && "scale(1.5)" }} color={"primary"}/>
                                     <Box>
-                                        <Typography variant={"caption"} color={"primary"}>Created at</Typography>
+                                        <Typography variant={"caption"} color={"primary"}>{ t("createdAt") }</Typography>
                                         <Typography variant={isDownSm ? "body2" : "body1"} whiteSpace={"nowrap"}>
                                             <Skeleton width={180}/>
                                         </Typography>

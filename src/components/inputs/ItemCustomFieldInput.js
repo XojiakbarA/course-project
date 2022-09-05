@@ -7,6 +7,9 @@ const ItemCustomFieldInput = ({ customValues, collectionValue, touched, errors, 
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
+    const handleCheckboxChange = (e, i) => {
+        setFieldValue(`customValues[${i}].value`, String(e.target.checked))
+    }
     const handleDateChange = (v, i) => {
         setFieldValue(`customValues[${i}].value`, v.getTime())
     }
@@ -55,7 +58,8 @@ const ItemCustomFieldInput = ({ customValues, collectionValue, touched, errors, 
                         <FormControlLabel
                             control={<Checkbox/>}
                             label={setLabel(value.customFieldId)}
-                            { ...getFieldProps(`customValues[${i}].value`) }
+                            checked={value.value === "true"}
+                            onChange={ e => handleCheckboxChange(e, i) }
                         />
                         <FormHelperText error={touched?.customValues?.length && touched.customValues[i]?.value && errors?.customValues?.length && Boolean(errors.name)}>
                             {touched?.customValues?.length && touched.customValues[i]?.value && errors?.customValues?.length && errors.customValues[i].value}

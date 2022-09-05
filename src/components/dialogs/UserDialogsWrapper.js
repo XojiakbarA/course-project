@@ -15,11 +15,12 @@ import {
 } from "../../store/slices/dialogsSlice";
 import {appendToFormData} from "../../utils/helpers";
 import {deleteUserImage, editUser} from "../../store/asyncThunk/usersAsyncThunk";
+import {useTranslation} from "react-i18next";
 
 const UserDialogsWrapper = () => {
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { user: userDialog } = useSelector(dialogsSelector)
 
     const { single: user, editLoading, deleteImageLoading } = useSelector(usersSelector)
@@ -54,7 +55,7 @@ const UserDialogsWrapper = () => {
     return (
         <>
             <CommonDialog
-                title={"Login"}
+                title={ t("login") }
                 maxWidth={"xs"}
                 open={userDialog.login}
                 onClose={toggleLoginUserDialog}
@@ -62,31 +63,31 @@ const UserDialogsWrapper = () => {
                 <Stack spacing={2}>
                     <LoginForm/>
                     <Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
-                        <Typography>Don't have an account yet?</Typography>
-                        <Button onClick={toggleAuthDialog}>Register</Button>
+                        <Typography>{ t("dontHaveAccount") }</Typography>
+                        <Button onClick={toggleAuthDialog}>{ t("register") }</Button>
                     </Stack>
                 </Stack>
             </CommonDialog>
             <CommonDialog
-                title={"Create User"}
+                title={ t("createUser") }
                 maxWidth={"xs"}
                 open={userDialog.create}
                 onClose={toggleCreateUserDialog}
             >
                 <RegisterForm/>
                 <Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
-                    <Typography>Already have an account?</Typography>
-                    <Button onClick={toggleAuthDialog}>Login</Button>
+                    <Typography>{ t("haveAccount") }</Typography>
+                    <Button onClick={toggleAuthDialog}>{ t("login") }</Button>
                 </Stack>
             </CommonDialog>
             <CommonDialog
-                title={"Edit User"}
+                title={ t("editUser") }
                 maxWidth={"xs"}
                 open={userDialog.edit}
                 onClose={toggleEditUserDialog}
             >
                 <UserForm
-                    buttonText={"Edit"}
+                    buttonText={ t("edit") }
                     buttonIcon={<EditIcon/>}
                     buttonLoading={editLoading}
                     onSubmit={handleUserEditSubmit}
@@ -98,7 +99,7 @@ const UserDialogsWrapper = () => {
                 onClose={toggleDeleteUserImageDialog}
                 onConfirmClick={handleUserDeleteImageClick}
                 loading={deleteImageLoading}
-                content={"Do you really want to delete the image?"}
+                content={ t("deleteConfirmImage") }
             />
         </>
     )

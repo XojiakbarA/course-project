@@ -9,7 +9,6 @@ import {useEffect, useState, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getTopics} from "../../store/asyncThunk/topicsAsyncThunk";
 import {authSelector, topicsSelector, usersSelector} from "../../store/selectors";
-import {isAdmin} from "../../utils/helpers";
 import {useCollectionFormik} from "../../hooks/useCollectionFormik";
 import {toggleDeleteCollectionImage} from "../../store/slices/dialogsSlice";
 import {setTopics} from "../../store/slices/topicsSlice";
@@ -19,18 +18,20 @@ import {setUsers} from "../../store/slices/usersSlice";
 import CollectionCustomFieldInput from "../inputs/CollectionCustomFieldInput";
 import {FieldArray, FormikProvider} from "formik";
 import {fetchCustomFieldTypes} from "../../api/auth";
+import {useTranslation} from "react-i18next";
 
 const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, collection }) => {
 
     const dispatch = useDispatch()
     const location = useLocation()
+    const { t } = useTranslation()
     const isAdminPage = location.pathname.startsWith("/admin")
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     const { content: topics, getLoading: topicsGetLoading } = useSelector(topicsSelector)
     const { content: users, getLoading: usersGetLoading } = useSelector(usersSelector)
-    const { user } = useSelector(authSelector)
+    const { isAdmin } = useSelector(authSelector)
 
     const [customFieldTypes, setCustomFieldTypes] = useState({ getLoading: false, data: [] })
     const [gridWidth, setGridWidth] = useState(null)
@@ -96,7 +97,7 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, colle
                             fullWidth
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"Name"}
+                            label={ t("name") }
                             error={ touched.name && Boolean(errors.name) }
                             helperText={ touched.name && errors.name }
                             { ...getFieldProps("name") }
@@ -104,11 +105,11 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, colle
                         <AutocompleteInput
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"User"}
+                            label={ t("user") }
                             options={users}
                             value={userValue}
                             loading={usersGetLoading}
-                            disabled={usersGetLoading || !isAdmin(user) || !isAdminPage}
+                            disabled={usersGetLoading || !isAdmin || !isAdminPage}
                             name="userId"
                             onChange={handleUserChange}
                             onBlur={handleBlur}
@@ -119,7 +120,7 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, colle
                         <AutocompleteInput
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"Topic"}
+                            label={ t("topic") }
                             options={topics}
                             value={topicValue}
                             loading={topicsGetLoading}
@@ -135,7 +136,7 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, colle
                             fullWidth
                             size={isDownSm ? "small" : "medium"}
                             variant={"filled"}
-                            label={"Description"}
+                            label={ t("description") }
                             multiline
                             rows={5}
                             error={ touched.description && Boolean(errors.description) }
@@ -145,14 +146,14 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, colle
                     </Stack>
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                    <ListSubheader sx={{ bgcolor: "transparent", position: "relative"    }}>Custom Fields</ListSubheader>
+                    <ListSubheader sx={{ bgcolor: "transparent", position: "relative" }}>{ t("customFields") }</ListSubheader>
                     {
-                        buttonText === "Edit"
+                        buttonText === t("edit")
                         &&
                         <Stack direction={"row"} spacing={2} alignItems={"center"}>
                             <WarningIcon color={"warning"} fontSize={"small"}/>
                             <Typography variant={"caption"} color={"text.disabled"}>
-                                When changing custom fields, all custom fields of existing items on this collection are cleared.
+                                { t("whenChangingCollection") }
                             </Typography>
                         </Stack>
                     }
@@ -163,7 +164,7 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, colle
                                     startIcon={<AddIcon/>}
                                     onClick={ e => push({ name: "", customFieldTypeId: "" }) }
                                 >
-                                    Add Field
+                                    { t("createField") }
                                 </Button>
                                 {
                                     !!values.customFields.length
@@ -195,7 +196,7 @@ const CollectionForm = ({ buttonText, buttonIcon, buttonLoading, onSubmit, colle
                         size={isDownSm ? "small" : "medium"}
                         startIcon={buttonIcon}
                         type={"submit"}
-                        loading={buttonLoading}
+                        loading={buttonLoading || usersGetLoading || topicsGetLoading}
                     >
                         { buttonText }
                     </LoadingButton>

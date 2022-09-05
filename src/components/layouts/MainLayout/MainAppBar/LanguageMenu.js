@@ -1,20 +1,41 @@
-import {Menu, MenuItem} from "@mui/material";
+import {Popover, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
-const LanguageMenu = ({ id, anchorEl, onClose }) => {
+const LanguageMenu = ({ id, anchorEl, value, onChange, onClose }) => {
+
+    const { t } = useTranslation()
+
+    const handleChange = (e) => {
+        onChange(e)
+        onClose()
+    }
 
     return (
-        <Menu
+        <Popover
             id={id}
             open={Boolean(anchorEl)}
             anchorEl={anchorEl}
-            keepMounted
             onClose={onClose}
             anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-            <MenuItem onClick={onClose}>English</MenuItem>
-            <MenuItem onClick={onClose}>Russian</MenuItem>
-        </Menu>
+            <ToggleButtonGroup
+                size={"small"}
+                orientation={"vertical"}
+                value={value}
+                exclusive
+                onChange={handleChange}
+                aria-label="change mode"
+                color='primary'
+            >
+                <ToggleButton value="en" aria-label="left aligned">
+                    { t("english") }
+                </ToggleButton>
+                <ToggleButton value="uz" aria-label="right aligned">
+                    { t("uzbek") }
+                </ToggleButton>
+            </ToggleButtonGroup>
+        </Popover>
     )
 }
 

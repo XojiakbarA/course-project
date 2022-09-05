@@ -41,7 +41,7 @@ export const editUser = createAsyncThunk("users/edit",
             if (res.status === 200) {
                 const authUser = getState().auth.user
                 if (authUser.id === id) {
-                    if (!res.data.data.isNonLocked || !res.data.data.roles.find(r => r.name === "ADMIN")) {
+                    if (!res.data.data.isNonLocked) {
                         dispatch(logout())
                     } else {
                         dispatch(setAuthUser(res.data.data))

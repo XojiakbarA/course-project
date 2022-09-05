@@ -5,7 +5,7 @@ import AvatarUpload from "../commons/AvatarUpload";
 import {useSinglePreview} from "../../hooks/useSinglePreview";
 import {useFormik} from "formik";
 import {registerValidationSchema} from "../../utils/validate";
-import {appendToFormData, isAdmin} from "../../utils/helpers";
+import {appendToFormData} from "../../utils/helpers";
 import {useDispatch, useSelector} from "react-redux";
 import {authSelector, rolesSelector, usersSelector} from "../../store/selectors";
 import {toggleDeleteUserImage} from "../../store/slices/dialogsSlice";
@@ -13,15 +13,16 @@ import {useEffect, useState} from "react";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import {getRoles} from "../../store/asyncThunk/rolesAsyncThunk";
 import {createUser} from "../../store/asyncThunk/usersAsyncThunk";
+import {useTranslation} from "react-i18next";
 
 const RegisterForm = () => {
 
     const isDownSm = useMediaQuery((theme) => theme.breakpoints.down('sm'))
 
     const dispatch = useDispatch()
-
+    const { t } = useTranslation()
     const { content: roles, getLoading } = useSelector(rolesSelector)
-    const { user: authUser } = useSelector(authSelector)
+    const { isAdmin } = useSelector(authSelector)
     const { createLoading } = useSelector(usersSelector)
 
     const [rolesValue, setRolesValue] = useState([])
@@ -80,7 +81,7 @@ const RegisterForm = () => {
                 helperText={ errors.image }
             />
             {
-                isAdmin(authUser)
+                isAdmin
                 &&
                 <FormControlLabel
                     control={<Switch checked={Boolean(values.isNonLocked)}/>}
@@ -91,14 +92,14 @@ const RegisterForm = () => {
                 />
             }
             {
-                isAdmin(authUser)
+                isAdmin
                 &&
                 <AutocompleteInput
                     multiple
                     fullWidth
                     size={isDownSm ? "small" : "medium"}
                     variant={"filled"}
-                    label={"Roles"}
+                    label={ t("roles") }
                     options={roles}
                     value={rolesValue}
                     loading={getLoading}
@@ -115,7 +116,7 @@ const RegisterForm = () => {
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
                 variant={"filled"}
-                label={"First Name"}
+                label={ t("firstName") }
                 error={ touched.firstName && Boolean(errors.firstName) }
                 helperText={ touched.firstName && errors.firstName }
                 { ...getFieldProps('firstName') }
@@ -124,7 +125,7 @@ const RegisterForm = () => {
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
                 variant={"filled"}
-                label={"Last Name"}
+                label={ t("lastName") }
                 error={ touched.lastName && Boolean(errors.lastName) }
                 helperText={ touched.lastName && errors.lastName }
                 { ...getFieldProps('lastName') }
@@ -141,7 +142,7 @@ const RegisterForm = () => {
             <PasswordInput
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
-                label={"Password"}
+                label={ t("password") }
                 error={ touched.password && Boolean(errors.password) }
                 helperText={ touched.password && errors.password }
                 { ...getFieldProps('password') }
@@ -149,7 +150,7 @@ const RegisterForm = () => {
             <PasswordInput
                 fullWidth
                 size={isDownSm ? "small" : "medium"}
-                label={"Confirm Password"}
+                label={ t("confirmPassword") }
                 error={ touched.confirmPassword && Boolean(errors.confirmPassword) }
                 helperText={ touched.confirmPassword && errors.confirmPassword }
                 { ...getFieldProps('confirmPassword') }

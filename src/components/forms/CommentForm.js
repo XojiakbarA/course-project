@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {authSelector, itemsSelector, usersSelector} from "../../store/selectors";
 import {useLocation} from "react-router";
 import {LoadingButton} from "@mui/lab";
-import {isAdmin} from "../../utils/helpers";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import {useEffect} from "react";
 import {getUsers} from "../../store/asyncThunk/usersAsyncThunk";
@@ -11,14 +10,16 @@ import {setUsers} from "../../store/slices/usersSlice";
 import {getItems} from "../../store/asyncThunk/itemsAsyncThunk";
 import {setItems} from "../../store/slices/itemsSlice";
 import {useCommentFormik} from "../../hooks/useCommentFormik";
+import {useTranslation} from "react-i18next";
 
 const CommentForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, comment }) => {
 
     const dispatch = useDispatch()
     const location = useLocation()
+    const { t } = useTranslation()
     const isAdminPage = location.pathname.startsWith("/admin")
 
-    const { user } = useSelector(authSelector)
+    const { isAdmin } = useSelector(authSelector)
     const { content: users, getLoading: usersGetLoading } = useSelector(usersSelector)
     const { content: items, getLoading: itemsGetLoading } = useSelector(itemsSelector)
 
@@ -47,11 +48,11 @@ const CommentForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, comment 
                     fullWidth
                     size={isDownSm ? "small" : "medium"}
                     variant={"filled"}
-                    label={"User"}
+                    label={ t("user") }
                     options={users}
                     value={userValue}
                     loading={usersGetLoading}
-                    disabled={usersGetLoading || !isAdmin(user) || !isAdminPage}
+                    disabled={usersGetLoading || !isAdmin || !isAdminPage}
                     name="userId"
                     onChange={handleUserChange}
                     onBlur={handleBlur}
@@ -63,11 +64,11 @@ const CommentForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, comment 
                     fullWidth
                     size={isDownSm ? "small" : "medium"}
                     variant={"filled"}
-                    label={"Item"}
+                    label={ t("item") }
                     options={items}
                     value={itemValue}
                     loading={itemsGetLoading}
-                    disabled={itemsGetLoading || !isAdmin(user) || !isAdminPage}
+                    disabled={itemsGetLoading || !isAdmin || !isAdminPage}
                     name="itemId"
                     onChange={handleItemChange}
                     onBlur={handleBlur}
@@ -76,7 +77,7 @@ const CommentForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, comment 
                     getOptionLabel={option => option.name}
                 />
                 <FormControl variant={"standard"}>
-                    <InputLabel shrink htmlFor={"rating"}>Rating</InputLabel>
+                    <InputLabel shrink htmlFor={"rating"}>{ t("rating") }</InputLabel>
                     <Rating
                         sx={{ pt: 2 }}
                         name={"rating"}
@@ -88,7 +89,7 @@ const CommentForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, comment 
                 <TextField
                     fullWidth
                     variant={"filled"}
-                    label={"Comment"}
+                    label={ t("comment") }
                     multiline
                     rows={5}
                     error={ touched.text && Boolean(errors.text) }
@@ -96,10 +97,11 @@ const CommentForm = ({ buttonIcon, buttonLoading, buttonText, onSubmit, comment 
                     { ...getFieldProps("text") }
                 />
                 <LoadingButton
+                    fullWidth
                     variant={"contained"}
                     size={isDownSm ? "small" : "medium"}
                     startIcon={buttonIcon}
-                    loading={buttonLoading}
+                    loading={buttonLoading || usersGetLoading || itemsGetLoading}
                     type={"submit"}
                 >
                     { buttonText }

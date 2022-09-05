@@ -20,12 +20,14 @@ import {
 } from "../../store/asyncThunk/collectionsAsyncThunk";
 import {useLocation, useNavigate} from "react-router";
 import {setFetchCollectionsType} from "../../store/slices/collectionsSlice";
+import {useTranslation} from "react-i18next";
 
 const CollectionDialogsWrapper = ({ params }) => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
+    const { t } = useTranslation()
 
     const { collection: collectionDialog } = useSelector(dialogsSelector)
 
@@ -70,26 +72,26 @@ const CollectionDialogsWrapper = ({ params }) => {
     return (
         <>
             <CommonDialog
-                title={"Create Collection"}
+                title={ t("createCollection") }
                 maxWidth={"md"}
                 open={collectionDialog.create}
                 onClose={toggleCreateCollectionDialog}
             >
                 <CollectionForm
-                    buttonText={"Create"}
+                    buttonText={ t("create") }
                     buttonIcon={<AddToPhotosIcon/>}
                     buttonLoading={createLoading}
                     onSubmit={handleCollectionCreateSubmit}
                 />
             </CommonDialog>
             <CommonDialog
-                title={"Edit Collection"}
+                title={ t("editCollection") }
                 maxWidth={"md"}
                 open={collectionDialog.edit}
                 onClose={toggleEditCollectionDialog}
             >
                 <CollectionForm
-                    buttonText={"Edit"}
+                    buttonText={ t("edit") }
                     buttonIcon={<EditIcon/>}
                     buttonLoading={editLoading}
                     onSubmit={handleCollectionEditSubmit}
@@ -101,14 +103,14 @@ const CollectionDialogsWrapper = ({ params }) => {
                 onClose={toggleDeleteCollectionDialog}
                 onConfirmClick={handleCollectionDeleteClick}
                 loading={deleteLoading}
-                content={"Do you really want to delete the collection?"}
+                content={ t("deleteConfirmCollection") }
             />
             <ConfirmDialog
                 open={collectionDialog.deleteImage}
                 onClose={toggleDeleteCollectionImageDialog}
                 onConfirmClick={handleDeleteCollectionImageClick}
                 loading={deleteImageLoading}
-                content={"Do you really want to delete the image?"}
+                content={ t("deleteConfirmImage") }
             />
         </>
     )

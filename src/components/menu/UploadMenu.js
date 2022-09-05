@@ -1,11 +1,14 @@
 import { Menu, MenuItem, ListItemIcon, Input } from '@mui/material'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
+import {useTranslation} from "react-i18next";
 
 const UploadMenu = ({
     open, anchorEl, name, disabled,
     handleClose, handleDeleteImage, handleUploadChange
 }) => {
+
+    const { t } = useTranslation()
 
     return (
         <Menu
@@ -52,7 +55,7 @@ const UploadMenu = ({
                 <ListItemIcon>
                     <DeleteForeverIcon fontSize="small" />
                 </ListItemIcon>
-                Remove
+                { t("delete") }
             </MenuItem>
             <label htmlFor={name}>
                 <Input
@@ -70,7 +73,7 @@ const UploadMenu = ({
                     <ListItemIcon>
                         <AddAPhotoIcon fontSize="small" />
                     </ListItemIcon>
-                    Upload
+                    { t("upload") }
                 </MenuItem>
             </label>
         </Menu>
