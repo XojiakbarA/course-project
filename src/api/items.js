@@ -1,5 +1,9 @@
 import {instance} from "./auth";
 
+export const fetchSearchItems = async (key) => {
+    return await instance.get(`/api/items/search/${key}`)
+}
+
 export const fetchItems = async (params) => {
     return await instance.get("/api/items", { params })
 }

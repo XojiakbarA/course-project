@@ -27,6 +27,7 @@ import Tags from "./pages/admin/Tags";
 import Comments from "./pages/admin/Comments";
 import NotFound from "./pages/404";
 import AdminProtected from "./pages/admin/AdminProtected";
+import Search from "./pages/Search";
 
 const App = (props) => {
 
@@ -45,6 +46,7 @@ const App = (props) => {
                 <Route element={<ScrollToTop/>}>
                     <Route path={"/"} element={<MainLayout/>}>
                         <Route index element={<Home/>}/>
+                        <Route path={"/search/:key"} element={<Search/>}/>
                         <Route path={"/collections"} element={<Collections/>}/>
                         <Route path={"/collections/:id"} element={<CollectionsID/>}/>
                         <Route path={"/items/"} element={<Items/>}/>
