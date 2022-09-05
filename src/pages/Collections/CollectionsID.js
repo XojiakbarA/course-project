@@ -31,16 +31,18 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import {FETCH_COLLECTION_ITEMS} from "../../store/fetchTypes";
 import ItemDialogsWrapper from "../../components/dialogs/ItemDialogsWrapper";
 import CollectionDialogsWrapper from "../../components/dialogs/CollectionDialogsWrapper";
+import {useTranslation} from "react-i18next";
 
 const CollectionsID = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { id } = useParams()
+    const { t } = useTranslation()
     const { content: items, hasMore, getLoading } = useSelector(itemsSelector)
     const { single: collection, getSingleLoading } = useSelector(collectionsSelector)
     const { content: tags } = useSelector(tagsSelector)
-    const { user } = useSelector(authSelector)
+    const { user, isAdmin } = useSelector(authSelector)
 
     const isOwnCollection = user?.id === collection?.user?.id
 
@@ -90,7 +92,7 @@ const CollectionsID = () => {
                 flex: 2,
                 minWidth: 150,
                 field: 'name',
-                headerName: 'Name',
+                headerName: t('name'),
                 type: "string",
                 renderCell: ({ row }) => <Link component={RouterLink} to={`/items/${row.id}`}>{row.name}</Link>
             },
@@ -98,7 +100,7 @@ const CollectionsID = () => {
                 flex: 1,
                 minWidth: 80,
                 field: 'image',
-                headerName: 'Image',
+                headerName: t('image'),
                 type: "string",
                 filterable: false,
                 sortable: false,
@@ -108,7 +110,7 @@ const CollectionsID = () => {
                 flex: 2,
                 minWidth: 250,
                 field: 'tags',
-                headerName: 'Tags',
+                headerName: t('tags'),
                 type: "singleSelect",
                 sortable: false,
                 valueOptions: tags?.map(i => i.name),
@@ -126,7 +128,7 @@ const CollectionsID = () => {
                 flex: 1,
                 minWidth: 100,
                 field: 'likesCount',
-                headerName: "Likes",
+                headerName: t("likes"),
                 type: "number",
                 renderHeader: () => (
                     <Stack direction={"row"} spacing={1}>
@@ -140,7 +142,7 @@ const CollectionsID = () => {
                 flex: 1,
                 minWidth: 100,
                 field: 'commentsCount',
-                headerName: "Comments",
+                headerName: t("comments"),
                 type: "number",
                 renderHeader: () => (
                     <Stack direction={"row"} spacing={1}>
@@ -154,17 +156,19 @@ const CollectionsID = () => {
                 flex: 1.5,
                 minWidth: 150,
                 field: 'createdAt',
-                headerName: 'Created At',
+                headerName: t('createdAt'),
                 type: "dateTime",
                 renderCell: ({ value }) => value ? new Date(value).toLocaleString() : null
             },
             {
                 width: 120,
                 field: "actions",
-                headerName: 'Actions',
+                headerName: t('actions'),
                 filterable: false,
                 sortable: false,
                 renderCell: ({ row }) => (
+                    isAdmin || isOwnCollection
+                    ?
                     <Stack direction={"row"} spacing={1}>
                         <Tooltip title={"Edit"}>
                             <IconButton onClick={ e => toggleEditItemDialog(row) }>
@@ -177,10 +181,12 @@ const CollectionsID = () => {
                             </IconButton>
                         </Tooltip>
                     </Stack>
+                    :
+                    null
                 )
             }
         ]
-    ), [tags, toggleDeleteItemDialog, toggleEditItemDialog])
+    ), [tags, toggleDeleteItemDialog, toggleEditItemDialog, t, isOwnCollection, isAdmin])
 
     return (
         <Grid container spacing={2}>
