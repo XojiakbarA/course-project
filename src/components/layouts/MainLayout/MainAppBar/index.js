@@ -13,6 +13,7 @@ import {useLocation} from "react-router";
 import AuthButton from "./AuthButton";
 import {useTranslation} from "react-i18next";
 import "../../../../utils/i18next";
+import TaskDescriptionButton from './TaskDescriptionButton';
 
 const MyAppBar = ({ onMenuClick }) => {
 
@@ -46,6 +47,7 @@ const MyAppBar = ({ onMenuClick }) => {
                         <SearchInput/>
                     }
                     <Box sx={{ flexGrow: 1 }} />
+                    <TaskDescriptionButton/>
                     <AuthButton/>
                 </Toolbar>
             </AppBar>
